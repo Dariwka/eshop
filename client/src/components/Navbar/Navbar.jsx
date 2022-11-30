@@ -13,7 +13,7 @@ const Navbar = () => {
       <div className="wrapper">
         <div className="left">
           <div className="item">
-            <img src="img/en.png" alt="flag" />
+            <img src="/img/en.png" alt="flag" />
             <KeyboardArrowDownIcon />
           </div>
           <div className="item">
@@ -48,27 +48,27 @@ const Navbar = () => {
         </div>
         <div className="right">
           <div className="item">
-            <Link className="link" to="/treatments">
+            <Link className="link" to="/treatments/1">
               Treatments
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/courses">
+            <Link className="link" to="/courses/1">
               Courses
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/brands">
+            <Link className="link" to="/brands/1">
               Brands
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/">
+            <Link className="link" to="/about">
               About
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/">
+            <Link className="link" to="/contact">
               Contact
             </Link>
           </div>

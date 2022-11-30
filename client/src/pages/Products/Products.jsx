@@ -23,19 +23,23 @@ const Products = () => {
           </div>
           <div className="inputItem">
             <input type="checkbox" id="2" value={2} />
-            <label htmlFor="2">Calming</label>
+            <label htmlFor="2">Creams</label>
           </div>
           <div className="inputItem">
             <input type="checkbox" id="3" value={3} />
-            <label htmlFor="3">Lifting</label>
+            <label htmlFor="3">Serums</label>
           </div>
           <div className="inputItem">
             <input type="checkbox" id="4" value={4} />
-            <label htmlFor="4">Whitening</label>
+            <label htmlFor="4">Ampoules</label>
           </div>
           <div className="inputItem">
             <input type="checkbox" id="5" value={5} />
-            <label htmlFor="5">Acne</label>
+            <label htmlFor="5">Slimming</label>
+          </div>
+          <div className="inputItem">
+            <input type="checkbox" id="6" value={6} />
+            <label htmlFor="6">Masks</label>
           </div>
         </div>
         <div className="filterItem">
