@@ -11,7 +11,7 @@ const Home = () => {
       <Slider />
       <FeaturedProducts type="featured" />
       <Categories />
-      <FeaturedProducts type="trading" />
+      <FeaturedProducts type="new" />
       <Contact />
     </div>
   );

@@ -52,7 +52,7 @@ const Slider = () => {
         clearTimeout(timeout.currentSlide);
       }
     };
-  }, [currentSlide]);
+  }, [currentSlide, length]);
 
   if (!Array.isArray(sliderPhotos) || sliderPhotos.length <= 0) {
     return null;
