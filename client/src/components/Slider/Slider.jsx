@@ -18,7 +18,7 @@ const Slider = () => {
     "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796264/kosmedik/dermedics_CALM_kompo_03_gazv6n.png",
     "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796264/kosmedik/dermedics_HYDRA_kompo_03_m1vqez.png",
     "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796264/kosmedik/dermedics_GENX_kompo_03_tbpyw7.png",
-    "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796263/kosmedik/dermedics_ACNE_kompo_02_z1unv7.png",
+    "https://res.cloudinary.com/lvimeridijan/image/upload/v1670359029/kosmedik/dermedics_ACNE_kompo_02_o1s90o.png",
     "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796263/kosmedik/dermedics_ECM_kompo_02_aoz6jb.png",
   ];
 
