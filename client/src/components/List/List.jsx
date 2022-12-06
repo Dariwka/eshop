@@ -10,7 +10,6 @@ const List = ({ subCats, maxPrice, prodSort, catId }) => {
     )}&[filters][price][$lte]=${maxPrice}&sort=price:${prodSort}`
   );
 
-  console.log(data);
   return (
     <div className="list">
       {error
