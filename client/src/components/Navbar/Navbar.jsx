@@ -53,17 +53,17 @@ const Navbar = () => {
         </div>
         <div className="right">
           <div className="item">
-            <Link className="link" to="/treatments/1">
+            <Link className="link" to="/treatments">
               Treatments
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/courses/1">
-              Courses
+            <Link className="link" to="/training">
+              Training
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/brands/1">
+            <Link className="link" to="/brands">
               Brands
             </Link>
           </div>
