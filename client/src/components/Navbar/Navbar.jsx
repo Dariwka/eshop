@@ -80,7 +80,12 @@ const Navbar = () => {
           <div className="icons">
             <SearchIcon />
             <PersonOutlineIcon />
-            <FavoriteBorderIcon />
+            <div className="cartIcon">
+              <Link className="link" to="/wishlist">
+                <FavoriteBorderIcon />
+              </Link>
+              <span>0</span>
+            </div>
             <div className="cartIcon">
               <ShoppingCartOutlinedIcon onClick={() => setOpen(!open)} />
               <span>{products.length}</span>

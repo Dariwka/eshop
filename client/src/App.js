@@ -9,6 +9,11 @@ import Course from "./pages/Course/Course.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./app.scss";
+import WishList from "./pages/WishList/WishList.jsx";
+import Brand from "./pages/Brand/Brand.jsx";
+import Brands from "./pages/Brands/Brands.jsx";
+import About from "./pages/About/About.jsx";
+import ContactUs from "./pages/ContactUs/ContactUs.jsx";
 
 const Layout = () => {
   return (
@@ -52,6 +57,26 @@ const router = createBrowserRouter([
       {
         path: "/course/:id",
         element: <Course />,
+      },
+      {
+        path: "/brands/:id",
+        element: <Brands />,
+      },
+      {
+        path: "/brand/:id",
+        element: <Brand />,
+      },
+      {
+        path: "/wishlist",
+        element: <WishList />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <ContactUs />,
       },
     ],
   },
