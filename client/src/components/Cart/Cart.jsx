@@ -1,63 +1,70 @@
 import React from "react";
 import "./Cart.scss";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
+import { useSelector, useDispatch } from "react-redux";
+import { removeItem, resetCart } from "../../redux/cartReducer";
+import { loadStripe } from "@stripe/stripe-js";
+import { makeRequest } from "../../makeRequest";
 
 const Cart = () => {
-  const data = [
-    {
-      id: 1,
-      img: "https://res.cloudinary.com/lvimeridijan/image/upload/v1653638944/kosmedik/dermedics_CALM_roll-on_15ml_txf3z2.png",
-      img2: "https://res.cloudinary.com/lvimeridijan/image/upload/v1653638944/kosmedik/dermedics_CALM_roll-on_15ml_box_1_dckssg.png",
-      title: "CALM Instant Relief Eye Serum",
-      isNew: true,
-      volume: 15,
-      oldPrice: 23,
-      price: 16,
-      desc: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      id: 2,
-      img: "https://res.cloudinary.com/lvimeridijan/image/upload/v1669803259/kosmedik/dermedics_ACNE_roll-on_15ml_bottle_eyvc08.png",
-      img2: "https://res.cloudinary.com/lvimeridijan/image/upload/v1669803259/kosmedik/dermedics_ACNE_roll-on_15ml_box_hes7tq.png",
-      title: "Anti Acne Roll-On Serum",
-      isNew: true,
-      volume: 15,
-      oldPrice: 23,
-      price: 16,
-      desc: "Lorem ipsum dolor sit amet consectetur",
-    },
-    {
-      id: 3,
-      img: "https://res.cloudinary.com/lvimeridijan/image/upload/v1669803439/kosmedik/dermedics_HYDRA_eye_cream_15ml_bottle_dseqr7.png",
-      img2: "https://res.cloudinary.com/lvimeridijan/image/upload/v1669803439/kosmedik/dermedics_HYDRA_eye_cream_15ml_box_purszy.png",
-      title: "HYDRA Eye Cream Deluxe",
-      isNew: false,
-      volume: 15,
-      oldPrice: 54,
-      price: 48,
-      desc: "Lorem ipsum dolor sit amet consectetur",
-    },
-  ];
+  const products = useSelector((state) => state.cart.products);
+  const dispatch = useDispatch();
+
+  const totalPrice = () => {
+    let total = 0;
+    products.forEach((item) => {
+      total += item.quantity * item.price;
+    });
+    return total.toFixed(2);
+  };
+
+  const stripePromise = loadStripe(
+    "pk_test_51KHR0mDknU593aK7dOktRi0jEH7m3RNkMGaSJ2apFiJY3ob4kyzT828sWkGnuD5fJbFCzqD1wQzlLqf5v2Qhigi2004csru10Q"
+  );
+
+  const handlePayment = async () => {
+    try {
+      const stripe = await stripePromise;
+
+      const res = await makeRequest.post("/orders", {
+        products,
+      });
+
+      await stripe.redirectToCheckout({
+        sessionId: res.data.stripeSession.id,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <div className="cart">
       <h1>Products in your cart</h1>
-      {data?.map((item) => (
+      {products?.map((item) => (
         <div className="item" key={item.id}>
-          <img src={item.img} alt="" />
+          <img src={process.env.REACT_APP_UPLOAD_URL + item.img} alt="" />
           <div className="details">
             <h1>{item.title}</h1>
             <p>{item.desc?.substring(0, 100)}</p>
-            <div className="price">1 x €{item.price}</div>
+            <div className="price">
+              {item.quantity} x €{item.price}
+            </div>
           </div>
-          <DeleteOutlinedIcon className="delete" />
+          <DeleteOutlinedIcon
+            className="delete"
+            onClick={() => dispatch(removeItem(item.id))}
+          />
         </div>
       ))}
       <div className="total">
         <span>SUBTOTAL</span>
-        <span>€19.9</span>
+        <span>€{totalPrice()}</span>
       </div>
-      <button>PROCEED TO CHECKOUT</button>
-      <span className="reset">Reset Cart</span>
+      <button onClick={handlePayment}>PROCEED TO CHECKOUT</button>
+      <span className="reset" onClick={() => dispatch(resetCart())}>
+        Reset Cart
+      </span>
     </div>
   );
 };

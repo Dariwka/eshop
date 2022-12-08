@@ -11,7 +11,7 @@ const Products = () => {
   const catId = parseInt(useParams().id);
 
   const [maxPrice, setMaxPrice] = useState(1000);
-  const [sort, setSort] = useState(null);
+  const [prodSort, setProdSort] = useState("asc");
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
 
@@ -72,7 +72,7 @@ const Products = () => {
               id="asc"
               value="asc"
               name="price"
-              onChange={(e) => setSort("asc")}
+              onChange={(e) => setProdSort("asc")}
             />
             <label htmlFor="asc">Price (Lowest First)</label>
           </div>
@@ -82,7 +82,7 @@ const Products = () => {
               id="desc"
               value="desc"
               name="price"
-              onChange={(e) => setSort("desc")}
+              onChange={(e) => setProdSort("desc")}
             />
             <label htmlFor="desc">Price (Highest First)</label>
           </div>
@@ -97,8 +97,8 @@ const Products = () => {
         <List
           catId={catId}
           maxPrice={maxPrice}
-          prodSort={sort}
           subCats={selectedSubCats}
+          prodSort={prodSort}
         />
       </div>
     </div>
