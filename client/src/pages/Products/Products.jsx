@@ -5,9 +5,6 @@ import "./Products.scss";
 import useFetch from "../../hooks/useFetch";
 
 const Products = () => {
-  //const param = useParams();
-  //console.log(param);
-
   const catId = parseInt(useParams().id);
 
   const [maxPrice, setMaxPrice] = useState(1000);
