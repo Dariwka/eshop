@@ -12,6 +12,6 @@ cd api, npm start (strapi start)
 cd client, npm start (localhost:3000)
 
 ### VIDEO
-* [video-part1](https://user-images.githubusercontent.com/77488950/209949258-92705224-e9da-44ac-96bd-3e694de06ffa.mp4)
-* [video-part2](https://user-images.githubusercontent.com/77488950/209949296-a1248465-41cd-4ac1-b6e5-c9348ec76e65.mp4)
-* [video-part3](https://user-images.githubusercontent.com/77488950/209949327-5727dc3c-68fd-4640-aae2-b5ed37dce935.mp4)
+* [video-part1](https://user-images.githubusercontent.com/77488950/209949651-d1fcc28c-268d-4698-a9b3-0d3cde8dccce.mp4)
+* [video-part2](https://user-images.githubusercontent.com/77488950/209949767-802260c7-dd72-45e4-83ab-00db0aa5cd52.mp4)
+* [video-part3](https://user-images.githubusercontent.com/77488950/209949881-699ff3c4-2ed7-4e37-9e47-f16f6b866a08.mp4)
