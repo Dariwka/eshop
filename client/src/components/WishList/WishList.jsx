@@ -2,49 +2,56 @@ import React from "react";
 import "./WishList.scss";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { useSelector, useDispatch } from "react-redux";
-import { removeFromWishList } from "../../redux/wishReducer";
-import { addToCart } from "../../redux/cartReducer";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  addToCart,
+  removeFromWishList,
+  resetWishList,
+} from "../../redux/cartReducer";
 
 const WishList = () => {
-  const wishProducts = useSelector((state) => state.wishList.wishProducts);
-  console.log(wishProducts);
+  const wishList = useSelector((state) => state.cart.wishList) || [];
 
   const dispatch = useDispatch();
+
   return (
-    <div className="wishlist">
-      <h1>Products or Treatments in your Wish List</h1>
-      {wishProducts?.map((item) => (
+    <div className="wishList">
+      <h1>Products in your Wish List</h1>
+      {wishList?.map((item) => (
         <div className="item" key={item.id}>
           <img src={process.env.REACT_APP_UPLOAD_URL + item.img} alt="" />
           <div className="details">
             <h1>{item.title}</h1>
+            <p>{item.price}€</p>
             <div className="price">
               {item.quantity} x €{item.price}
             </div>
           </div>
-          <button
+          <AddShoppingCartIcon
             className="add"
             onClick={() =>
               dispatch(
                 addToCart({
                   id: item.id,
-                  title: item.attributes.title,
-                  desc: item.attributes.desc,
-                  price: item.attributes.price,
-                  img: item.attributes.img.item.attributes.url,
-                  guantity: item.quantity,
+                  title: item.title,
+                  price: item.price,
+                  desc: item.desc,
+                  img: item.img,
+                  quantity: item.quantity,
                 })
-              )
+              ) && dispatch(removeFromWishList(item.id))
             }
-          >
-            <AddShoppingCartIcon /> ADD TO CART
-          </button>
+          />
           <DeleteOutlinedIcon
+            className="delete"
             onClick={() => dispatch(removeFromWishList(item.id))}
           />
         </div>
       ))}
+      <button>ADD ALL TO SHOPPING CART</button>
+      <span className="reset" onClick={() => dispatch(resetWishList())}>
+        Reset Wish List
+      </span>
     </div>
   );
 };

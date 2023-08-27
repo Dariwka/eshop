@@ -10,7 +10,6 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import wishReducer from "./wishReducer";
 import storage from "redux-persist/lib/storage";
 
 const persistConfig = {
@@ -19,16 +18,11 @@ const persistConfig = {
   storage,
 };
 
-const persistedReducer = persistReducer(
-  persistConfig,
-  cartReducer,
-  wishReducer
-);
+const persistedReducer = persistReducer(persistConfig, cartReducer);
 
 export const store = configureStore({
   reducer: {
     cart: persistedReducer,
-    wishList: persistedReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

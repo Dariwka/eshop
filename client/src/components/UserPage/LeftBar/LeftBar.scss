@@ -1,0 +1,8 @@
+.leftbar {
+  flex: 3;
+  height: calc(100vh - 51px);
+  border-right: solid 1px lightgray;
+  .leftbarWrapper {
+    padding: 20px;
+  }
+}

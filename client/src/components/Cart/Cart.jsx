@@ -7,14 +7,18 @@ import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from "../../makeRequest";
 
 const Cart = () => {
-  const products = useSelector((state) => state.cart.products);
+  const products = useSelector((state) => state.cart.products) || [];
   const dispatch = useDispatch();
+
+  console.log("products", products);
 
   const totalPrice = () => {
     let total = 0;
+
     products.forEach((item) => {
       total += item.quantity * item.price;
     });
+
     return total.toFixed(2);
   };
 

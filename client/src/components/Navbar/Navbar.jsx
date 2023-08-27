@@ -8,11 +8,28 @@ import { Link } from "react-router-dom";
 import "./Navbar.scss";
 import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
+import WishList from "../WishList/WishList";
 
-const Navbar = () => {
+const Navbar = ({ name }) => {
   const products = useSelector((state) => state.cart.products);
 
+  console.log("products", products);
+
+  const wishList = useSelector((state) => state.cart.wishList);
+
+  console.log("wished", wishList);
+
   const [open, setOpen] = useState(false);
+  const [openWishList, setOpenWishList] = useState(false);
+
+  //const componentRef = useRef();
+
+  const menuCloseOpenHandler = () => {
+    setOpen(!open);
+  };
+  const wishCloseOpenHandler = () => {
+    setOpenWishList(!openWishList);
+  };
   return (
     <div className="navbar">
       <div className="wrapper">
@@ -36,13 +53,8 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/products/3">
+            <Link className="link" to="/professionals">
               Professionals
-            </Link>
-          </div>
-          <div className="item">
-            <Link className="link" to="/products/4">
-              Devices
             </Link>
           </div>
         </div>
@@ -63,11 +75,6 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/brands">
-              Brands
-            </Link>
-          </div>
-          <div className="item">
             <Link className="link" to="/about">
               About
             </Link>
@@ -79,21 +86,25 @@ const Navbar = () => {
           </div>
           <div className="icons">
             <SearchIcon />
-            <PersonOutlineIcon />
-            <div className="cartIcon">
-              <Link className="link" to="/wishlist">
-                <FavoriteBorderIcon />
+            <div className="item">
+              <Link className="link" to="/user/1">
+                <PersonOutlineIcon />
+                <span>{name}</span>
               </Link>
-              <span>0</span>
             </div>
             <div className="cartIcon">
-              <ShoppingCartOutlinedIcon onClick={() => setOpen(!open)} />
+              <FavoriteBorderIcon onClick={wishCloseOpenHandler} />
+              <span>{wishList.length}</span>
+            </div>
+            <div className="cartIcon">
+              <ShoppingCartOutlinedIcon onClick={menuCloseOpenHandler} />
               <span>{products.length}</span>
             </div>
           </div>
         </div>
       </div>
       {open && <Cart />}
+      {openWishList && <WishList />}
     </div>
   );
 };

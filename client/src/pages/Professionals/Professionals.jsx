@@ -1,15 +1,15 @@
 import React, { useState } from "react";
+import "./Professionals.scss";
 import useFetch from "../../hooks/useFetch";
-import "./Treatments.scss";
-import ListTreat from "../../components/ListTreat/ListTreat";
+import ListProf from "../../components/ListProf/ListProf";
 
-const Treatments = () => {
+const Professionals = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
-  const [treatSort, setTreatSort] = useState("asc");
+  const [profSort, setProfSort] = useState("asc");
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
 
-  const { data, loading, error } = useFetch(`/sub-treat-categories?populate=*`);
+  const { data, loading, error } = useFetch(`/sub-prof-categories?populate=*`);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -23,10 +23,10 @@ const Treatments = () => {
   };
 
   return (
-    <div className="treatments">
+    <div className="professionals">
       <div className="left">
-        <div className="filterTreat">
-          <h2>Treatment's Categories</h2>
+        <div className="filterProf">
+          <h2>Categories</h2>
           {error
             ? "Something went wrong"
             : loading
@@ -43,7 +43,7 @@ const Treatments = () => {
                 </div>
               ))}
         </div>
-        <div className="filterTreat">
+        <div className="filterProf">
           <h2>Filter by price</h2>
           <div className="inputItem">
             <span>0</span>
@@ -56,7 +56,7 @@ const Treatments = () => {
             <span>{maxPrice}</span>
           </div>
         </div>
-        <div className="filterTreat">
+        <div className="filterProf">
           <h2>Sort by</h2>
           <div className="inputItem">
             <input
@@ -64,7 +64,7 @@ const Treatments = () => {
               id="asc"
               value="asc"
               name="price"
-              onChange={(e) => setTreatSort("asc")}
+              onChange={(e) => setProfSort("asc")}
             />
             <label htmlFor="asc">Price (Lowest First)</label>
           </div>
@@ -74,7 +74,7 @@ const Treatments = () => {
               id="desc"
               value="desc"
               name="price"
-              onChange={(e) => setTreatSort("desc")}
+              onChange={(e) => setProfSort("desc")}
             />
             <label htmlFor="desc">Price (Highest First)</label>
           </div>
@@ -86,14 +86,14 @@ const Treatments = () => {
           alt=""
           className="catImg"
         />
-        <ListTreat
+        <ListProf
           maxPrice={maxPrice}
-          subCatsTreat={selectedSubCats}
-          treatSort={treatSort}
+          subCatsProf={selectedSubCats}
+          profSort={profSort}
         />
       </div>
     </div>
   );
 };
 
-export default Treatments;
+export default Professionals;

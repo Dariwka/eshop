@@ -9,16 +9,21 @@ import Course from "./pages/Course/Course.jsx";
 import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./app.scss";
-import WishList from "./pages/WishList/WishList.jsx";
+
 import Brand from "./pages/Brand/Brand.jsx";
 import Brands from "./pages/Brands/Brands.jsx";
 import About from "./pages/About/About.jsx";
 import ContactUs from "./pages/ContactUs/ContactUs.jsx";
+import Professionals from "./pages/Professionals/Professionals.jsx";
+import Professional from "./pages/Professional/Professional.jsx";
+import UserPage from "./pages/UserPage/UserPage.jsx";
+import { useState } from "react";
 
 const Layout = () => {
+  const [name, setName] = useState("Diana");
   return (
     <div className="app">
-      <Navbar />
+      <Navbar name={name} />
       <Outlet />
       <Footer />
     </div>
@@ -60,6 +65,14 @@ const router = createBrowserRouter([
         element: <Course />,
       },
       {
+        path: "/professionals",
+        element: <Professionals />,
+      },
+      {
+        path: "/professional/:id",
+        element: <Professional />,
+      },
+      {
         path: "/brands",
         element: <Brands />,
       },
@@ -68,16 +81,16 @@ const router = createBrowserRouter([
         element: <Brand />,
       },
       {
-        path: "/wishlist",
-        element: <WishList />,
-      },
-      {
         path: "/about",
         element: <About />,
       },
       {
         path: "/contact",
         element: <ContactUs />,
+      },
+      {
+        path: "/user/:id",
+        element: <UserPage />,
       },
     ],
   },

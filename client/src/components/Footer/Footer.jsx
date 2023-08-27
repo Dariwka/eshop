@@ -29,6 +29,7 @@ const Footer = () => {
         </div>
         <div className="item">
           <h1>Links</h1>
+          <span>Brands</span>
           <span>FAQ</span>
           <span>Stores</span>
           <span>Compare</span>

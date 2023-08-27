@@ -1,25 +1,29 @@
 import React, { useState } from "react";
-import "./Product.scss";
-import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import "./Professional.scss";
 import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import BalanceIcon from "@mui/icons-material/Balance";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
+import { useDispatch } from "react-redux";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { addToCart, addToWishList } from "../../redux/cartReducer";
 
-const Product = () => {
+const Professional = () => {
   const id = useParams().id;
+  const [show, setShow] = useState(false);
   const [selectedImg, setSelectedImg] = useState("img");
+
   const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch();
 
-  const { data, loading } = useFetch(`/products/${id}?populate=*`);
+  const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
+
+  console.log("prof", data);
+
   return (
-    <div className="product">
+    <div className="professional">
       {loading ? (
-        "Loading...."
+        "loading..."
       ) : (
         <>
           <div className="left">
@@ -55,7 +59,6 @@ const Product = () => {
             <h1>{data?.attributes?.title}</h1>
             <span className="price">€{data?.attributes?.price}</span>
             <p>{data?.attributes?.desc}</p>
-
             <div className="quantity">
               <button
                 onClick={() =>
@@ -67,57 +70,24 @@ const Product = () => {
               {quantity}
               <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
             </div>
-            <button
-              className="add"
-              onClick={() =>
-                dispatch(
-                  addToCart({
-                    id: data.id,
-                    title: data.attributes.title,
-                    desc: data.attributes.desc,
-                    price: data.attributes.price,
-                    img: data.attributes.img.data.attributes.url,
-                    quantity,
-                  })
-                )
-              }
-            >
+            <button className="add">
               <AddShoppingCartIcon /> ADD TO CART
             </button>
             <div className="links">
-              <button
-                className="item"
-                onClick={() =>
-                  dispatch(
-                    addToWishList({
-                      id: data.id,
-                      title: data.attributes.title,
-                      price: data.attributes.price,
-                      img: data.attributes.img.data.attributes.url,
-                      quantity,
-                    })
-                  )
-                }
-              >
-                <FavoriteBorderIcon /> ADD TO WISH LIST
-              </button>
-              <div className="item">
-                <BalanceIcon />
-                ADD TO COMPARE
+              <div className="heart">
+                {show ? <FavoriteIcon /> : <FavoriteBorderIcon />}ADD TO WISH
+                LIST
               </div>
             </div>
             <div className="info">
-              <span>Vendor: Serum</span>
-              <span>Product series: Calming</span>
-              <span>Tag: Serum, Face, Calming</span>
-            </div>
-            <hr />
-            <div className="info">
-              <span>DESCRIPTION</span>
               <hr />
-              <span>ADDITIONAL INFORMATION</span>
-              <hr />
-              <span>FAQ</span>
+              <span>Availability: {data?.attributes?.stock}</span>
+              <span>
+                Brand: {data?.attributes?.brand?.data[0].attributes?.title}
+              </span>
+              <span>Area: {data?.attributes?.area}</span>
+              <span>Goal: {data?.attributes?.goal}</span>
+              <span>Tag: {data?.attributes?.tags}</span>
             </div>
           </div>
         </>
@@ -126,4 +96,4 @@ const Product = () => {
   );
 };
 
-export default Product;
+export default Professional;
