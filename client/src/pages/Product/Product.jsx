@@ -84,28 +84,6 @@ const Product = () => {
             >
               <AddShoppingCartIcon /> ADD TO CART
             </button>
-            <div className="links">
-              <button
-                className="item"
-                onClick={() =>
-                  dispatch(
-                    addToWishList({
-                      id: data.id,
-                      title: data.attributes.title,
-                      price: data.attributes.price,
-                      img: data.attributes.img.data.attributes.url,
-                      quantity,
-                    })
-                  )
-                }
-              >
-                <FavoriteBorderIcon /> ADD TO WISH LIST
-              </button>
-              <div className="item">
-                <BalanceIcon />
-                ADD TO COMPARE
-              </div>
-            </div>
             <div className="info">
               <span>Vendor: Serum</span>
               <span>Product series: Calming</span>

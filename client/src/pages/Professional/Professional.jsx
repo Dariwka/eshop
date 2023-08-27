@@ -73,12 +73,6 @@ const Professional = () => {
             <button className="add">
               <AddShoppingCartIcon /> ADD TO CART
             </button>
-            <div className="links">
-              <div className="heart">
-                {show ? <FavoriteIcon /> : <FavoriteBorderIcon />}ADD TO WISH
-                LIST
-              </div>
-            </div>
             <div className="info">
               <hr />
               <span>Availability: {data?.attributes?.stock}</span>

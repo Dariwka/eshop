@@ -16,14 +16,11 @@ import About from "./pages/About/About.jsx";
 import ContactUs from "./pages/ContactUs/ContactUs.jsx";
 import Professionals from "./pages/Professionals/Professionals.jsx";
 import Professional from "./pages/Professional/Professional.jsx";
-import UserPage from "./pages/UserPage/UserPage.jsx";
-import { useState } from "react";
 
 const Layout = () => {
-  const [name, setName] = useState("Diana");
   return (
     <div className="app">
-      <Navbar name={name} />
+      <Navbar />
       <Outlet />
       <Footer />
     </div>
@@ -87,10 +84,6 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <ContactUs />,
-      },
-      {
-        path: "/user/:id",
-        element: <UserPage />,
       },
     ],
   },
