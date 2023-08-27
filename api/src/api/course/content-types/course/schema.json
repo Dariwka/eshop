@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "products",
+  "collectionName": "courses",
   "info": {
-    "singularName": "product",
-    "pluralName": "products",
-    "displayName": "product",
+    "singularName": "course",
+    "pluralName": "courses",
+    "displayName": "course",
     "description": ""
   },
   "options": {
@@ -43,45 +43,40 @@
     "price": {
       "type": "decimal"
     },
-    "isNew": {
-      "type": "boolean",
-      "default": false
+    "date": {
+      "type": "date"
     },
-    "categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::category.category",
-      "inversedBy": "products"
-    },
-    "sub_categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::sub-category.sub-category",
-      "mappedBy": "products"
-    },
-    "type": {
-      "type": "enumeration",
-      "enum": [
-        "new",
-        "sale",
-        "featured"
-      ]
-    },
-    "volume": {
-      "type": "integer"
-    },
-    "isSale": {
-      "type": "boolean",
-      "default": false
-    },
-    "stock": {
-      "type": "text"
+    "time": {
+      "type": "time"
     },
     "brands": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::brand.brand",
-      "mappedBy": "product"
+      "inversedBy": "courses"
+    },
+    "sub_course_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::sub-course-category.sub-course-category",
+      "inversedBy": "courses"
+    },
+    "isPopular": {
+      "type": "boolean",
+      "default": false
+    },
+    "isNew": {
+      "type": "boolean",
+      "default": true
+    },
+    "area": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "string"
+    },
+    "tags": {
+      "type": "text"
     }
   }
 }

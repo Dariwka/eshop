@@ -1,10 +1,10 @@
 {
   "kind": "collectionType",
-  "collectionName": "products",
+  "collectionName": "professionals",
   "info": {
-    "singularName": "product",
-    "pluralName": "products",
-    "displayName": "product",
+    "singularName": "professional",
+    "pluralName": "professionals",
+    "displayName": "professional",
     "description": ""
   },
   "options": {
@@ -43,45 +43,49 @@
     "price": {
       "type": "decimal"
     },
-    "isNew": {
-      "type": "boolean",
-      "default": false
-    },
-    "categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::category.category",
-      "inversedBy": "products"
-    },
-    "sub_categories": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::sub-category.sub-category",
-      "mappedBy": "products"
-    },
-    "type": {
-      "type": "enumeration",
-      "enum": [
-        "new",
-        "sale",
-        "featured"
-      ]
-    },
     "volume": {
       "type": "integer"
     },
-    "isSale": {
-      "type": "boolean",
-      "default": false
+    "size": {
+      "type": "integer"
+    },
+    "sub_prof_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::sub-prof-category.sub-prof-category",
+      "inversedBy": "professionals"
     },
     "stock": {
-      "type": "text"
+      "type": "string"
     },
-    "brands": {
+    "package": {
+      "type": "integer"
+    },
+    "brand": {
       "type": "relation",
       "relation": "oneToMany",
       "target": "api::brand.brand",
-      "mappedBy": "product"
+      "mappedBy": "professional"
+    },
+    "weight": {
+      "type": "integer"
+    },
+    "area": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
+    },
+    "isNew": {
+      "type": "boolean",
+      "default": true
+    },
+    "isPopular": {
+      "type": "boolean",
+      "default": false
     }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sub_prof_categories",
+  "info": {
+    "singularName": "sub-prof-category",
+    "pluralName": "sub-prof-categories",
+    "displayName": "SubProfCategory",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "professionals": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::professional.professional",
+      "mappedBy": "sub_prof_categories"
+    }
+  }
+}

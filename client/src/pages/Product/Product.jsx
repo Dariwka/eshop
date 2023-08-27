@@ -7,6 +7,7 @@ import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
+import { addToWishList } from "../../redux/wishReducer";
 
 const Product = () => {
   const id = useParams().id;
@@ -85,9 +86,22 @@ const Product = () => {
               <AddShoppingCartIcon /> ADD TO CART
             </button>
             <div className="links">
-              <div className="item">
+              <button
+                className="item"
+                onClick={() =>
+                  dispatch(
+                    addToWishList({
+                      id: data.id,
+                      title: data.attributes.title,
+                      price: data.attributes.price,
+                      img: data.attributes.img.data.attributes.url,
+                      quantity,
+                    })
+                  )
+                }
+              >
                 <FavoriteBorderIcon /> ADD TO WISH LIST
-              </div>
+              </button>
               <div className="item">
                 <BalanceIcon />
                 ADD TO COMPARE

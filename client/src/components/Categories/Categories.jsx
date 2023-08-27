@@ -36,8 +36,8 @@ const Categories = () => {
             alt=""
           />
           <button>
-            <Link className="link" to="/products/3">
-              Courses
+            <Link className="link" to="/trainings">
+              Trainings
             </Link>
           </button>
         </div>
@@ -51,8 +51,8 @@ const Categories = () => {
                 alt=""
               />
               <button>
-                <Link className="link" to="/products/4">
-                  Mesotherapy
+                <Link className="link" to="/treatments">
+                  Treatments
                 </Link>
               </button>
             </div>
@@ -64,8 +64,8 @@ const Categories = () => {
                 alt=""
               />
               <button>
-                <Link className="link" to="/products/5">
-                  Slimming
+                <Link className="link" to="/products/4">
+                  Devices
                 </Link>
               </button>
             </div>

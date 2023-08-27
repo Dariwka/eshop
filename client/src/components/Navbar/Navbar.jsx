@@ -59,7 +59,7 @@ const Navbar = () => {
           </div>
           <div className="item">
             <Link className="link" to="/training">
-              Training
+              Trainings
             </Link>
           </div>
           <div className="item">
