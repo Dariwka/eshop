@@ -1,9 +1,14 @@
-import React from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "./ContactUs.scss";
-import { useState } from "react";
+import emailjs from "@emailjs/browser";
+import SelectField from "../../components/SelectField/SelectField";
+import InputField from "../../components/InputField/InputField";
+import TextArea from "../../components/TextArea/TextArea";
 
 const ContactUs = () => {
-  const [value, setValue] = useState({
+  const form = useRef();
+
+  const [values, setValues] = useState({
     subject: "",
     name: "",
     email: "",
@@ -11,23 +16,24 @@ const ContactUs = () => {
     message: "",
   });
 
+  console.log("ENV", process.env);
+
   const [status, setStatus] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
     emailjs
       .send(
         process.env.REACT_APP_SERVICE_KEY,
         process.env.REACT_APP_TEMPLATE_KEY,
         values,
-        process.env.REACT_APP_USER_KEY
+        process.env.REACT_APP_PUBLIC_KEY
       )
       .then(
         (response) => {
           console.log("SUCCESS!", response);
           setValues({
-            aihe: "",
+            subject: "",
             name: "",
             email: "",
             phone: "",
@@ -60,10 +66,56 @@ const ContactUs = () => {
   return (
     <div className="containerContact">
       <div className="wrapper">
-        <form action="submit"></form>
+        <h1>CONTACT FORM</h1>
+        {status && renderAlert()}
+        <form ref={form} onSubmit={handleSubmit}>
+          <div style={{ padding: "1rem 0" }}>
+            <SelectField
+              handleChange={handleChange}
+              name="subject"
+              label="Subject"
+            />
+            <InputField
+              value={values.name}
+              handleChange={handleChange}
+              label="Name"
+              name="name"
+              type="text"
+              placeholder="Name Surname"
+            />
+            <InputField
+              value={values.email}
+              handleChange={handleChange}
+              label="Email"
+              name="email"
+              type="email"
+              placeholder="name.surname@example.com"
+            />
+            <InputField
+              value={values.phone}
+              handleChange={handleChange}
+              label="Phone"
+              name="phone"
+              type="phone"
+              placeholder="+358 454545454"
+            />
+            <TextArea
+              value={values.message}
+              handleChange={handleChange}
+              label="MESSAGE"
+              name="message"
+            />
+            <button type="submit">SEND</button>
+          </div>
+        </form>
       </div>
     </div>
   );
 };
+const renderAlert = () => (
+  <div className="success">
+    <p>Thank you! Your message has been sent!</p>
+  </div>
+);
 
 export default ContactUs;

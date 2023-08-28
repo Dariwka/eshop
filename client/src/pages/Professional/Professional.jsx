@@ -1,20 +1,14 @@
 import React, { useState } from "react";
 import "./Professional.scss";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
-import { useDispatch } from "react-redux";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
 
 const Professional = () => {
   const id = useParams().id;
-  const [show, setShow] = useState(false);
   const [selectedImg, setSelectedImg] = useState("img");
 
   const [quantity, setQuantity] = useState(1);
-
-  const dispatch = useDispatch();
 
   const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
 
