@@ -16,8 +16,6 @@ const ContactUs = () => {
     message: "",
   });
 
-  console.log("ENV", process.env);
-
   const [status, setStatus] = useState("");
 
   const handleSubmit = (e) => {
