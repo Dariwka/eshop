@@ -79,9 +79,9 @@
     },
     "brands": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::brand.brand",
-      "mappedBy": "product"
+      "inversedBy": "products"
     }
   }
 }

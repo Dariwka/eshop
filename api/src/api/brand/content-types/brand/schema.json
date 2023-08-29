@@ -35,17 +35,17 @@
       "target": "api::course.course",
       "mappedBy": "brands"
     },
-    "product": {
+    "products": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::product.product",
       "inversedBy": "brands"
     },
-    "professional": {
+    "professionals": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::professional.professional",
-      "inversedBy": "brand"
+      "inversedBy": "brands"
     }
   }
 }

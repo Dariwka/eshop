@@ -63,6 +63,15 @@
       "relation": "manyToMany",
       "target": "api::sub-treat-category.sub-treat-category",
       "inversedBy": "treatments"
+    },
+    "area": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
     }
   }
 }
