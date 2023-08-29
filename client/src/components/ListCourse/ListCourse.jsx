@@ -10,10 +10,6 @@ const ListCourse = ({ subCatsCourse, maxPrice, courseSort }) => {
     )}&[filters][price][$lte]=${maxPrice}&sort=price:${courseSort}`
   );
 
-  console.log("course", data);
-
-  console.log("categ", subCatsCourse);
-
   return (
     <div className="listCourse">
       {loading

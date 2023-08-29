@@ -1,22 +1,14 @@
 import React, { useState } from "react";
 import "./Course.scss";
-import { useDispatch } from "react-redux";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import ModeIcon from "@mui/icons-material/Mode";
 
 const Course = () => {
   const id = useParams().id;
-  const [show, setShow] = useState(false);
   const [selectedImg, setSelectedImg] = useState("img");
-
-  const [quantity, setQuantity] = useState(1);
-
-  const dispatch = useDispatch();
 
   const { data, loading } = useFetch(`/courses/${id}?populate=*`);
   console.log("course", data);
@@ -72,12 +64,6 @@ const Course = () => {
             <button className="add">
               <ModeIcon /> BOOK
             </button>
-            <div className="links">
-              <div className="heart">
-                {show ? <FavoriteIcon /> : <FavoriteBorderIcon />}ADD TO WISH
-                LIST
-              </div>
-            </div>
             <div className="info">
               <hr />
               <span>Area: {data?.attributes?.area}</span>

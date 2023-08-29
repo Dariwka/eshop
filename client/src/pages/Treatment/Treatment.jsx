@@ -71,9 +71,9 @@ const Treatment = () => {
             </button>
             <div className="info">
               <hr />
-              <span>Area: Body</span>
-              <span>Goal: Lifting, Slimming</span>
-              <span>Tags: cavitation, body, lifting</span>
+              <span>Area: {data?.attributes?.area}</span>
+              <span>Goal: {data?.attributes?.goal}</span>
+              <span>Tags: {data?.attributes?.tags}</span>
             </div>
           </div>
         </>

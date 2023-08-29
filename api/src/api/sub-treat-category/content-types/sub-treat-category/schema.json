@@ -19,7 +19,7 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::treatment.treatment",
-      "inversedBy": "sub_treat_categories"
+      "mappedBy": "sub_treat_categories"
     }
   }
 }
