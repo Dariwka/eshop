@@ -1,0 +1,91 @@
+{
+  "kind": "collectionType",
+  "collectionName": "professionals",
+  "info": {
+    "singularName": "professional",
+    "pluralName": "professionals",
+    "displayName": "professional",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "desc": {
+      "type": "text"
+    },
+    "img": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "img2": {
+      "type": "media",
+      "multiple": false,
+      "required": false,
+      "allowedTypes": [
+        "images",
+        "files",
+        "videos",
+        "audios"
+      ]
+    },
+    "price": {
+      "type": "decimal"
+    },
+    "volume": {
+      "type": "integer"
+    },
+    "size": {
+      "type": "integer"
+    },
+    "sub_prof_categories": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::sub-prof-category.sub-prof-category",
+      "inversedBy": "professionals"
+    },
+    "stock": {
+      "type": "string"
+    },
+    "package": {
+      "type": "integer"
+    },
+    "weight": {
+      "type": "integer"
+    },
+    "area": {
+      "type": "string"
+    },
+    "goal": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
+    },
+    "isNew": {
+      "type": "boolean",
+      "default": true
+    },
+    "isPopular": {
+      "type": "boolean",
+      "default": false
+    },
+    "brands": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::brand.brand",
+      "inversedBy": "professionals"
+    }
+  }
+}

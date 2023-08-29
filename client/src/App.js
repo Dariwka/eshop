@@ -10,6 +10,13 @@ import Navbar from "./components/Navbar/Navbar.jsx";
 import Footer from "./components/Footer/Footer.jsx";
 import "./app.scss";
 
+import Brand from "./pages/Brand/Brand.jsx";
+import Brands from "./pages/Brands/Brands.jsx";
+import About from "./pages/About/About.jsx";
+import ContactUs from "./pages/ContactUs/ContactUs.jsx";
+import Professionals from "./pages/Professionals/Professionals.jsx";
+import Professional from "./pages/Professional/Professional.jsx";
+
 const Layout = () => {
   return (
     <div className="app">
@@ -30,15 +37,7 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "/products/:id",
-        element: <Products />,
-      },
-      {
-        path: "/product/:id",
-        element: <Product />,
-      },
-      {
-        path: "/treatments/:id",
+        path: "/treatments",
         element: <Treatments />,
       },
       {
@@ -46,12 +45,45 @@ const router = createBrowserRouter([
         element: <Treatment />,
       },
       {
-        path: "/courses/:id",
+        path: "/products/:id",
+        element: <Products />,
+      },
+      {
+        path: "/product/:id",
+        element: <Product />,
+      },
+
+      {
+        path: "/training",
         element: <Courses />,
       },
       {
-        path: "/course/:id",
+        path: "/training/:id",
         element: <Course />,
+      },
+      {
+        path: "/professionals",
+        element: <Professionals />,
+      },
+      {
+        path: "/professional/:id",
+        element: <Professional />,
+      },
+      {
+        path: "/brands",
+        element: <Brands />,
+      },
+      {
+        path: "/brand/:id",
+        element: <Brand />,
+      },
+      {
+        path: "/about",
+        element: <About />,
+      },
+      {
+        path: "/contact",
+        element: <ContactUs />,
       },
     ],
   },

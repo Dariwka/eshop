@@ -1,8 +1,6 @@
 import React, { useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-import FavoriteBorderIcon from "@mui/icons-material/FavoriteBorder";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import { Link } from "react-router-dom";
 import "./Navbar.scss";
@@ -13,6 +11,13 @@ const Navbar = () => {
   const products = useSelector((state) => state.cart.products);
 
   const [open, setOpen] = useState(false);
+
+  //const componentRef = useRef();
+
+  const menuCloseOpenHandler = () => {
+    setOpen(!open);
+  };
+
   return (
     <div className="navbar">
       <div className="wrapper">
@@ -36,13 +41,8 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/products/3">
+            <Link className="link" to="/professionals">
               Professionals
-            </Link>
-          </div>
-          <div className="item">
-            <Link className="link" to="/products/4">
-              Devices
             </Link>
           </div>
         </div>
@@ -53,18 +53,13 @@ const Navbar = () => {
         </div>
         <div className="right">
           <div className="item">
-            <Link className="link" to="/treatments/1">
+            <Link className="link" to="/treatments">
               Treatments
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/courses/1">
-              Courses
-            </Link>
-          </div>
-          <div className="item">
-            <Link className="link" to="/brands/1">
-              Brands
+            <Link className="link" to="/training">
+              Trainings
             </Link>
           </div>
           <div className="item">
@@ -79,10 +74,8 @@ const Navbar = () => {
           </div>
           <div className="icons">
             <SearchIcon />
-            <PersonOutlineIcon />
-            <FavoriteBorderIcon />
             <div className="cartIcon">
-              <ShoppingCartOutlinedIcon onClick={() => setOpen(!open)} />
+              <ShoppingCartOutlinedIcon onClick={menuCloseOpenHandler} />
               <span>{products.length}</span>
             </div>
           </div>

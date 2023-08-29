@@ -6,7 +6,7 @@ import BalanceIcon from "@mui/icons-material/Balance";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/cartReducer";
+import { addToCart, addToWishList } from "../../redux/cartReducer";
 
 const Product = () => {
   const id = useParams().id;
@@ -84,15 +84,6 @@ const Product = () => {
             >
               <AddShoppingCartIcon /> ADD TO CART
             </button>
-            <div className="links">
-              <div className="item">
-                <FavoriteBorderIcon /> ADD TO WISH LIST
-              </div>
-              <div className="item">
-                <BalanceIcon />
-                ADD TO COMPARE
-              </div>
-            </div>
             <div className="info">
               <span>Vendor: Serum</span>
               <span>Product series: Calming</span>

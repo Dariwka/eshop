@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sub_course_categories",
+  "info": {
+    "singularName": "sub-course-category",
+    "pluralName": "sub-course-categories",
+    "displayName": "SubCourseCategory",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "courses": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::course.course",
+      "mappedBy": "sub_course_categories"
+    }
+  }
+}

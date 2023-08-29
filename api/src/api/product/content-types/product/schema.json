@@ -73,6 +73,15 @@
     "isSale": {
       "type": "boolean",
       "default": false
+    },
+    "stock": {
+      "type": "text"
+    },
+    "brands": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::brand.brand",
+      "inversedBy": "products"
     }
   }
 }

@@ -1,0 +1,25 @@
+{
+  "kind": "collectionType",
+  "collectionName": "sub_treat_categories",
+  "info": {
+    "singularName": "sub-treat-category",
+    "pluralName": "sub-treat-categories",
+    "displayName": "SubTreatCategory",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "title": {
+      "type": "string"
+    },
+    "treatments": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::treatment.treatment",
+      "mappedBy": "sub_treat_categories"
+    }
+  }
+}
