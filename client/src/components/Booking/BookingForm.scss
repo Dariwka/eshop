@@ -41,19 +41,35 @@
       .submitButton {
         text-align: center;
 
-        button {
+        .submit {
           width: 30%;
           margin: 1rem;
           padding: 0.5rem;
           box-sizing: border-box;
           border-radius: 0.5rem;
-          background-color: green;
+          background-color: rgb(53, 183, 53);
           color: white;
           border: none;
           cursor: pointer;
           &:hover {
-            background-color: #ffa724;
-            border-color: #ffa724;
+            background-color: green;
+            border-color: green;
+            color: white;
+          }
+        }
+        .cancel {
+          width: 30%;
+          margin: 1rem;
+          padding: 0.5rem;
+          box-sizing: border-box;
+          border-radius: 0.5rem;
+          background-color: rgb(255, 79, 79);
+          color: white;
+          border: none;
+          cursor: pointer;
+          &:hover {
+            background-color: red;
+            border-color: red;
             color: white;
           }
         }

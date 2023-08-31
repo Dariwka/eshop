@@ -4,7 +4,7 @@ import emailjs from "@emailjs/browser";
 import useFetch from "../../hooks/useFetch";
 //import InputField from "../InputField/InputField";
 
-const BookingForm = ({ treatment }) => {
+const BookingForm = ({ treatment, close }) => {
   const form = useRef();
   const { data } = useFetch(`/time-Slots?populate=*`);
   console.log(data);
@@ -58,6 +58,7 @@ const BookingForm = ({ treatment }) => {
             treatment: { treatment },
           });
           setStatus("SUCCESS");
+          close();
         },
         (error) => {
           console.log("FAILED...", error);
@@ -84,8 +85,8 @@ const BookingForm = ({ treatment }) => {
               onChange={handleChange}
               placeholder="time"
             >
-              <option value="time" disabled>
-                Please Choose
+              <option disabled selected value>
+                Time
               </option>
               {data?.map((item) => (
                 <option value="" key={item.id}>
@@ -135,8 +136,10 @@ const BookingForm = ({ treatment }) => {
             </label>
           </div>
           <div className="submitButton">
-            <button>Submit</button>
-            <button>Cancel</button>
+            <button className="submit">Submit</button>
+            <button className="cancel" onClick={close}>
+              Cancel
+            </button>
           </div>
         </form>
       </div>

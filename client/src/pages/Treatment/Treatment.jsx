@@ -75,7 +75,12 @@ const Treatment = () => {
           </div>
         </>
       )}
-      {open && <BookingForm treatment={data?.attributes?.title} />}
+      {open && (
+        <BookingForm
+          treatment={data?.attributes?.title}
+          close={bookingOpenHandler}
+        />
+      )}
     </div>
   );
 };
