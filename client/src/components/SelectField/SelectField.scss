@@ -1,12 +1,13 @@
-.container {
-  margin-bottom: 2rem;
+.containerSelected {
+  margin-bottom: 1rem;
 
   .filterText {
+    color: gray;
+    font-size: small;
     font-size: 20px;
     font-weight: 600;
-    margin-right: 20px;
   }
-  select {
+  .selected {
     width: 100%;
     padding: 12px 20px;
     margin: 8px 0;

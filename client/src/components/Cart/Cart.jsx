@@ -10,8 +10,6 @@ const Cart = () => {
   const products = useSelector((state) => state.cart.products) || [];
   const dispatch = useDispatch();
 
-  console.log("products", products);
-
   const totalPrice = () => {
     let total = 0;
 

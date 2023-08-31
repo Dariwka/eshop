@@ -4,12 +4,19 @@ import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import BookingForm from "../../components/Booking/BookingForm";
 
 const Treatment = () => {
   const id = useParams().id;
   const [selectedImg, setSelectedImg] = useState("img");
-  const [quantity, setQuantity] = useState(1);
   const { data, loading } = useFetch(`/treatments/${id}?populate=*`);
+
+  //booking
+  const [open, setOpen] = useState(false);
+
+  const bookingOpenHandler = () => {
+    setOpen(!open);
+  };
 
   return (
     <div className="treatment">
@@ -55,20 +62,10 @@ const Treatment = () => {
             </div>
 
             <p>{data?.attributes?.info}</p>
-            <div className="quantity">
-              <button
-                onClick={() =>
-                  setQuantity((prev) => (prev === 1 ? 1 : prev - 1))
-                }
-              >
-                -
-              </button>
-              {quantity}
-              <button onClick={() => setQuantity((prev) => prev + 1)}>+</button>
-            </div>
-            <button className="add">
+            <button className="add" onClick={bookingOpenHandler}>
               <CalendarMonthIcon /> Booking a treatment
             </button>
+
             <div className="info">
               <hr />
               <span>Area: {data?.attributes?.area}</span>
@@ -78,6 +75,7 @@ const Treatment = () => {
           </div>
         </>
       )}
+      {open && <BookingForm treatment={data?.attributes?.title} />}
     </div>
   );
 };

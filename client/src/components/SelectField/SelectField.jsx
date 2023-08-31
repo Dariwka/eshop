@@ -4,11 +4,16 @@ import "./SelectField.scss";
 const SelectField = (props) => {
   const { label, handleChange, name } = props;
   return (
-    <div className="container">
+    <div className="containerSelected">
       <span className="filterText" htmlFor={name}>
         {label}
       </span>
-      <select onChange={handleChange} name={name} defaultValue="subject">
+      <select
+        className="selected"
+        onChange={handleChange}
+        name={name}
+        defaultValue="subject"
+      >
         <option value="subject" disabled>
           Please Choose
         </option>

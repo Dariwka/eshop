@@ -4,7 +4,7 @@ import "./TextArea.scss";
 const TextArea = (props) => {
   const { handleChange, label, name, value } = props;
   return (
-    <div className="container">
+    <div className="containerText">
       <span htmlFor={name}>{label}</span>
       <textarea
         name={name}
