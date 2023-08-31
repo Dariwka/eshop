@@ -1,0 +1,37 @@
+{
+  "kind": "collectionType",
+  "collectionName": "appoinments",
+  "info": {
+    "singularName": "appoinment",
+    "pluralName": "appoinments",
+    "displayName": "Appoinment",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "stripeId": {
+      "type": "text"
+    },
+    "treatments": {
+      "type": "json"
+    },
+    "name": {
+      "type": "text"
+    },
+    "surname": {
+      "type": "text"
+    },
+    "email": {
+      "type": "email"
+    },
+    "phone": {
+      "type": "biginteger"
+    },
+    "slots": {
+      "type": "json"
+    }
+  }
+}
