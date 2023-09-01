@@ -77,18 +77,12 @@ const BookingForm = ({ treatment, close }) => {
               onChange={handleChange}
               required
             />
-            <select
-              type="time"
-              name="time"
-              required
-              onChange={handleChange}
-              placeholder="time"
-            >
+            <select type="time" name="time" required onChange={handleChange}>
               <option disabled selected value>
                 Time
               </option>
               {data?.map((item) => (
-                <option value={values.time} key={item.id}>
+                <option type="time" name="time" key={item.id}>
                   {item?.attributes?.time.slice(0, 5)}
                 </option>
               ))}
