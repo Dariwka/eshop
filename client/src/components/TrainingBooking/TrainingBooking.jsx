@@ -55,7 +55,7 @@ const TrainingBooking = ({
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response);
+          console.log("SUCCESS!", response.text);
           setValues({
             name: "",
             surname: "",
@@ -70,7 +70,7 @@ const TrainingBooking = ({
           setStatus("SUCCESS");
         },
         (error) => {
-          console.log("FAILED...", error);
+          console.log("FAILED...", error.text);
         }
       );
     e.target.reset();
@@ -145,10 +145,4 @@ const TrainingBooking = ({
     </div>
   );
 };
-// const renderAlert = () => (
-//   <div className="success">
-//     <p>Thank you for booking a training course!</p>
-//   </div>
-// );
-
 export default TrainingBooking;

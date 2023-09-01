@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./BookingForm.scss";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
 import useFetch from "../../hooks/useFetch";
 
@@ -28,8 +30,12 @@ const BookingForm = ({ treatment, close }) => {
 
   useEffect(() => {
     if (status === "SUCCESS") {
+      toast.success("You successfulle booked your treatment", {
+        position: toast.POSITION.TOP_CENTER,
+      });
       setTimeout(() => {
         setStatus("");
+        close();
       }, 3000);
     }
   }, [status]);
@@ -45,7 +51,7 @@ const BookingForm = ({ treatment, close }) => {
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response);
+          console.log("SUCCESS!", response.text);
           setValues({
             date: "",
             time: "",
@@ -58,17 +64,15 @@ const BookingForm = ({ treatment, close }) => {
           setStatus("SUCCESS");
         },
         (error) => {
-          console.log("FAILED...", error);
+          console.log("FAILED...", error.text);
         }
       );
     e.target.reset();
-    close();
   };
 
   return (
     <div className="bookingContainer">
       <div className="wrapper">
-        {status && renderAlert()}
         <form ref={form} onSubmit={handleSubmitAppointment}>
           <div className="inputField">
             <input
@@ -136,15 +140,10 @@ const BookingForm = ({ treatment, close }) => {
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
 };
-
-const renderAlert = () => (
-  <div className="success">
-    <p>Thank you! Your made an appointment!</p>
-  </div>
-);
 
 export default BookingForm;
