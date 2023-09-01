@@ -12,9 +12,6 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "stripeId": {
-      "type": "text"
-    },
     "treatments": {
       "type": "json"
     },
@@ -30,8 +27,11 @@
     "phone": {
       "type": "biginteger"
     },
-    "slots": {
-      "type": "json"
+    "date": {
+      "type": "date"
+    },
+    "time": {
+      "type": "time"
     }
   }
 }
