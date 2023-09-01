@@ -55,6 +55,7 @@ const BookingForm = ({ treatment, close }) => {
             phone: "",
             treatment: treatment,
           });
+          setStatus("SUCCESS");
         },
         (error) => {
           console.log("FAILED...", error);

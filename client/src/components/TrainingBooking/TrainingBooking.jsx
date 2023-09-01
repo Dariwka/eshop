@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import "./TrainingBooking.scss";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
 
 const TrainingBooking = ({
@@ -33,9 +35,12 @@ const TrainingBooking = ({
 
   useEffect(() => {
     if (status === "SUCCESS") {
+      toast.success("You successfulle created your training reservation", {
+        position: toast.POSITION.TOP_CENTER,
+      });
       setTimeout(() => {
-        setStatus("");
-      }, 5000);
+        close();
+      }, 3000);
     }
   }, [status]);
 
@@ -62,6 +67,7 @@ const TrainingBooking = ({
             trainingTime: trainingTime,
             trainingTitle: trainingTitle,
           });
+          setStatus("SUCCESS");
         },
         (error) => {
           console.log("FAILED...", error);
@@ -73,7 +79,6 @@ const TrainingBooking = ({
   return (
     <div className="trainingContainer">
       <div className="wrapper">
-        {status && renderAlert()}
         <form ref={form} onSubmit={submitTraining}>
           <div className="inputField">
             <input
@@ -135,14 +140,15 @@ const TrainingBooking = ({
             </button>
           </div>
         </form>
+        <ToastContainer />
       </div>
     </div>
   );
 };
-const renderAlert = () => (
-  <div className="success">
-    <p>Thank you for booking a training course!</p>
-  </div>
-);
+// const renderAlert = () => (
+//   <div className="success">
+//     <p>Thank you for booking a training course!</p>
+//   </div>
+// );
 
 export default TrainingBooking;
