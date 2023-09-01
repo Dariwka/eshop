@@ -5,13 +5,19 @@ import { useParams } from "react-router-dom";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ModeIcon from "@mui/icons-material/Mode";
+import TrainingBooking from "../../components/TrainingBooking/TrainingBooking";
 
 const Course = () => {
   const id = useParams().id;
   const [selectedImg, setSelectedImg] = useState("img");
 
   const { data, loading } = useFetch(`/courses/${id}?populate=*`);
-  console.log("course", data);
+
+  const [show, setShow] = useState(false);
+
+  const trainingHandler = () => {
+    setShow(!show);
+  };
 
   return (
     <div className="course">
@@ -61,7 +67,7 @@ const Course = () => {
             </div>
 
             <p>{data?.attributes?.desc}</p>
-            <button className="add">
+            <button className="add" onClick={trainingHandler}>
               <ModeIcon /> BOOK
             </button>
             <div className="info">
@@ -72,6 +78,14 @@ const Course = () => {
             </div>
           </div>
         </>
+      )}
+      {show && (
+        <TrainingBooking
+          trainingTime={data?.attributes?.time.split(":00.000")[0]}
+          trainingTitle={data?.attributes?.title}
+          trainingDate={data?.attributes?.date}
+          close={trainingHandler}
+        />
       )}
     </div>
   );

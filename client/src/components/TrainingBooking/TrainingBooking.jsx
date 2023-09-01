@@ -1,20 +1,25 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./BookingForm.scss";
+import "./TrainingBooking.scss";
 import emailjs from "@emailjs/browser";
-import useFetch from "../../hooks/useFetch";
 
-const BookingForm = ({ treatment, close }) => {
+const TrainingBooking = ({
+  trainingTime,
+  trainingDate,
+  trainingTitle,
+  close,
+}) => {
   const form = useRef();
-  const { data } = useFetch(`/time-Slots?populate=*`);
 
   const [values, setValues] = useState({
-    date: "",
-    time: "",
     name: "",
     surname: "",
     email: "",
     phone: "",
-    treatment: treatment,
+    company: "",
+    ytunnus: "",
+    trainingDate: trainingDate,
+    trainingTime: trainingTime,
+    trainingTitle: trainingTitle,
   });
 
   const [status, setStatus] = useState("");
@@ -30,30 +35,32 @@ const BookingForm = ({ treatment, close }) => {
     if (status === "SUCCESS") {
       setTimeout(() => {
         setStatus("");
-      }, 3000);
+      }, 5000);
     }
   }, [status]);
 
-  const handleSubmitAppointment = (e) => {
+  const submitTraining = (e) => {
     e.preventDefault();
     emailjs
       .send(
-        process.env.REACT_APP_APPOINTMENT_SERVICE_ID,
-        process.env.REACT_APP_APPOINTMENT_TEMPLATE_ID,
+        process.env.REACT_APP_TRAINING_SERVICE_ID,
+        process.env.REACT_APP_TRAINING_TEMPLATE_ID,
         values,
-        process.env.REACT_APP_APPOINTMENT_PUBLIC_KEY
+        process.env.REACT_APP_TRAINING_PUBLIC_KEY
       )
       .then(
         (response) => {
           console.log("SUCCESS!", response);
           setValues({
-            date: "",
-            time: "",
             name: "",
             surname: "",
             email: "",
             phone: "",
-            treatment: treatment,
+            company: "",
+            ytunnus: "",
+            trainingDate: trainingDate,
+            trainingTime: trainingTime,
+            trainingTitle: trainingTitle,
           });
         },
         (error) => {
@@ -61,38 +68,14 @@ const BookingForm = ({ treatment, close }) => {
         }
       );
     e.target.reset();
-    close();
   };
 
   return (
-    <div className="bookingContainer">
+    <div className="trainingContainer">
       <div className="wrapper">
         {status && renderAlert()}
-        <form ref={form} onSubmit={handleSubmitAppointment}>
+        <form ref={form} onSubmit={submitTraining}>
           <div className="inputField">
-            <input
-              type="date"
-              name="date"
-              placeholder="Choose day"
-              onChange={handleChange}
-              required
-            />
-            <select
-              type="time"
-              name="time"
-              required
-              onChange={handleChange}
-              placeholder="time"
-            >
-              <option disabled selected value>
-                Time
-              </option>
-              {data?.map((item) => (
-                <option value={values.time} key={item.id}>
-                  {item?.attributes?.time.slice(0, 5)}
-                </option>
-              ))}
-            </select>
             <input
               required
               type="text"
@@ -126,17 +109,28 @@ const BookingForm = ({ treatment, close }) => {
               value={values.phone}
               onChange={handleChange}
             />
-          </div>
-          <div className="acceptation">
-            <input type="checkbox" id="accept" required />
-            <label htmlFor="accept">
-              I accept that I'm informed about contradiction and I don't have
-              any illness that can preclude this treatment.
-            </label>
+            <input
+              type="text"
+              id="company"
+              name="company"
+              placeholder="Company"
+              value={values.company}
+              onChange={handleChange}
+            />
+            <input
+              type="number"
+              id="ytunnus"
+              name="ytunnus"
+              placeholder="Y-tunnus or VAT number"
+              value={values.ytunnus}
+              onChange={handleChange}
+            />
           </div>
           <div className="submitButton">
-            <button className="submit">Submit</button>
-            <button className="cancel" onClick={close}>
+            <button type="submit" className="submit">
+              Submit
+            </button>
+            <button type="cancel" className="cancel" onClick={close}>
               Cancel
             </button>
           </div>
@@ -145,11 +139,10 @@ const BookingForm = ({ treatment, close }) => {
     </div>
   );
 };
-
 const renderAlert = () => (
   <div className="success">
-    <p>Thank you! Your made an appointment!</p>
+    <p>Thank you for booking a training course!</p>
   </div>
 );
 
-export default BookingForm;
+export default TrainingBooking;
