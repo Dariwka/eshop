@@ -39,10 +39,11 @@ const TrainingBooking = ({
         position: toast.POSITION.TOP_CENTER,
       });
       setTimeout(() => {
+        setStatus("");
         close();
       }, 3000);
     }
-  }, [status]);
+  }, [status, close]);
 
   const submitTraining = (e) => {
     e.preventDefault();
@@ -55,7 +56,7 @@ const TrainingBooking = ({
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response.text);
+          console.log("SUCCESS!", response);
           setValues({
             name: "",
             surname: "",

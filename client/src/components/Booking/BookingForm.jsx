@@ -38,7 +38,7 @@ const BookingForm = ({ treatment, close }) => {
         close();
       }, 3000);
     }
-  }, [status]);
+  }, [status, close]);
 
   const handleSubmitAppointment = (e) => {
     e.preventDefault();
