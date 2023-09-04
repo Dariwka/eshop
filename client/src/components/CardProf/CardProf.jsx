@@ -12,18 +12,12 @@ const CardProf = ({ item }) => {
             <span className="popular">Popular </span>
           )}
           <img
-            src={
-              process.env.REACT_APP_UPLOAD_URL +
-              item.attributes?.img?.data?.attributes?.url
-            }
+            src={item.attributes?.img?.data?.attributes?.url}
             alt=""
             className="mainImg"
           />
           <img
-            src={
-              process.env.REACT_APP_UPLOAD_URL +
-              item.attributes?.img2?.data?.attributes?.url
-            }
+            src={item.attributes?.img2?.data?.attributes?.url}
             alt=""
             className="secondImg"
           />
