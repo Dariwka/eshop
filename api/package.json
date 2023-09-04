@@ -14,7 +14,7 @@
     "@strapi/plugin-users-permissions": "4.5.3",
     "@strapi/strapi": "4.5.3",
     "mysql": "2.18.1",
-    "strapi-plugin-netlify-deployments": "^2.0.1",
+    "pg": "^8.11.3",
     "stripe": "^11.2.0"
   },
   "author": {
