@@ -64,7 +64,7 @@ const BookingForm = ({ treatment, close }) => {
           setStatus("SUCCESS");
         },
         (error) => {
-          console.log("FAILED...", error.text);
+          //console.log("FAILED...", error);
         }
       );
     e.target.reset();

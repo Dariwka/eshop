@@ -71,7 +71,7 @@ const TrainingBooking = ({
           setStatus("SUCCESS");
         },
         (error) => {
-          console.log("FAILED...", error.text);
+          console.log("FAILED...", error);
         }
       );
     e.target.reset();

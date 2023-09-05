@@ -12,8 +12,6 @@ const Professional = () => {
 
   const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
 
-  console.log("prof", data);
-
   return (
     <div className="professional">
       {loading ? (

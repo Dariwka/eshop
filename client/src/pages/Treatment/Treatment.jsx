@@ -58,10 +58,23 @@ const Treatment = () => {
             </button>
 
             <div className="info">
-              <hr />
               <span>Area: {data?.attributes?.area}</span>
               <span>Goal: {data?.attributes?.goal}</span>
               <span>Tags: {data?.attributes?.tags}</span>
+            </div>
+            <hr />
+            <div className="info">
+              <span>DESCRIPTION:{data?.attributes?.longDesc}</span>
+              <hr />
+              <span>
+                ADDITIONAL INFORMATION: {data?.attributes?.additional}
+              </span>
+              <hr />
+              <span>
+                CONTRAINDICATIONS: {data?.attributes?.contraindication}
+              </span>
+              <hr />
+              <span>FAQ</span>
             </div>
           </div>
         </>

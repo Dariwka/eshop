@@ -10,10 +10,6 @@ const ListTreat = ({ subCatsTreat, maxPrice, treatSort }) => {
     )}&[filters][price][$lte]=${maxPrice}&sort=price:${treatSort}`
   );
 
-  console.log("treat", data);
-
-  console.log("categ", subCatsTreat);
-
   return (
     <div className="listTreat">
       {loading
