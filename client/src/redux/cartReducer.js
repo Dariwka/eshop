@@ -52,9 +52,9 @@ export const {
   addToCart,
   removeItem,
   resetCart,
-  addToWishList,
-  removeFromWishList,
-  resetWishList,
+  // addToWishList,
+  // removeFromWishList,
+  // resetWishList,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

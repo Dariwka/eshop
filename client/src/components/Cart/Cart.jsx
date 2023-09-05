@@ -12,7 +12,6 @@ const Cart = () => {
 
   const totalPrice = () => {
     let total = 0;
-
     products.forEach((item) => {
       total += item.quantity * item.price;
     });
