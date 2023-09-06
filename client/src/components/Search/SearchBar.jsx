@@ -9,7 +9,7 @@ const SearchBar = () => {
       <div className="wrapperSearch">
         <input type="text" />
         <Link to="/search">
-          <PageviewIcon fontSize="large" />
+          <PageviewIcon fontSize="medium" />
         </Link>
       </div>
     </div>

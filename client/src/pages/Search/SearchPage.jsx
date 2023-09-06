@@ -5,20 +5,19 @@ import useFetch from "../../hooks/useFetch";
 
 const SearchPage = () => {
   const { data } = useFetch(`/searches?populate=*`);
-  console.log("data", data);
   const [products, setProducts] = useState(data);
   const [searchVal, setSearchVal] = useState("");
 
-  console.log("products", products);
+  console.log("search Enter", data);
 
   const searchHandler = () => {
-    console.log("search");
-    // if (searchVal === "") {
-    //   setProducts(data);
-    //   return;
-    // }
+    if (searchVal === "") {
+      setProducts(data);
+      return;
+    }
+
     // const filterBySearch = data.filter((item) => {
-    //   if (item.toLowerCase().includes(searchVal.toLowerCase())) {
+    //   if (item.attributes.toLowerCase().includes(searchVal.toLowerCase())) {
     //     return item;
     //   }
     // });

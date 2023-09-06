@@ -21,7 +21,7 @@ const Product = () => {
       ) : (
         <>
           <div className="left">
-            <div className="images">
+            <div className="imahttps://kosmedikbackend.onrender.com/admin/settings/users-permissions/rolesges">
               <img
                 src={data?.attributes?.img?.data?.attributes.url}
                 alt=""

@@ -2,7 +2,8 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ListSearch = ({ product }) => {
-  console.log(product);
+  console.log("brands", product?.attributes?.brands?.data);
+
   return (
     <>
       <div className="list">
