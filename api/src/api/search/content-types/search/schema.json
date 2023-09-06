@@ -14,27 +14,27 @@
   "attributes": {
     "products": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::product.product",
-      "mappedBy": "search"
+      "mappedBy": "searches"
     },
     "brands": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::brand.brand",
-      "mappedBy": "search"
+      "mappedBy": "searches"
     },
     "courses": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::course.course",
-      "mappedBy": "search"
+      "mappedBy": "searches"
     },
     "treatments": {
       "type": "relation",
-      "relation": "oneToMany",
+      "relation": "manyToMany",
       "target": "api::treatment.treatment",
-      "mappedBy": "search"
+      "mappedBy": "searches"
     }
   }
 }

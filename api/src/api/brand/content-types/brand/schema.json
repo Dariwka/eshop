@@ -47,9 +47,9 @@
       "target": "api::professional.professional",
       "inversedBy": "brands"
     },
-    "search": {
+    "searches": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::search.search",
       "inversedBy": "brands"
     }

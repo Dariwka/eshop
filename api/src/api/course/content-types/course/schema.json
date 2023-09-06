@@ -78,9 +78,9 @@
     "tags": {
       "type": "text"
     },
-    "search": {
+    "searches": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::search.search",
       "inversedBy": "courses"
     }
