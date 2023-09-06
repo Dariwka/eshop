@@ -1,0 +1,17 @@
+.searchPageContainer {
+  padding: 30px 50px;
+  display: flex;
+  flex-grow: 1;
+
+  .left {
+    display: grid;
+    align-content: space-around;
+    flex: 4;
+    .bottom {
+      display: flex;
+    }
+  }
+  .right {
+    flex: 1;
+  }
+}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import "./Cart.scss";
 import DeleteOutlinedIcon from "@mui/icons-material/DeleteOutlined";
 import { useSelector, useDispatch } from "react-redux";
@@ -6,7 +6,8 @@ import { removeItem, resetCart } from "../../redux/cartReducer";
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from "../../makeRequest";
 
-const Cart = () => {
+const Cart = ({ close, open }) => {
+  const ref = useRef(null);
   const products = useSelector((state) => state.cart.products) || [];
   const dispatch = useDispatch();
 
@@ -38,8 +39,24 @@ const Cart = () => {
     }
   };
 
+  useEffect(() => {
+    const handleOutsideClick = (e) => {
+      if (
+        !ref?.current?.contains(e.target) &&
+        !open?.current?.contains(e.target)
+      ) {
+        close();
+      }
+    };
+
+    document.addEventListener("click", handleOutsideClick, false);
+    return () => {
+      document.removeEventListener("click", handleOutsideClick, false);
+    };
+  }, [close, open]);
+
   return (
-    <div className="cart">
+    <div className="cart" ref={ref}>
       <h1>Products in your cart</h1>
       {products?.map((item) => (
         <div className="item" key={item.id}>

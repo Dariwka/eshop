@@ -16,6 +16,7 @@ import About from "./pages/About/About.jsx";
 import ContactUs from "./pages/ContactUs/ContactUs.jsx";
 import Professionals from "./pages/Professionals/Professionals.jsx";
 import Professional from "./pages/Professional/Professional.jsx";
+import SearchPage from "./pages/Search/SearchPage.jsx";
 
 const Layout = () => {
   return (
@@ -52,9 +53,8 @@ const router = createBrowserRouter([
         path: "/product/:id",
         element: <Product />,
       },
-
       {
-        path: "/training",
+        path: "/trainings",
         element: <Courses />,
       },
       {
@@ -84,6 +84,10 @@ const router = createBrowserRouter([
       {
         path: "/contact",
         element: <ContactUs />,
+      },
+      {
+        path: "/search",
+        element: <SearchPage />,
       },
     ],
   },

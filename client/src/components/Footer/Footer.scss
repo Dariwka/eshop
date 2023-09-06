@@ -1,5 +1,5 @@
 .footer {
-  margin: 100px 120px 20px 120px;
+  margin: 100px 90px 20px 90px;
 
   .top {
     display: flex;
@@ -10,7 +10,7 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      text-align: justify;
+      text-align: center;
       font-size: 14px;
 
       h1 {
@@ -19,6 +19,9 @@
         color: #555;
       }
 
+      .link {
+        color: gray;
+      }
       span {
         color: gray;
       }

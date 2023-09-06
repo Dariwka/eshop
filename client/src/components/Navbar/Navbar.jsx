@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -6,21 +6,28 @@ import { Link } from "react-router-dom";
 import "./Navbar.scss";
 import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
+import SearchBar from "../Search/SearchBar";
 
-const Navbar = () => {
+const Navbar = ({ click }) => {
+  const [open, setOpen] = useState(false);
+  const [show, setShow] = useState(false);
+
   const products = useSelector((state) => state.cart.products);
 
-  const [open, setOpen] = useState(false);
+  const openButtonRef = useRef();
 
-  //const componentRef = useRef();
-
-  const menuCloseOpenHandler = () => {
-    setOpen(!open);
+  const closeHandler = () => {
+    setOpen(false);
   };
 
   return (
     <div className="navbar">
       <div className="wrapper">
+        <div className="hamburgerMenu" onClick={click}>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
         <div className="left">
           <div className="item">
             <img src="/img/en.png" alt="flag" />
@@ -58,7 +65,7 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="item">
-            <Link className="link" to="/training">
+            <Link className="link" to="/trainings">
               Trainings
             </Link>
           </div>
@@ -73,15 +80,26 @@ const Navbar = () => {
             </Link>
           </div>
           <div className="icons">
-            <SearchIcon />
+            <SearchIcon
+              onClick={() => {
+                setShow((show) => !show);
+              }}
+            />
+
             <div className="cartIcon">
-              <ShoppingCartOutlinedIcon onClick={menuCloseOpenHandler} />
+              <ShoppingCartOutlinedIcon
+                ref={openButtonRef}
+                onClick={() => {
+                  setOpen((open) => !open);
+                }}
+              />
               <span>{products.length}</span>
             </div>
           </div>
         </div>
       </div>
-      {open && <Cart />}
+      {open && <Cart open={openButtonRef} close={closeHandler} />}
+      {show && <SearchBar />}
     </div>
   );
 };
