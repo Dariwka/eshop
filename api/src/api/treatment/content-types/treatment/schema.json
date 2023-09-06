@@ -81,6 +81,12 @@
     },
     "contraindication": {
       "type": "text"
+    },
+    "search": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::search.search",
+      "inversedBy": "treatments"
     }
   }
 }
