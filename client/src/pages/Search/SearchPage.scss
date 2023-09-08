@@ -3,15 +3,55 @@
   display: flex;
   flex-grow: 1;
 
-  .left {
+  .leftSearch {
     display: grid;
     align-content: space-around;
     flex: 4;
+    .top {
+      display: flex;
+      width: 100%;
+      align-items: center;
+      justify-content: center;
+
+      .wrapperSearchPage {
+        width: 60%;
+        text-align: center;
+
+        h1 {
+          font-weight: 400;
+        }
+        .inputBar {
+          display: flex;
+          flex-direction: column;
+
+          input {
+            padding: 5px;
+            margin: 2rem 0;
+          }
+          button {
+            width: 100%;
+            height: 50px;
+            cursor: pointer;
+            border: none;
+            font-weight: 500;
+            padding: 10px;
+            background-color: green;
+            color: white;
+          }
+        }
+      }
+    }
     .bottom {
       display: flex;
+      margin: 2rem 0;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
     }
   }
-  .right {
+  .rightSearch {
+    padding: 20px;
+    padding-right: 0;
     flex: 1;
   }
 }

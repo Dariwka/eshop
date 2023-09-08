@@ -1,7 +1,16 @@
 import React from "react";
-import "./ListTreat.scss";
 import CardTreat from "../../components/CardTreat/CardTreat";
 import useFetch from "../../hooks/useFetch";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const ListTreatContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  ${mobile({ flexDirection: "column" })}
+`;
 
 const ListTreat = ({ subCatsTreat, maxPrice, treatSort }) => {
   const { data, loading } = useFetch(
@@ -11,11 +20,13 @@ const ListTreat = ({ subCatsTreat, maxPrice, treatSort }) => {
   );
 
   return (
-    <div className="listTreat">
-      {loading
-        ? "loading..."
-        : data?.map((item) => <CardTreat item={item} key={item.id} />)}
-    </div>
+    <ListTreatContainer>
+      {loading ? (
+        <LoadingButton loading={loading} />
+      ) : (
+        data?.map((item) => <CardTreat item={item} key={item.id} />)
+      )}
+    </ListTreatContainer>
   );
 };
 

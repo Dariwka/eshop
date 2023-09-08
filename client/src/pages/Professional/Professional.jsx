@@ -3,6 +3,7 @@ import "./Professional.scss";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useFetch from "../../hooks/useFetch";
 import { useParams } from "react-router-dom";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const Professional = () => {
   const id = useParams().id;
@@ -15,7 +16,7 @@ const Professional = () => {
   return (
     <div className="professional">
       {loading ? (
-        "loading..."
+        <LoadingButton loading={loading} />
       ) : (
         <>
           <div className="left">

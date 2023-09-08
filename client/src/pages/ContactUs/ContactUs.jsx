@@ -1,9 +1,48 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./ContactUs.scss";
+import { ToastContainer, toast } from "react-toastify";
 import emailjs from "@emailjs/browser";
 import SelectField from "../../components/SelectField/SelectField";
 import InputField from "../../components/InputField/InputField";
 import TextArea from "../../components/TextArea/TextArea";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const ContainerContact = styled.div`
+  width: 100%;
+  background: linear-gradient(rgb(255, 255, 255, 0.5), rgb(255, 255, 255, 0.5)),
+    url("https://res.cloudinary.com/lvimeridijan/image/upload/v1692866812/kosmedik/IMG_2844-scaled_wthwu1.jpg")
+      center;
+  background-size: cover;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+const Wrapper = styled.div`
+  margin: 15px;
+  padding: 20px;
+  width: 30%;
+  background-color: white;
+  ${mobile({ width: "80% ", padding: "10px" })}
+`;
+
+const Title = styled.h1`
+  margin: 1rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+`;
+
+const Button = styled.button`
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  padding: 10px;
+  background-color: green;
+  color: white;
+`;
 
 const ContactUs = () => {
   const form = useRef();
@@ -18,6 +57,17 @@ const ContactUs = () => {
 
   const [status, setStatus] = useState("");
 
+  useEffect(() => {
+    if (status === "SUCCESS") {
+      toast.success("Thank you! Your message has been sent!", {
+        position: toast.POSITION.TOP_CENTER,
+      });
+      setTimeout(() => {
+        setStatus("");
+      }, 3000);
+    }
+  }, [status]);
+
   const handleSubmit = (e) => {
     e.preventDefault();
     emailjs
@@ -29,7 +79,7 @@ const ContactUs = () => {
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response);
+          console.log("SUCCESS!", response.text);
           setValues({
             subject: "",
             name: "",
@@ -38,9 +88,10 @@ const ContactUs = () => {
             message: "",
           });
           setStatus("SUCCESS");
+          window.scrollTo(0, 0);
         },
         (error) => {
-          console.log("FAILED...", error);
+          console.log("FAILED...", error.text);
         }
       );
     e.target.reset();
@@ -62,10 +113,9 @@ const ContactUs = () => {
   };
 
   return (
-    <div className="containerContact">
-      <div className="wrapper">
-        <h1>CONTACT FORM</h1>
-        {status && renderAlert()}
+    <ContainerContact>
+      <Wrapper>
+        <Title>CONTACT FORM</Title>
         <form ref={form} onSubmit={handleSubmit}>
           <SelectField
             handleChange={handleChange}
@@ -102,16 +152,12 @@ const ContactUs = () => {
             label="MESSAGE"
             name="message"
           />
-          <button type="submit">SEND</button>
+          <Button type="submit">SEND</Button>
         </form>
-      </div>
-    </div>
+        <ToastContainer />
+      </Wrapper>
+    </ContainerContact>
   );
 };
-const renderAlert = () => (
-  <div className="success">
-    <p>Thank you! Your message has been sent!</p>
-  </div>
-);
 
 export default ContactUs;

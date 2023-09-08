@@ -1,0 +1,29 @@
+.rightRow {
+  position: relative;
+  .rightModule {
+    .resetButton {
+      position: absolute;
+      top: 0;
+      right: 0;
+      cursor: pointer;
+    }
+    .moduleBody {
+      margin-top: 20px;
+      h2 {
+        font-weight: 400;
+      }
+
+      .filterItem {
+        margin-bottom: 30px;
+        .inputItem {
+          margin-bottom: 10px;
+          margin-top: 10px;
+
+          label {
+            margin-left: 10px;
+          }
+        }
+      }
+    }
+  }
+}

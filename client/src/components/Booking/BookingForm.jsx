@@ -1,9 +1,89 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./BookingForm.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
 import useFetch from "../../hooks/useFetch";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const BookingContainer = styled.div`
+  position: absolute;
+  right: 275px;
+  top: 450px;
+  z-index: 999;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  -webkit-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  -moz-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  ${mobile({ width: "85%", right: "20px", top: "450px" })};
+`;
+
+const Wrapper = styled.div``;
+
+const FormContainer = styled.form`
+  box-sizing: border-box;
+  border-radius: 1rem;
+  background-color: hsl(0, 0%, 100%);
+  border: 4px solid hsl(0, 0%, 90%);
+`;
+
+const InputField = styled.div`
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  ${mobile({ gridTemplateColumns: "auto", gap: "1rem" })};
+`;
+const InputText = styled.input`
+  padding: 5px;
+`;
+
+const Acceptation = styled.div`
+  padding: 0 2rem 0.5rem;
+`;
+const Label = styled.label`
+  padding: 0.5rem;
+  font-size: 14px;
+  font-weight: 400;
+`;
+
+const SubmitButton = styled.div`
+  text-align: center;
+`;
+
+const Submit = styled.button`
+  width: 30%;
+  margin: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background-color: rgb(53, 183, 53);
+  color: white;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: green;
+    border-color: green;
+    color: white;
+  }
+`;
+const Cancel = styled.button`
+  width: 30%;
+  margin: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background-color: rgb(255, 79, 79);
+  color: white;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+`;
 
 const BookingForm = ({ treatment, close }) => {
   const form = useRef();
@@ -64,35 +144,46 @@ const BookingForm = ({ treatment, close }) => {
           setStatus("SUCCESS");
         },
         (error) => {
-          //console.log("FAILED...", error);
+          console.log("FAILED...", error.text);
         }
       );
     e.target.reset();
   };
 
   return (
-    <div className="bookingContainer">
-      <div className="wrapper">
-        <form ref={form} onSubmit={handleSubmitAppointment}>
-          <div className="inputField">
-            <input
+    <BookingContainer>
+      <Wrapper>
+        <FormContainer ref={form} onSubmit={handleSubmitAppointment}>
+          <InputField>
+            <InputText
               type="date"
               name="date"
               placeholder="Choose day"
               onChange={handleChange}
               required
             />
-            <select type="time" name="time" required onChange={handleChange}>
-              <option disabled selected value>
+            <select
+              defaultValue={"DEFAULT"}
+              type="time"
+              name="time"
+              required
+              onChange={handleChange}
+            >
+              <option disabled value="DEFAULT">
                 Time
               </option>
               {data?.map((item) => (
-                <option type="time" name="time" key={item.id}>
+                <option
+                  value={values.time}
+                  type="time"
+                  name="time"
+                  key={item?.attributes?.id}
+                >
                   {item?.attributes?.time.slice(0, 5)}
                 </option>
               ))}
             </select>
-            <input
+            <InputText
               required
               type="text"
               placeholder="Name"
@@ -100,7 +191,7 @@ const BookingForm = ({ treatment, close }) => {
               name="name"
               onChange={handleChange}
             />
-            <input
+            <InputText
               type="text"
               placeholder="Surname"
               required
@@ -108,7 +199,7 @@ const BookingForm = ({ treatment, close }) => {
               name="surname"
               onChange={handleChange}
             />
-            <input
+            <InputText
               type="email"
               placeholder="name.surname@gmail.com"
               required
@@ -116,7 +207,7 @@ const BookingForm = ({ treatment, close }) => {
               name="email"
               onChange={handleChange}
             />
-            <input
+            <InputText
               type="tel"
               id="phone"
               name="phone"
@@ -125,24 +216,22 @@ const BookingForm = ({ treatment, close }) => {
               value={values.phone}
               onChange={handleChange}
             />
-          </div>
-          <div className="acceptation">
-            <input type="checkbox" id="accept" required />
-            <label htmlFor="accept">
+          </InputField>
+          <Acceptation>
+            <InputText type="checkbox" id="accept" required />
+            <Label htmlFor="accept">
               I accept that I'm informed about contradiction and I don't have
               any illness that can preclude this treatment.
-            </label>
-          </div>
-          <div className="submitButton">
-            <button className="submit">Submit</button>
-            <button className="cancel" onClick={close}>
-              Cancel
-            </button>
-          </div>
-        </form>
+            </Label>
+          </Acceptation>
+          <SubmitButton>
+            <Submit>Submit</Submit>
+            <Cancel onClick={close}>Cancel</Cancel>
+          </SubmitButton>
+        </FormContainer>
         <ToastContainer />
-      </div>
-    </div>
+      </Wrapper>
+    </BookingContainer>
   );
 };
 

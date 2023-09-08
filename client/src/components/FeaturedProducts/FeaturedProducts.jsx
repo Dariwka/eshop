@@ -1,7 +1,39 @@
 import React from "react";
 import useFetch from "../../hooks/useFetch";
 import Card from "../Card/Card";
-import "./FeaturedProducts.scss";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const FeaturedProd = styled.div`
+  margin: 100px 200px;
+  ${mobile({ margin: "20px" })};
+`;
+const Top = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 50px;
+  ${mobile({ flexDirection: "column" })};
+`;
+
+const Title = styled.h1`
+  flex: 2;
+  text-transform: capitalize;
+  ${mobile({ fontSize: "x-large" })};
+`;
+
+const Desc = styled.p`
+  flex: 3;
+  color: gray;
+`;
+
+const Bottom = styled.div`
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  ${mobile({ flexDirection: "column", gap: "15px" })};
+`;
 
 const FeaturedProducts = ({ type }) => {
   const { data, loading, error } = useFetch(
@@ -9,18 +41,23 @@ const FeaturedProducts = ({ type }) => {
   );
 
   return (
-    <div className="featuredProducts">
-      <div className="top">
-        <h1>{type} products</h1>
-      </div>
-      <div className="bottom">
-        {error
-          ? "Something went wrong"
-          : loading
-          ? "loading ....."
-          : data?.map((item) => <Card item={item} key={item.id} />)}
-      </div>
-    </div>
+    <FeaturedProd>
+      <Top>
+        <Title>{type} products</Title>
+        <Desc>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Id, suscipit?
+        </Desc>
+      </Top>
+      <Bottom>
+        {error ? (
+          "Something went wrong"
+        ) : loading ? (
+          <LoadingButton loading={loading} />
+        ) : (
+          data?.map((item) => <Card item={item} key={item.id} />)
+        )}
+      </Bottom>
+    </FeaturedProd>
   );
 };
 

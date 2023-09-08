@@ -17,11 +17,20 @@ import ContactUs from "./pages/ContactUs/ContactUs.jsx";
 import Professionals from "./pages/Professionals/Professionals.jsx";
 import Professional from "./pages/Professional/Professional.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
+import SideDrawer from "./components/Drawer/SideDrawer.jsx";
+import { useState } from "react";
+import BackDrop from "./components/BackDrop/BackDrop.jsx";
+import Announcement from "./components/Announcement/Announcement.jsx";
 
 const Layout = () => {
+  const [sideToggle, setSideToggle] = useState(false);
+
   return (
     <div className="app">
-      <Navbar />
+      <Announcement />
+      <Navbar click={() => setSideToggle(true)} />
+      <SideDrawer show={sideToggle} click={() => setSideToggle(false)} />
+      <BackDrop show={sideToggle} click={() => setSideToggle(false)} />
       <Outlet />
       <Footer />
     </div>

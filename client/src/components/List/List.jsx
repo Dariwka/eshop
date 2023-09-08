@@ -1,7 +1,14 @@
 import React from "react";
-import "./List.scss";
 import Card from "../Card/Card";
 import useFetch from "../../hooks/useFetch";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+
+const ListContainer = styled.div`
+  display: flex;
+  ${mobile({ flexDirection: "column" })}
+`;
 
 const List = ({ subCats, maxPrice, prodSort, catId }) => {
   const { data, loading } = useFetch(
@@ -11,11 +18,13 @@ const List = ({ subCats, maxPrice, prodSort, catId }) => {
   );
 
   return (
-    <div className="list">
-      {loading
-        ? "loading"
-        : data?.map((item) => <Card item={item} key={item.id} />)}
-    </div>
+    <ListContainer>
+      {loading ? (
+        <LoadingButton loading={loading} />
+      ) : (
+        data?.map((item) => <Card item={item} key={item.id} />)
+      )}
+    </ListContainer>
   );
 };
 

@@ -6,6 +6,7 @@ import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
 import AccessTimeIcon from "@mui/icons-material/AccessTime";
 import ModeIcon from "@mui/icons-material/Mode";
 import TrainingBooking from "../../components/TrainingBooking/TrainingBooking";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const Course = () => {
   const id = useParams().id;
@@ -22,7 +23,7 @@ const Course = () => {
   return (
     <div className="course">
       {loading ? (
-        "loading..."
+        <LoadingButton loading={loading} />
       ) : (
         <>
           <div className="left">

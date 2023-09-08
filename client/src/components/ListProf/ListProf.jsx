@@ -2,6 +2,7 @@ import React from "react";
 import "./ListProf.scss";
 import CardProf from "../CardProf/CardProf";
 import useFetch from "../../hooks/useFetch";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const ListProf = ({ subCatsProf, maxPrice, profSort }) => {
   const { data, loading } = useFetch(
@@ -12,9 +13,11 @@ const ListProf = ({ subCatsProf, maxPrice, profSort }) => {
 
   return (
     <div className="listProf">
-      {loading
-        ? "loading..."
-        : data?.map((item) => <CardProf item={item} key={item.id} />)}
+      {loading ? (
+        <LoadingButton loading={loading} />
+      ) : (
+        data?.map((item) => <CardProf item={item} key={item.id} />)
+      )}
     </div>
   );
 };

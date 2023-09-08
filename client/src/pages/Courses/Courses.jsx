@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import ListCourse from "../../components/ListCourse/ListCourse";
 import "./Courses.scss";
 import useFetch from "../../hooks/useFetch";
+import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const Courses = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
@@ -28,21 +29,23 @@ const Courses = () => {
       <div className="left">
         <div className="filterCourse">
           <h2>Training's Categories</h2>
-          {error
-            ? "Something went wrong"
-            : loading
-            ? "loading ..."
-            : data?.map((item) => (
-                <div className="inputItem" key={item.id}>
-                  <input
-                    type="checkbox"
-                    id={item.id}
-                    value={item.id}
-                    onChange={handleChange}
-                  />
-                  <label htmlFor={item.id}>{item.attributes.title}</label>
-                </div>
-              ))}
+          {error ? (
+            "Something went wrong"
+          ) : loading ? (
+            <LoadingButton loading={loading} />
+          ) : (
+            data?.map((item) => (
+              <div className="inputItem" key={item.id}>
+                <input
+                  type="checkbox"
+                  id={item.id}
+                  value={item.id}
+                  onChange={handleChange}
+                />
+                <label htmlFor={item.id}>{item.attributes.title}</label>
+              </div>
+            ))
+          )}
         </div>
         <div className="filterCourse">
           <h2>Filter by price</h2>

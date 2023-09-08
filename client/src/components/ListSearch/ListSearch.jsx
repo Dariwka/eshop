@@ -2,78 +2,30 @@ import React from "react";
 import { Link } from "react-router-dom";
 
 const ListSearch = ({ product }) => {
-  console.log("brands", product?.attributes?.brands?.data);
-
+  console.log("", product);
   return (
     <>
       <div className="list">
         <Link className="link">
           <div className="card">
             <div className="image">
-              <span>New Season</span>
+              {product?.isNew && <span>New Season</span>}
+              {product?.isSale && <span>Special Offer</span>}
               <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_bottle_aae0612efa.jpg"
+                src={product?.img?.data?.attributes?.url}
                 alt=""
                 className="mainImg"
               />
               <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_box_3b90f8656a.jpg"
+                src={product?.img2?.data?.attributes?.url}
                 alt=""
                 className="secondImg"
               />
             </div>
-            <h2>Serum</h2>
+            <h2>{product.title}</h2>
             <div className="prices">
-              <h3>€20</h3>
-              <h3>€50</h3>
-            </div>
-          </div>
-        </Link>
-      </div>
-      <div className="list">
-        <Link className="link">
-          <div className="card">
-            <div className="image">
-              <span>New Season</span>
-              <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_bottle_aae0612efa.jpg"
-                alt=""
-                className="mainImg"
-              />
-              <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_box_3b90f8656a.jpg"
-                alt=""
-                className="secondImg"
-              />
-            </div>
-            <h2>Serum</h2>
-            <div className="prices">
-              <h3>€20</h3>
-              <h3>€50</h3>
-            </div>
-          </div>
-        </Link>
-      </div>
-      <div className="list">
-        <Link className="link">
-          <div className="card">
-            <div className="image">
-              <span>New Season</span>
-              <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_bottle_aae0612efa.jpg"
-                alt=""
-                className="mainImg"
-              />
-              <img
-                src="https://res.cloudinary.com/lvimeridijan/image/upload/v1693831306/dermedics_ACNE_roll_on_15ml_box_3b90f8656a.jpg"
-                alt=""
-                className="secondImg"
-              />
-            </div>
-            <h2>Serum</h2>
-            <div className="prices">
-              <h3>€20</h3>
-              <h3>€50</h3>
+              <h3>€{product.oldPrice || product?.price + 20}</h3>
+              <h3>€{product?.price}</h3>
             </div>
           </div>
         </Link>
