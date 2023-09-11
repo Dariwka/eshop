@@ -39,18 +39,12 @@
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::product.product",
-      "inversedBy": "brands"
+      "mappedBy": "brands"
     },
     "professionals": {
       "type": "relation",
       "relation": "manyToMany",
       "target": "api::professional.professional",
-      "inversedBy": "brands"
-    },
-    "searches": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::search.search",
       "inversedBy": "brands"
     }
   }

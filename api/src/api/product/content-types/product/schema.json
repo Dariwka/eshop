@@ -83,11 +83,8 @@
       "target": "api::brand.brand",
       "inversedBy": "products"
     },
-    "searches": {
-      "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::search.search",
-      "inversedBy": "products"
+    "prodId": {
+      "type": "integer"
     }
   }
 }
