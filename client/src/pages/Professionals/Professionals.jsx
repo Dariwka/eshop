@@ -1,8 +1,51 @@
 import React, { useState } from "react";
-import "./Professionals.scss";
 import useFetch from "../../hooks/useFetch";
 import ListProf from "../../components/ListProf/ListProf";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const ContainerProf = styled.div`
+  padding: 30px 50px;
+  display: flex;
+  ${mobile({ flexDirection: "column", padding: "20px" })}
+`;
+
+const LeftContainer = styled.div`
+  flex: 1;
+  position: sticky;
+  height: 100%;
+  top: 50px;
+  ${mobile({ position: "static" })}
+`;
+
+const FilterItem = styled.div`
+  margin-bottom: 30px;
+`;
+
+const Title = styled.h2`
+  font-weight: 400;
+  margin-bottom: 20px;
+`;
+const InputItem = styled.div`
+  margin-bottom: 10px;
+`;
+
+const Label = styled.label`
+  margin-left: 10px;
+`;
+
+const Right = styled.div`
+  flex: 4;
+`;
+
+const CatImg = styled.img`
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+  margin-bottom: 50px;
+  ${mobile({ display: "none" })}
+`;
 
 const Professionals = () => {
   const [maxPrice, setMaxPrice] = useState(1000);
@@ -24,31 +67,31 @@ const Professionals = () => {
   };
 
   return (
-    <div className="professionals">
-      <div className="left">
-        <div className="filterProf">
-          <h2>Categories</h2>
+    <ContainerProf>
+      <LeftContainer>
+        <FilterItem>
+          <Title>Categories</Title>
           {error ? (
             "Something went wrong"
           ) : loading ? (
             <LoadingButton loading={loading} />
           ) : (
             data?.map((item) => (
-              <div className="inputItem" key={item.id}>
+              <InputItem key={item.id}>
                 <input
                   type="checkbox"
                   id={item.id}
                   value={item.id}
                   onChange={handleChange}
                 />
-                <label htmlFor={item.id}>{item.attributes.title}</label>
-              </div>
+                <Label htmlFor={item.id}>{item.attributes.title}</Label>
+              </InputItem>
             ))
           )}
-        </div>
-        <div className="filterProf">
-          <h2>Filter by price</h2>
-          <div className="inputItem">
+        </FilterItem>
+        <FilterItem>
+          <Title>Filter by price</Title>
+          <InputItem>
             <span>0</span>
             <input
               type="range"
@@ -57,11 +100,11 @@ const Professionals = () => {
               onChange={(e) => setMaxPrice(e.target.value)}
             />
             <span>{maxPrice}</span>
-          </div>
-        </div>
-        <div className="filterProf">
-          <h2>Sort by</h2>
-          <div className="inputItem">
+          </InputItem>
+        </FilterItem>
+        <FilterItem>
+          <Title>Sort by</Title>
+          <InputItem>
             <input
               type="radio"
               id="asc"
@@ -69,9 +112,9 @@ const Professionals = () => {
               name="price"
               onChange={(e) => setProfSort("asc")}
             />
-            <label htmlFor="asc">Price (Lowest First)</label>
-          </div>
-          <div className="inputItem">
+            <Label htmlFor="asc">Price (Lowest First)</Label>
+          </InputItem>
+          <InputItem>
             <input
               type="radio"
               id="desc"
@@ -79,23 +122,22 @@ const Professionals = () => {
               name="price"
               onChange={(e) => setProfSort("desc")}
             />
-            <label htmlFor="desc">Price (Highest First)</label>
-          </div>
-        </div>
-      </div>
-      <div className="right">
-        <img
+            <Label htmlFor="desc">Price (Highest First)</Label>
+          </InputItem>
+        </FilterItem>
+      </LeftContainer>
+      <Right>
+        <CatImg
           src="https://res.cloudinary.com/lvimeridijan/image/upload/v1669809025/kosmedik/engin-akyurt-ZbzYDboN7fg-unsplash_2_h0fmb3.jpg"
           alt=""
-          className="catImg"
         />
         <ListProf
           maxPrice={maxPrice}
           subCatsProf={selectedSubCats}
           profSort={profSort}
         />
-      </div>
-    </div>
+      </Right>
+    </ContainerProf>
   );
 };
 

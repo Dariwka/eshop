@@ -8,16 +8,11 @@ import SearchFilter from "../../components/SearchFilter/SearchFilter";
 
 const SearchPage = () => {
   const { data, loading } = useFetch(`/products?populate=*`);
-  const [products, setProducts] = useState(data);
+  const [products, setProducts] = useState([]);
   const [searchVal, setSearchVal] = useState("");
 
   console.log("products", products);
-
-  const filterByCategory = products
-    ?.map((el) => el.sub_categories)
-    .filter((sub) => sub.data[0].attributes.title === "Creams");
-
-  console.log("CATEGORY", filterByCategory);
+  console.log("data", data);
 
   //search
   const searchHandler = (e) => {
@@ -63,7 +58,7 @@ const SearchPage = () => {
             <LoadingButton loading={loading} />
           ) : (
             products?.map((product) => {
-              return <ListSearch product={product} key={product.id} />;
+              return <ListSearch product={product} key={product.title} />;
             })
           )}
         </div>

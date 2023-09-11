@@ -57,6 +57,9 @@ const Image = styled.img`
 `;
 
 const Categories = () => {
+  const scrollToTop = () => {
+    window.scrollTo(0, 0);
+  };
   return (
     <Container>
       <Col>
@@ -66,7 +69,7 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link className="link" to="/products/1">
+            <Link onClick={scrollToTop} className="link" to="/products/1">
               Face
             </Link>
           </Button>
@@ -77,7 +80,7 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link className="link" to="/products/2">
+            <Link onClick={scrollToTop} className="link" to="/products/2">
               Body
             </Link>
           </Button>
@@ -90,7 +93,7 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link className="link" to="/trainings">
+            <Link onClick={scrollToTop} className="link" to="/trainings">
               Trainings
             </Link>
           </Button>
@@ -105,7 +108,7 @@ const Categories = () => {
                 alt=""
               />
               <Button>
-                <Link className="link" to="/treatments">
+                <Link onClick={scrollToTop} className="link" to="/treatments">
                   Treatments
                 </Link>
               </Button>
@@ -118,7 +121,7 @@ const Categories = () => {
                 alt=""
               />
               <Button>
-                <Link className="link" to="/products/4">
+                <Link onClick={scrollToTop} className="link" to="/products/4">
                   Devices
                 </Link>
               </Button>
@@ -131,7 +134,7 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link className="link" to="/products/6">
+            <Link onClick={scrollToTop} className="link" to="/products/6">
               Professionals
             </Link>
           </Button>

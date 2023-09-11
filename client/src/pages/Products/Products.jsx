@@ -79,6 +79,8 @@ const Products = () => {
     );
   };
 
+  console.log(selectedSubCats);
+
   return (
     <ContainerProducts>
       <LeftContainer>
@@ -96,7 +98,6 @@ const Products = () => {
                     scrollIntoView(listRef);
                   }}
                   type="checkbox"
-                  id={item.id}
                   value={item.id}
                   onChange={handleChange}
                 />
