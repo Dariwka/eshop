@@ -10,7 +10,7 @@ const SearchFilter = () => {
   const [selectedSubCats, setSelectedSubCats] = useState([]);
   const [prodSort, setProdSort] = useState("asc");
 
-  console.log("values", prodSort, maxPrice, selectedSubCats);
+  // console.log("values", prodSort, maxPrice, selectedSubCats);
 
   const handleChange = (e) => {
     const value = e.target.value;
@@ -24,7 +24,7 @@ const SearchFilter = () => {
   };
 
   const resetHandler = () => {
-    console.log("click");
+    //console.log("click");
   };
 
   return (

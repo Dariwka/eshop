@@ -5,14 +5,75 @@ import useFetch from "../../hooks/useFetch";
 import ListSearch from "../../components/ListSearch/ListSearch";
 import LoadingButton from "@mui/lab/LoadingButton";
 import SearchFilter from "../../components/SearchFilter/SearchFilter";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const SearchPageContainer = styled.div`
+  padding: 30px 50px;
+  display: flex;
+  flex-grow: 1;
+  ${mobile({ padding: "10px" })}
+`;
+const LeftSearch = styled.div`
+  display: grid;
+  align-content: space-around;
+  flex: 4;
+`;
+const Top = styled.div`
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+`;
+const StyledForm = styled.form`
+  width: 60%;
+  text-align: center;
+`;
+const Title = styled.h1`
+  font-weight: 400;
+  ${mobile({ fontSize: "22px" })}
+`;
+const InputBar = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+const StyledInput = styled.input`
+  padding: 5px;
+  margin: 2rem 0;
+`;
+
+const StyledButton = styled.button`
+  width: 100%;
+  height: 50px;
+  cursor: pointer;
+  border: none;
+  font-weight: 500;
+  padding: 10px;
+  background-color: green;
+  color: white;
+`;
+
+const Bottom = styled.div`
+  display: flex;
+  margin: 2rem 0;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  ${mobile({ flexDirection: "column" })}
+`;
+
+const RightSearch = styled.div`
+  padding: 20px;
+  padding-right: 0;
+  flex: 1;
+  ${mobile({ display: "none" })}
+`;
 
 const SearchPage = () => {
   const { data, loading } = useFetch(`/products?populate=*`);
-  const [products, setProducts] = useState([]);
+  const [products, setProducts] = useState(data);
   const [searchVal, setSearchVal] = useState("");
-
-  console.log("products", products);
-  console.log("data", data);
 
   //search
   const searchHandler = (e) => {
@@ -38,35 +99,35 @@ const SearchPage = () => {
   };
 
   return (
-    <div className="searchPageContainer">
-      <div className="leftSearch">
-        <div className="top">
-          <form className="wrapperSearchPage" onSubmit={searchHandler}>
-            <h1>Search</h1>
-            <div className="inputBar">
-              <input
+    <SearchPageContainer>
+      <LeftSearch>
+        <Top>
+          <StyledForm onSubmit={searchHandler}>
+            <Title>Search</Title>
+            <InputBar>
+              <StyledInput
                 required
                 type="text"
                 onChange={(e) => setSearchVal(e.target.value)}
               />
-              <button type="submit">Search</button>
-            </div>
-          </form>
-        </div>
-        <div className="bottom">
+              <StyledButton type="submit">Search</StyledButton>
+            </InputBar>
+          </StyledForm>
+        </Top>
+        <Bottom>
           {loading ? (
             <LoadingButton loading={loading} />
           ) : (
             products?.map((product) => {
-              return <ListSearch product={product} key={product.title} />;
+              return <ListSearch product={product} key={product} />;
             })
           )}
-        </div>
-      </div>
-      <div className="rightSearch">
+        </Bottom>
+      </LeftSearch>
+      <RightSearch>
         <SearchFilter />
-      </div>
-    </div>
+      </RightSearch>
+    </SearchPageContainer>
   );
 };
 

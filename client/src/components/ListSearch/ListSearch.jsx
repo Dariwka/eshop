@@ -3,6 +3,8 @@ import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 
+const ContainerList = styled.div``;
+
 const LinkProduct = styled(Link)`
   text-decoration: none;
   color: unset;
@@ -92,12 +94,10 @@ const NewPrice = styled.h3`
 `;
 
 const ListSearch = ({ product }) => {
-  console.log("", product);
-
   return (
     <>
-      <div className="list">
-        <LinkProduct>
+      <ContainerList>
+        <LinkProduct to={`/product/${product.prodId}`}>
           <CardProduct>
             <ImageContainer>
               {product?.isNew && <Stick className="new">New Season</Stick>}
@@ -122,7 +122,7 @@ const ListSearch = ({ product }) => {
             </Prices>
           </CardProduct>
         </LinkProduct>
-      </div>
+      </ContainerList>
     </>
   );
 };

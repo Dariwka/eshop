@@ -79,8 +79,6 @@ const Products = () => {
     );
   };
 
-  console.log(selectedSubCats);
-
   return (
     <ContainerProducts>
       <LeftContainer>

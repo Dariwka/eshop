@@ -56,7 +56,7 @@ const TrainingBooking = ({
       )
       .then(
         (response) => {
-          console.log("SUCCESS!", response);
+          console.log("SUCCESS!", response.text);
           setValues({
             name: "",
             surname: "",
@@ -71,7 +71,7 @@ const TrainingBooking = ({
           setStatus("SUCCESS");
         },
         (error) => {
-          console.log("FAILED...", error);
+          console.log("FAILED...", error.text);
         }
       );
     e.target.reset();
