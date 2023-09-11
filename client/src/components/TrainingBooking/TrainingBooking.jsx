@@ -1,8 +1,83 @@
 import React, { useEffect, useRef, useState } from "react";
-import "./TrainingBooking.scss";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const TrainingContainer = styled.div`
+  width: 420px;
+  position: absolute;
+  right: 275px;
+  top: 450px;
+  z-index: 999;
+  background-color: #fff;
+  padding: 20px;
+  box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  -webkit-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  -moz-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  ${mobile({ width: "85%", right: "20px", top: "450px" })};
+`;
+
+const Wrapper = styled.div`
+  width: 100%;
+`;
+
+const StyledForm = styled.form`
+  box-sizing: border-box;
+  border-radius: 1rem;
+  background-color: hsl(0, 0%, 100%);
+  border: 4px solid hsl(0, 0%, 90%);
+`;
+
+const InputField = styled.div`
+  padding: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  ${mobile({ gridTemplateColumns: "auto", gap: "1rem" })};
+`;
+
+const StyledInput = styled.input`
+  padding: 5px;
+`;
+
+const Buttons = styled.div`
+  text-align: center;
+`;
+
+const Submit = styled.button`
+  width: 30%;
+  margin: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background-color: rgb(53, 183, 53);
+  color: white;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: green;
+    border-color: green;
+    color: white;
+  }
+`;
+const Cancel = styled.button`
+  width: 30%;
+  margin: 1rem;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  border-radius: 0.5rem;
+  background-color: rgb(255, 79, 79);
+  color: white;
+  border: none;
+  cursor: pointer;
+  &:hover {
+    background-color: red;
+    border-color: red;
+    color: white;
+  }
+`;
 
 const TrainingBooking = ({
   trainingTime,
@@ -78,11 +153,11 @@ const TrainingBooking = ({
   };
 
   return (
-    <div className="trainingContainer">
-      <div className="wrapper">
-        <form ref={form} onSubmit={submitTraining}>
-          <div className="inputField">
-            <input
+    <TrainingContainer>
+      <Wrapper>
+        <StyledForm ref={form} onSubmit={submitTraining}>
+          <InputField>
+            <StyledInput
               required
               type="text"
               placeholder="Name"
@@ -90,7 +165,7 @@ const TrainingBooking = ({
               name="name"
               onChange={handleChange}
             />
-            <input
+            <StyledInput
               type="text"
               placeholder="Surname"
               required
@@ -98,7 +173,7 @@ const TrainingBooking = ({
               name="surname"
               onChange={handleChange}
             />
-            <input
+            <StyledInput
               type="email"
               placeholder="name.surname@gmail.com"
               required
@@ -106,7 +181,7 @@ const TrainingBooking = ({
               name="email"
               onChange={handleChange}
             />
-            <input
+            <StyledInput
               type="tel"
               id="phone"
               name="phone"
@@ -115,7 +190,7 @@ const TrainingBooking = ({
               value={values.phone}
               onChange={handleChange}
             />
-            <input
+            <StyledInput
               type="text"
               id="company"
               name="company"
@@ -123,7 +198,7 @@ const TrainingBooking = ({
               value={values.company}
               onChange={handleChange}
             />
-            <input
+            <StyledInput
               type="number"
               id="ytunnus"
               name="ytunnus"
@@ -131,19 +206,19 @@ const TrainingBooking = ({
               value={values.ytunnus}
               onChange={handleChange}
             />
-          </div>
-          <div className="submitButton">
-            <button type="submit" className="submit">
+          </InputField>
+          <Buttons>
+            <Submit type="submit" className="submit">
               Submit
-            </button>
-            <button type="cancel" className="cancel" onClick={close}>
+            </Submit>
+            <Cancel type="cancel" className="cancel" onClick={close}>
               Cancel
-            </button>
-          </div>
-        </form>
+            </Cancel>
+          </Buttons>
+        </StyledForm>
         <ToastContainer />
-      </div>
-    </div>
+      </Wrapper>
+    </TrainingContainer>
   );
 };
 export default TrainingBooking;

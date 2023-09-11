@@ -117,11 +117,6 @@ const HrBorder = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
 
-const Hr = styled.hr`
-  width: 200px;
-  border: 1px solid rgb(238, 237, 237);
-`;
-
 const Professional = () => {
   const id = useParams().id;
   const [selectedImg, setSelectedImg] = useState("img");

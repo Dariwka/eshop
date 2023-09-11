@@ -1,6 +1,4 @@
 import React, { useState } from "react";
-import "./SearchPage.scss";
-//import ListSearch from "../../components/ListSearch/ListSearch";
 import useFetch from "../../hooks/useFetch";
 import ListSearch from "../../components/ListSearch/ListSearch";
 import LoadingButton from "@mui/lab/LoadingButton";
