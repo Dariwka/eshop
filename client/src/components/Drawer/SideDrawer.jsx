@@ -13,35 +13,35 @@ const SideDrawer = ({ show, click }) => {
     <div className={sideDrawerClass.join(" ")}>
       <ul className="sidedrawer__links" onClick={click}>
         <li>
-          <Link href="/">
+          <Link to="/">
             <HomeIcon />
           </Link>
         </li>
         <li>
-          <Link href="/products/1">Face</Link>
+          <Link to="/products/1">Face</Link>
         </li>
         <li>
-          <Link href="/products/2">Body</Link>
+          <Link to="/products/2">Body</Link>
         </li>
         <li>
-          <Link href="/treatments">Treatments</Link>
+          <Link to="/treatments">Treatments</Link>
         </li>
         <li>
-          <Link href="/trainings">Trainings</Link>
+          <Link to="/trainings">Trainings</Link>
         </li>
         <li>
-          <Link href="https://www.posti.fi/en/private/parcels-and-tracking">
+          <Link to="https://www.posti.fi/en/private/parcels-and-tracking">
             Order Tracking
           </Link>
         </li>
         <li>
-          <Link href="/terms">Terms</Link>
+          <Link to="/terms">Terms</Link>
         </li>
         <li>
-          <Link href="/about">About Us</Link>
+          <Link to="/about">About Us</Link>
         </li>
         <li>
-          <Link href="/contact">Contact Us</Link>
+          <Link to="/contact">Contact Us</Link>
         </li>
       </ul>
     </div>
