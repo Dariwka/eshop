@@ -1,4 +1,5 @@
 import HomeIcon from "@mui/icons-material/Home";
+import { Link } from "react-router-dom";
 import "./SideDrawer.css";
 
 const SideDrawer = ({ show, click }) => {
@@ -12,35 +13,35 @@ const SideDrawer = ({ show, click }) => {
     <div className={sideDrawerClass.join(" ")}>
       <ul className="sidedrawer__links" onClick={click}>
         <li>
-          <a href="/">
+          <Link href="/">
             <HomeIcon />
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="/products/1">Face</a>
+          <Link href="/products/1">Face</Link>
         </li>
         <li>
-          <a href="/products/2">Body</a>
+          <Link href="/products/2">Body</Link>
         </li>
         <li>
-          <a href="/treatments">Treatments</a>
+          <Link href="/treatments">Treatments</Link>
         </li>
         <li>
-          <a href="/trainings">Trainings</a>
+          <Link href="/trainings">Trainings</Link>
         </li>
         <li>
-          <a href="https://www.posti.fi/en/private/parcels-and-tracking">
+          <Link href="https://www.posti.fi/en/private/parcels-and-tracking">
             Order Tracking
-          </a>
+          </Link>
         </li>
         <li>
-          <a href="/terms">Terms</a>
+          <Link href="/terms">Terms</Link>
         </li>
         <li>
-          <a href="/about">About Us</a>
+          <Link href="/about">About Us</Link>
         </li>
         <li>
-          <a href="/contact">Contact Us</a>
+          <Link href="/contact">Contact Us</Link>
         </li>
       </ul>
     </div>
