@@ -75,7 +75,7 @@ const SearchFilter = () => {
               <input
                 type="radio"
                 id="asc"
-                value="asc"
+                value={prodSort}
                 name="price"
                 onChange={(e) => setProdSort("asc")}
               />
