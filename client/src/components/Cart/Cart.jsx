@@ -89,6 +89,14 @@ const Reset = styled.span`
   cursor: pointer;
 `;
 
+const ShippingCost = styled.div`
+  display: flex;
+  justify-content: space-between;
+  font-weight: 500;
+  font-size: 18px;
+  margin-bottom: 20px;
+`;
+
 const Cart = ({ close, open }) => {
   const ref = useRef(null);
   const products = useSelector((state) => state.cart.products) || [];
@@ -97,7 +105,11 @@ const Cart = ({ close, open }) => {
   const totalPrice = () => {
     let total = 0;
     products.forEach((item) => {
-      total += item.quantity * item.price;
+      if (total + item.quantity * item.price <= 100) {
+        total += item.quantity * item.price + 10.9;
+      } else {
+        total += item.quantity * item.price;
+      }
     });
 
     return total.toFixed(2);
@@ -138,6 +150,18 @@ const Cart = ({ close, open }) => {
     };
   }, [close, open]);
 
+  const shippingHandler = () => {
+    let shippingCoast = 0;
+    products.forEach((item) => {
+      if (item.quantity * item.price <= 100) {
+        shippingCoast += 10.9;
+      } else {
+        shippingCoast = 0;
+      }
+    });
+    return shippingCoast.toFixed(2);
+  };
+
   return (
     <CartContainer ref={ref}>
       <CartTitle>Products in your cart</CartTitle>
@@ -157,6 +181,10 @@ const Cart = ({ close, open }) => {
           />
         </Item>
       ))}
+      <ShippingCost>
+        <span>Shipping Cost</span>
+        <span>€ {shippingHandler()}</span>
+      </ShippingCost>
       <Total>
         <span>SUBTOTAL</span>
         <span>€{totalPrice()}</span>

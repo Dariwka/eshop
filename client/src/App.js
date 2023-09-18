@@ -21,6 +21,7 @@ import SideDrawer from "./components/Drawer/SideDrawer.jsx";
 import { useState } from "react";
 import BackDrop from "./components/BackDrop/BackDrop.jsx";
 import Announcement from "./components/Announcement/Announcement.jsx";
+import Success from "./pages/Success/Success.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -97,6 +98,10 @@ const router = createBrowserRouter([
       {
         path: "/search",
         element: <SearchPage />,
+      },
+      {
+        path: "/checkout-success",
+        element: <Success />,
       },
     ],
   },
