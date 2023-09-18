@@ -22,6 +22,8 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
               currency: "eur",
               product_data: {
                 name: item.title,
+                images: [item.image],
+                description: item.desc,
               },
               unit_amount: Math.round(item.price * 100),
             },
@@ -34,8 +36,8 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
         shipping_address_collection: { allowed_countries: ["FI"] },
         payment_method_types: ["card"],
         mode: "payment",
-        success_url: `${process.env.CLIENT_URL}?success=true`,
-        cancel_url: `${process.env.CLIENT_URL}?success=false`,
+        success_url: `${process.env.CLIENT_URL}/checkout-success`,
+        cancel_url: `${process.env.CLIENT_URL}/cart`,
         line_items: lineItems,
       });
 
