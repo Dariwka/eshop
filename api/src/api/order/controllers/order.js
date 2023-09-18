@@ -39,27 +39,6 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             shipping_rate_data: {
               type: "fixed_amount",
               fixed_amount: {
-                amount: 0,
-                currency: "eur",
-              },
-              display_name: "Free shipping if total amount more than 100 eur",
-              // Delivers between 5-7 business days
-              delivery_estimate: {
-                minimum: {
-                  unit: "business_day",
-                  value: 5,
-                },
-                maximum: {
-                  unit: "business_day",
-                  value: 7,
-                },
-              },
-            },
-          },
-          {
-            shipping_rate_data: {
-              type: "fixed_amount",
-              fixed_amount: {
                 amount: 1090,
                 currency: "eur",
               },
@@ -73,6 +52,27 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
                 maximum: {
                   unit: "business_day",
                   value: 4,
+                },
+              },
+            },
+          },
+          {
+            shipping_rate_data: {
+              type: "fixed_amount",
+              fixed_amount: {
+                amount: 0,
+                currency: "eur",
+              },
+              display_name: "FREE shipping if total amount more than 100 eur",
+              // Delivers between 5-7 business days
+              delivery_estimate: {
+                minimum: {
+                  unit: "business_day",
+                  value: 5,
+                },
+                maximum: {
+                  unit: "business_day",
+                  value: 7,
                 },
               },
             },
