@@ -1,10 +1,29 @@
 import React from "react";
-import "./SelectField.scss";
+
+import styled from "styled-components";
+
+const ContainerSelected = styled.div`
+  margin-bottom: 1rem;
+
+  span {
+    color: gray;
+    font-size: small;
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  select {
+    width: 100%;
+    padding: 12px 20px;
+    margin: 8px 0;
+    box-sizing: border-box;
+  }
+`;
 
 const SelectField = (props) => {
   const { label, handleChange, name } = props;
   return (
-    <div className="containerSelected">
+    <ContainerSelected>
       <span className="filterText" htmlFor={name}>
         {label}
       </span>
@@ -22,7 +41,7 @@ const SelectField = (props) => {
         <option value="appointment">Appointment</option>
         <option value="other">Other</option>
       </select>
-    </div>
+    </ContainerSelected>
   );
 };
 

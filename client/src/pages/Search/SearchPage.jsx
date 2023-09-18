@@ -92,6 +92,7 @@ const SearchPage = () => {
         ) {
           return item;
         }
+        return false;
       });
     setProducts(filterBySearch);
   };
@@ -117,7 +118,7 @@ const SearchPage = () => {
             <LoadingButton loading={loading} />
           ) : (
             products?.map((product) => {
-              return <ListSearch product={product} key={product} />;
+              return <ListSearch product={product} key={product.title} />;
             })
           )}
         </Bottom>

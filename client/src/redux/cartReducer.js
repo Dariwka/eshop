@@ -1,4 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
+import { toast } from "react-toastify";
 
 const initialState = {
   products: [],
@@ -14,6 +15,9 @@ export const cartSlice = createSlice({
 
       if (item) {
         item.quantity += action.payload.quantity;
+        toast.info("Increased product quantity", {
+          position: toast.POSITION.TOP_CENTER,
+        });
       } else {
         state.products.push(action.payload);
       }
@@ -36,6 +40,11 @@ export const cartSlice = createSlice({
     resetCart: (state) => {
       state.products = [];
     },
+
+    clearCart: (state) => {
+      state.products = [];
+      toast.error("Cart cleared", { position: "bottom-left" });
+    },
     // removeFromWishList: (state, action) => {
     //   state.wishList = state.wishList.filter(
     //     (item) => item.id !== action.payload
@@ -52,6 +61,7 @@ export const {
   addToCart,
   removeItem,
   resetCart,
+  clearCart,
   // addToWishList,
   // removeFromWishList,
   // resetWishList,

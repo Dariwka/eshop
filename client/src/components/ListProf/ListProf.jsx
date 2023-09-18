@@ -1,8 +1,16 @@
 import React from "react";
-import "./ListProf.scss";
 import CardProf from "../CardProf/CardProf";
 import useFetch from "../../hooks/useFetch";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import styled from "styled-components";
+import { mobile } from "../../responsive";
+
+const ListProfContainer = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  ${mobile({ flexDirection: "column" })}
+`;
 
 const ListProf = ({ subCatsProf, maxPrice, profSort }) => {
   const { data, loading } = useFetch(
@@ -12,13 +20,13 @@ const ListProf = ({ subCatsProf, maxPrice, profSort }) => {
   );
 
   return (
-    <div className="listProf">
+    <ListProfContainer>
       {loading ? (
         <LoadingButton loading={loading} />
       ) : (
         data?.map((item) => <CardProf item={item} key={item.id} />)
       )}
-    </div>
+    </ListProfContainer>
   );
 };
 
