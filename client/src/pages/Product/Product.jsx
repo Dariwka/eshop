@@ -7,6 +7,7 @@ import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
+import { ToastContainer, toast } from "react-toastify";
 
 const ProductContainer = styled.div`
   font-family: "Urbanist", sans-serif;
@@ -144,6 +145,9 @@ const Product = () => {
         quantity,
       })
     );
+    toast.success("Product successfulle added to your shopping cart", {
+      position: toast.POSITION.TOP_CENTER,
+    });
     window.scrollTo(0, 0);
   };
 
@@ -209,6 +213,7 @@ const Product = () => {
           </Right>
         </>
       )}
+      <ToastContainer />
     </ProductContainer>
   );
 };

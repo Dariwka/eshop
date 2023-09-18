@@ -212,7 +212,7 @@ const Footer = () => {
         </ContactItem>
         <ContactItem>
           <MailOutlineOutlinedIcon style={{ marginRight: "10px" }} />
-          <Email href="mailto:info@kalamestari.fi">info@kosmedik.fi</Email>
+          <Email href="mailto:info@kalamestari.eu">info@kosmedik.eu</Email>
         </ContactItem>
         <ContactItem>
           <StoreIcon style={{ marginRight: "10px" }} />
