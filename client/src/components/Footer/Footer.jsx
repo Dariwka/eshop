@@ -17,7 +17,7 @@ const Container = styled.div`
 `;
 
 const Left = styled.div`
-  flex: 1;
+  flex: 0.5;
   display: flex;
   flex-direction: column;
   padding: 20px;
@@ -96,7 +96,7 @@ const Tunnus = styled.a`
 `;
 
 const Right = styled.div`
-  flex: 1;
+  flex: 0.5;
   padding: 20px;
   ${mobile({ backgroundColor: "#c7e286" })}
 `;
@@ -169,7 +169,7 @@ const Footer = () => {
           <ListItem onClick={scrollToTop} to="/products/1">
             Face
           </ListItem>
-          <ListItem to="https://www.posti.fi/en/private/parcels-and-tracking">
+          <ListItem href="https://www.posti.fi/en/private/parcels-and-tracking">
             Order Tracking
           </ListItem>
           <ListItem onClick={scrollToTop} to="/products/2">

@@ -45,7 +45,8 @@ const FeaturedProducts = ({ type }) => {
       <Top>
         <Title>{type} products</Title>
         <Desc>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Id, suscipit?
+          From now untill further we give for all our clients discount. Shop
+          with us and get great deals.
         </Desc>
       </Top>
       <Bottom>

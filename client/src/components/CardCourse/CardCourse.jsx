@@ -57,7 +57,7 @@ const Stick = styled.span`
     background-color: green;
   }
 
-  &.specOffer {
+  &.popular {
     background-color: red;
   }
 `;
