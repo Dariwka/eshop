@@ -116,7 +116,7 @@ const Cart = ({ close, open }) => {
   };
 
   const stripePromise = loadStripe(
-    "pk_test_51KHR0mDknU593aK7dOktRi0jEH7m3RNkMGaSJ2apFiJY3ob4kyzT828sWkGnuD5fJbFCzqD1wQzlLqf5v2Qhigi2004csru10Q"
+    "pk_live_51KHR0mDknU593aK78SngMWP5ldsk1aBsD2qpCr6QzZBMAOwnLUMRkaJV8XgYBq107iNXJfLhswLsVxpp5p71vzcH000C852xjh"
   );
 
   const handlePayment = async () => {

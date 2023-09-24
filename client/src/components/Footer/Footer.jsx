@@ -203,7 +203,7 @@ const Footer = () => {
         <ContactItem>
           <RoomIcon style={{ marginRight: "10px" }} />
           <AddressOnMap onClick={showInMapClicked}>
-            Klaneettittie 6as, 2floor, Helsinki
+            Klaneettitie 6as, 2 floor, Helsinki
           </AddressOnMap>
         </ContactItem>
         <ContactItem>
