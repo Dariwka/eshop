@@ -46,9 +46,6 @@
     "volume": {
       "type": "integer"
     },
-    "size": {
-      "type": "integer"
-    },
     "sub_prof_categories": {
       "type": "relation",
       "relation": "manyToMany",
@@ -62,7 +59,7 @@
       "type": "integer"
     },
     "weight": {
-      "type": "integer"
+      "type": "decimal"
     },
     "area": {
       "type": "string"
@@ -86,6 +83,9 @@
       "relation": "manyToMany",
       "target": "api::brand.brand",
       "inversedBy": "professionals"
+    },
+    "size": {
+      "type": "string"
     }
   }
 }
