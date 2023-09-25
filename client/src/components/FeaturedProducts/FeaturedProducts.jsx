@@ -31,6 +31,7 @@ const Desc = styled.p`
 const Bottom = styled.div`
   display: flex;
   justify-content: center;
+  flex-wrap: wrap;
   gap: 30px;
   ${mobile({ flexDirection: "column", gap: "15px" })};
 `;
