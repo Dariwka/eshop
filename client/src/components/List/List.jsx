@@ -7,6 +7,8 @@ import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 
 const ListContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
   ${mobile({ flexDirection: "column" })}
 `;
 

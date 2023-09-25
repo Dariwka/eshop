@@ -11,7 +11,7 @@ import { ToastContainer, toast } from "react-toastify";
 
 const ProductContainer = styled.div`
   font-family: "Urbanist", sans-serif;
-  padding: 50px 50px;
+  padding: 30px 50px;
   display: flex;
   gap: 50px;
   ${mobile({ flexDirection: "column", gap: "30px", padding: "15px" })};
