@@ -62,7 +62,10 @@ const Terms = () => {
           method and are automatically added to the total amount of the order.
           You will see the shipping costs that will be charged for your order
           (if shipping costs are charged) in your shopping cart before you
-          accept the order.
+          accept the order. From 26.09.2023 of order more than 100€, shipping
+          cost FREE, but please on payment step, change shipping cost to 0€. If
+          you would like to get your parcel faster than 5-7 days, you can pay
+          10.90€.
         </p>
         <h3>Ordering and contract </h3>
         <p>
@@ -86,35 +89,9 @@ const Terms = () => {
         </p>
         <h3>Payment service provider </h3>
         <p>
-          Paytrail Oyj (2122839-7) co-operates with Finnish banks and credit
-          institutions as the payment service provider and payment service
-          provider. Paytrail Oyj appears as the payee on the bank statement or
-          card invoice and forwards the payment to the merchant. Paytrail plc is
-          licensed as a payment institution. In the event of a complaint, please
-          contact the supplier of the product in the first instance. Paytrail
-          Oyj, business ID: 2122839-7 Innova 2 Lutakonaukio 7 40100 Jyväskylä
-          www.paytrail.com 1. Bank charges: Nordea, Osuuspankki, Danske Bank,
-          Säästöpankki, Oma Säästöpankki, POP Bank, Aktia, Handelsbanken,
-          Ålandsbanken and S-Bank 2. Invoice and installment services: Walley,
-          OP Invoice and Flexibility 3. Card payment: Visa, Mastercard ja
-          American Express 4. Mobile payments: MobilePay, Pivo, Transfer and
-          Apple Pay --------------------------------- Below these delivery terms
-          are also in English and Swedish: Payment Service Provider Paytrail Plc
-          acts as a collecting payment service provider and is an authorized
-          Payment Institution. Paytrail Plc will be shown as the recipient on
-          your bank or credit card statement. Paytrail Plc will forward the
-          payment to the merchant. For reclamations, please contact the website
-          the payment was made to. Paytrail Plc Innova 2 Lutakonaukio 7 40100
-          Jyväskylä Business ID 2122839-7 ------------------------ Payment
-          intermediaries The payment intermediation service is performed and
-          Paytrail Oyj (2122839-7) is a supplier in collaboration with banks and
-          credit institutions. Payments with Visa Electron or MasterCard are
-          Paytrail Oyj as the recipient of the card bill and also forwards the
-          payment to the merchant. Paytrail Oyj has an operating license for
-          payment institutions granted by Finansinspektionen. In the event of a
-          complaint, we ask you to be in contact with the online store in the
-          first instance. Paytrail Oyj FO number: 2122839-7 Innova 2
-          Lutakonaukio 7 40100 Jyväskylä www.paytrail.com
+          Millions of companies of all sizes use Stripe online and in person to
+          accept payments, send payouts, automate financial processes, and
+          ultimately grow revenue.
         </p>
         <h3>Order and payment confirmation</h3>
         <p>
