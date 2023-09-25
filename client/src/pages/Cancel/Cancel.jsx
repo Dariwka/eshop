@@ -1,7 +1,5 @@
-import React, { useEffect } from "react";
-import { useDispatch } from "react-redux";
+import React from "react";
 import styled from "styled-components";
-import { clearCart } from "../../redux/cartReducer";
 import { mobile } from "../../responsive";
 
 const Container = styled.div`
@@ -16,27 +14,21 @@ const Container = styled.div`
 
   h2 {
     margin-bottom: 0.5rem;
-    color: #029e02;
+    color: red;
   }
 `;
 
-const Success = () => {
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    dispatch(clearCart());
-  }, [dispatch]);
-
+const Cancel = () => {
   return (
     <Container>
-      <h2>Checkout Successful</h2>
-      <p>Your order might take some time to process.</p>
+      <h2>You Cancel your payment</h2>
+      <p>Are you change your mind? or any issue with site?</p>
       <p>
         Incase of any inqueries contact the support at
-        <strong>info@kosmedik.eu</strong>
+        <strong> info@kosmedik.eu</strong>
       </p>
     </Container>
   );
 };
 
-export default Success;
+export default Cancel;

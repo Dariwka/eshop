@@ -23,6 +23,7 @@ import BackDrop from "./components/BackDrop/BackDrop.jsx";
 import Announcement from "./components/Announcement/Announcement.jsx";
 import Success from "./pages/Success/Success.jsx";
 import Terms from "./pages/Terms/Terms.jsx";
+import Cancel from "./pages/Cancel/Cancel.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -103,6 +104,10 @@ const router = createBrowserRouter([
       {
         path: "/checkout-success",
         element: <Success />,
+      },
+      {
+        path: "/cancel-payment",
+        element: <Cancel />,
       },
       {
         path: "/terms",
