@@ -18,7 +18,7 @@ const ListCourse = ({ subCatsCourse, maxPrice, courseSort }) => {
       (item) => `&[filters][sub_course_categories][id][$eq]=${item}`
     )}&[filters][price][$lte]=${maxPrice}&sort=price:${courseSort}`
   );
-  console.log("course", data);
+
   return (
     <ListCourseContainer>
       {loading ? (

@@ -19,8 +19,6 @@ const ListProf = ({ subCatsProf, maxPrice, profSort }) => {
     )}&[filters][price][$lte]=${maxPrice}&sort=price:${profSort}`
   );
 
-  console.log("prof", data);
-
   return (
     <ListProfContainer>
       {loading ? (
