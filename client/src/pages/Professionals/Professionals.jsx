@@ -48,7 +48,7 @@ const CatImg = styled.img`
 `;
 
 const Professionals = () => {
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(10000);
   const [profSort, setProfSort] = useState("asc");
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
