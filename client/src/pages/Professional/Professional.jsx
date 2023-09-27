@@ -5,6 +5,9 @@ import { useParams } from "react-router-dom";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
+import { ToastContainer, toast } from "react-toastify";
+import { addToCart } from "../../redux/cartReducer";
+import { useDispatch } from "react-redux";
 
 const ProfContainer = styled.div`
   font-family: "Urbanist", sans-serif;
@@ -125,6 +128,25 @@ const Professional = () => {
 
   const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
 
+  const dispatch = useDispatch();
+
+  const addHandler = () => {
+    dispatch(
+      addToCart({
+        id: data.id,
+        title: data.attributes.title,
+        desc: data.attributes.desc,
+        price: data.attributes.price,
+        img: data.attributes.img.data.attributes.url,
+        quantity,
+      })
+    );
+    toast.success("Product successfulle added to your shopping cart", {
+      position: toast.POSITION.TOP_CENTER,
+    });
+    window.scrollTo(0, 0);
+  };
+
   return (
     <ProfContainer>
       {loading ? (
@@ -168,7 +190,7 @@ const Professional = () => {
                 +
               </PlusButton>
             </Quantity>
-            <AddButton className="add">
+            <AddButton onClick={addHandler}>
               <AddShoppingCartIcon /> ADD TO CART
             </AddButton>
             <InfoContainer>
@@ -184,6 +206,7 @@ const Professional = () => {
           </Right>
         </>
       )}
+      <ToastContainer />
     </ProfContainer>
   );
 };
