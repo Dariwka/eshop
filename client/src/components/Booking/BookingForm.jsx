@@ -91,7 +91,7 @@ const BookingForm = ({ treatment, close }) => {
 
   const [values, setValues] = useState({
     date: "",
-    time: "",
+    time: data?.attributes?.time,
     name: "",
     surname: "",
     email: "",
@@ -173,12 +173,7 @@ const BookingForm = ({ treatment, close }) => {
                 Time
               </option>
               {data?.map((item) => (
-                <option
-                  value={values.time}
-                  type="time"
-                  name="time"
-                  key={item?.attributes?.id}
-                >
+                <option type="time" name="time" key={item?.attributes?.id}>
                   {item?.attributes?.time.slice(0, 5)}
                 </option>
               ))}
