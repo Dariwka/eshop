@@ -24,6 +24,8 @@ import Announcement from "./components/Announcement/Announcement.jsx";
 import Success from "./pages/Success/Success.jsx";
 import Terms from "./pages/Terms/Terms.jsx";
 import Cancel from "./pages/Cancel/Cancel.jsx";
+import Rent from "./pages/Rent/Rent.jsx";
+import Rents from "./pages/Rents/Rents.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -112,6 +114,10 @@ const router = createBrowserRouter([
       {
         path: "/terms",
         element: <Terms />,
+      },
+      {
+        path: "/rents",
+        element: <Rents />,
       },
     ],
   },

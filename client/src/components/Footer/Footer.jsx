@@ -182,7 +182,9 @@ const Footer = () => {
             Professionals
           </ListItem>
           <ListItem onClick={scrollToTop}>Brands</ListItem>
-          <ListItem onClick={scrollToTop}>Devices</ListItem>
+          <ListItem onClick={scrollToTop} to="/rents">
+            Rent Devices
+          </ListItem>
           <ListItem onClick={scrollToTop} to="/contact">
             Be our Partner
           </ListItem>
