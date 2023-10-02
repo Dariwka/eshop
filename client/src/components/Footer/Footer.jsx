@@ -76,6 +76,16 @@ const ListItem = styled(Link)`
     color: green;
   }
 `;
+const ListItemOrder = styled.a`
+  width: 50%;
+  margin-bottom: 10px;
+  text-decoration: none;
+  color: black;
+  &:hover {
+    text-decoration: underline;
+    color: green;
+  }
+`;
 const Email = styled.a`
   text-decoration: none;
   color: black;
@@ -150,7 +160,10 @@ const Footer = () => {
           >
             <FacebookIcon />
           </SocialIcon>
-          <SocialIcon color="7232bd">
+          <SocialIcon
+            color="7232bd"
+            href="https://www.instagram.com/kosmedik.eu/"
+          >
             <InstagramIcon />
           </SocialIcon>
           <SocialIcon
@@ -169,9 +182,9 @@ const Footer = () => {
           <ListItem onClick={scrollToTop} to="/products/1">
             Face
           </ListItem>
-          <ListItem href="https://www.posti.fi/en/private/parcels-and-tracking">
+          <ListItemOrder href="https://www.posti.fi/en/private/parcels-and-tracking">
             Order Tracking
-          </ListItem>
+          </ListItemOrder>
           <ListItem onClick={scrollToTop} to="/products/2">
             Body
           </ListItem>
@@ -208,7 +221,7 @@ const Footer = () => {
         </ContactItem>
         <ContactItem>
           <MailOutlineOutlinedIcon style={{ marginRight: "10px" }} />
-          <Email href="mailto:info@kalamestari.eu">info@kosmedik.eu</Email>
+          <Email href="mailto:info@kosmedik.eu">info@kosmedik.eu</Email>
         </ContactItem>
         <ContactItem>
           <StoreIcon style={{ marginRight: "10px" }} />
