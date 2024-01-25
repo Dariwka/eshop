@@ -45,10 +45,6 @@ export const sliderPhotos = [
   },
   {
     id: 12,
-    img: "https://res.cloudinary.com/lvimeridijan/image/upload/v1670359029/kosmedik/dermedics_ACNE_kompo_02_o1s90o.png",
-  },
-  {
-    id: 13,
     img: "https://res.cloudinary.com/lvimeridijan/image/upload/v1669796263/kosmedik/dermedics_ECM_kompo_02_aoz6jb.png",
   },
 ];
