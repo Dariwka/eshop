@@ -197,7 +197,7 @@ const Professional = () => {
               <HrBorder />
               <span>Availability: {data?.attributes?.stock}</span>
               <span>
-                Brand: {data?.attributes?.brand?.data[0].attributes?.title}
+                Brand: {data?.attributes?.brands?.data[0].attributes?.title}
               </span>
               <span>Area: {data?.attributes?.area}</span>
               <span>Goal: {data?.attributes?.goal}</span>

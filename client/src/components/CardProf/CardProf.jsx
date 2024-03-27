@@ -69,26 +69,22 @@ const Prices = styled.div`
   gap: 20px;
 `;
 
-const OldPrice = styled.h3`
-  font-size: 18px;
-  font-weight: 500;
+// const OldPrice = styled.h3`
+//   font-size: 18px;
+//   font-weight: 500;
 
-  &:first-child {
-    color: gray;
-    text-decoration: line-through;
-  }
-`;
+//   &:first-child {
+//     color: gray;
+//     text-decoration: line-through;
+//   }
+// `;
 const NewPrice = styled.h3`
   font-size: 18px;
   font-weight: 500;
-
-  &:first-child {
-    color: gray;
-    text-decoration: line-through;
-  }
 `;
 
 const CardProf = ({ item }) => {
+  console.log("dat", item?.attributes);
   return (
     <LinkProf className="link" to={`/professional/${item.id}`}>
       <StyledCard>
@@ -110,7 +106,6 @@ const CardProf = ({ item }) => {
         </ImageContainer>
         <Title>{item?.attributes.title}</Title>
         <Prices>
-          <OldPrice>€{item.oldPrice || item?.attributes.price + 20}</OldPrice>
           <NewPrice>€{item?.attributes.price}</NewPrice>
         </Prices>
       </StyledCard>
