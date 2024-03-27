@@ -86,6 +86,12 @@
     },
     "size": {
       "type": "string"
+    },
+    "oldPrice": {
+      "type": "decimal"
+    },
+    "contactPrice": {
+      "type": "text"
     }
   }
 }
