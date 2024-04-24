@@ -128,6 +128,8 @@ const Professional = () => {
 
   const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
 
+  console.log("data", data);
+
   const dispatch = useDispatch();
 
   const addHandler = () => {
@@ -161,14 +163,14 @@ const Professional = () => {
                 onClick={(e) => setSelectedImg("img")}
               />
               <Image
-                src={data?.attributes?.img2?.data?.attributes.url}
+                src={data?.attributes?.img2?.data?.attributes?.url}
                 alt=""
                 onClick={(e) => setSelectedImg("img2")}
               />
             </ImgContainer>
             <MainImg>
               <ImageBig
-                src={data?.attributes[selectedImg]?.data?.attributes.url}
+                src={data?.attributes[selectedImg]?.data?.attributes?.url}
                 alt=""
               />
             </MainImg>
@@ -196,6 +198,7 @@ const Professional = () => {
             <InfoContainer>
               <HrBorder />
               <span>Availability: {data?.attributes?.stock}</span>
+              <span>{data?.attributes?.contactPrice}</span>
               <span>
                 Brand: {data?.attributes?.brands?.data[0].attributes?.title}
               </span>
