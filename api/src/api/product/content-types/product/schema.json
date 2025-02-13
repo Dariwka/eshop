@@ -85,6 +85,34 @@
     },
     "prodId": {
       "type": "integer"
+    },
+    "package": {
+      "type": "integer"
+    },
+    "weight": {
+      "type": "integer"
+    },
+    "area": {
+      "type": "text"
+    },
+    "goal": {
+      "type": "text"
+    },
+    "tags": {
+      "type": "text"
+    },
+    "isPopular": {
+      "type": "boolean",
+      "default": false
+    },
+    "size": {
+      "type": "string"
+    },
+    "oldPrice": {
+      "type": "decimal"
+    },
+    "contactPrice": {
+      "type": "text"
     }
   }
 }

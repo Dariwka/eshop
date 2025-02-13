@@ -146,7 +146,7 @@ const Navbar = ({ click }) => {
             <StyledLink to="/products/2">Body</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/professionals">Professionals</StyledLink>
+            <StyledLink to="/products/3">Professionals</StyledLink>
           </Item>
         </Left>
         <Center>

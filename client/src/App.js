@@ -14,8 +14,6 @@ import Brand from "./pages/Brand/Brand.jsx";
 import Brands from "./pages/Brands/Brands.jsx";
 import About from "./pages/About/About.jsx";
 import ContactUs from "./pages/ContactUs/ContactUs.jsx";
-import Professionals from "./pages/Professionals/Professionals.jsx";
-import Professional from "./pages/Professional/Professional.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import SideDrawer from "./components/Drawer/SideDrawer.jsx";
 import { useState } from "react";
@@ -72,14 +70,6 @@ const router = createBrowserRouter([
       {
         path: "/training/:id",
         element: <Course />,
-      },
-      {
-        path: "/professionals",
-        element: <Professionals />,
-      },
-      {
-        path: "/professional/:id",
-        element: <Professional />,
       },
       {
         path: "/brands",

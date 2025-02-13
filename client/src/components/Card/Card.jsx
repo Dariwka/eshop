@@ -59,6 +59,9 @@ const Stick = styled.span`
   &.specOffer {
     background-color: red;
   }
+  &.popular {
+    background-color: blue;
+  }
 `;
 const Title = styled.h2`
   font-size: 16px;
@@ -102,9 +105,10 @@ const Card = ({ item }) => {
     >
       <CardProduct key={item?.attributes?.id}>
         <ImageContainer>
-          {item?.attributes.isNew && <Stick className="new">New Season</Stick>}
-          {item?.attributes.isSale && (
-            <Stick className="specOffer">Discount</Stick>
+          {item?.attributes.isNew && <Stick className="new">New</Stick>}
+          {item?.attributes.isSale && <Stick className="specOffer">Sale</Stick>}
+          {item?.attributes.isPopular && (
+            <Stick className="popular">Popular </Stick>
           )}
           <Image
             src={item.attributes?.img?.data?.attributes?.url}
@@ -119,7 +123,7 @@ const Card = ({ item }) => {
         </ImageContainer>
         <Title>{item?.attributes.title}</Title>
         <Prices>
-          <OldPrice>€{item.oldPrice || item?.attributes.price + 20}</OldPrice>
+          <OldPrice>€{item?.attributes.oldPrice}</OldPrice>
           <NewPrice>€{item?.attributes.price}</NewPrice>
         </Prices>
       </CardProduct>

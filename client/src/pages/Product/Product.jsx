@@ -198,17 +198,15 @@ const Product = () => {
               <AddShoppingCartIcon /> ADD TO CART
             </AddButton>
             <InfoContainer>
-              <span>Vendor: Serum</span>
-              <span>Product series: Calming</span>
-              <span>Tag: Serum, Face, Calming</span>
-            </InfoContainer>
-            <HrBorder />
-            <InfoContainer>
-              <span>DESCRIPTION</span>
-              <Hr />
-              <span>ADDITIONAL INFORMATION</span>
-              <Hr />
-              <span>FAQ</span>
+              <HrBorder />
+              <span>Availability: {data?.attributes?.stock}</span>
+              <span>{data?.attributes?.contactPrice}</span>
+              <span>
+                Brand: {data?.attributes?.brands?.data[0].attributes?.title}
+              </span>
+              <span>Area: {data?.attributes?.area}</span>
+              <span>Goal: {data?.attributes?.goal}</span>
+              <span>Tag: {data?.attributes?.tags}</span>
             </InfoContainer>
           </Right>
         </>

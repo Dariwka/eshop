@@ -84,7 +84,6 @@ const NewPrice = styled.h3`
 `;
 
 const CardProf = ({ item }) => {
-  console.log("ITEM", item);
   return (
     <LinkProf className="link" to={`/professional/${item.id}`}>
       <StyledCard>

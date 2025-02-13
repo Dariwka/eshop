@@ -138,7 +138,7 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link onClick={scrollToTop} className="link" to="/professionals">
+            <Link onClick={scrollToTop} className="link" to="/products/3">
               Professionals
             </Link>
           </Button>

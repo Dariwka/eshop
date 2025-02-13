@@ -128,8 +128,6 @@ const Professional = () => {
 
   const { data, loading } = useFetch(`/professionals/${id}?populate=*`);
 
-  console.log("data", data);
-
   const dispatch = useDispatch();
 
   const addHandler = () => {

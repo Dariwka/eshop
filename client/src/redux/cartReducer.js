@@ -12,7 +12,6 @@ export const cartSlice = createSlice({
   reducers: {
     addToCart: (state, action) => {
       const item = state.products.find((item) => item.id === action.payload.id);
-
       if (item) {
         item.quantity += action.payload.quantity;
         toast.info("Increased product quantity", {
