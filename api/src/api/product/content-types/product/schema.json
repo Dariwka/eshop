@@ -67,9 +67,6 @@
         "featured"
       ]
     },
-    "volume": {
-      "type": "integer"
-    },
     "isSale": {
       "type": "boolean",
       "default": false
@@ -88,9 +85,6 @@
     },
     "package": {
       "type": "integer"
-    },
-    "weight": {
-      "type": "decimal"
     },
     "area": {
       "type": "text"
@@ -113,6 +107,12 @@
     },
     "contactPrice": {
       "type": "text"
+    },
+    "volume": {
+      "type": "string"
+    },
+    "weight": {
+      "type": "string"
     }
   }
 }
