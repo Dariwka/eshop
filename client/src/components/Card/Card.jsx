@@ -123,7 +123,9 @@ const Card = ({ item }) => {
         </ImageContainer>
         <Title>{item?.attributes.title}</Title>
         <Prices>
-          <OldPrice>€{item?.attributes.oldPrice}</OldPrice>
+          <OldPrice>
+            €{item?.attributes.oldPrice || item?.attributes.price + 20}
+          </OldPrice>
           <NewPrice>€{item?.attributes.price}</NewPrice>
         </Prices>
       </CardProduct>

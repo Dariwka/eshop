@@ -51,7 +51,7 @@ const CatImg = styled.img`
 const Products = () => {
   const catId = parseInt(useParams().id);
 
-  const [maxPrice, setMaxPrice] = useState(1000);
+  const [maxPrice, setMaxPrice] = useState(5000);
   const [prodSort, setProdSort] = useState("asc");
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
@@ -114,7 +114,7 @@ const Products = () => {
               }}
               type="range"
               min={0}
-              max={1000}
+              max={5000}
               onChange={(e) => setMaxPrice(e.target.value)}
             />
             <span>{maxPrice}</span>

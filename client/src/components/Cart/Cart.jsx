@@ -126,7 +126,6 @@ const Cart = ({ close, open }) => {
       const res = await makeRequest.post("/orders", {
         products,
       });
-      console.log(products, "incart");
       await stripe.redirectToCheckout({
         sessionId: res.data.stripeSession.id,
       });
