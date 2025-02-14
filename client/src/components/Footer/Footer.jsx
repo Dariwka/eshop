@@ -191,7 +191,7 @@ const Footer = () => {
           <ListItem onClick={scrollToTop} to="/terms">
             Terms
           </ListItem>
-          <ListItem onClick={scrollToTop} to="/professionals">
+          <ListItem onClick={scrollToTop} to="/products/3">
             Professionals
           </ListItem>
           <ListItem onClick={scrollToTop}>Brands</ListItem>

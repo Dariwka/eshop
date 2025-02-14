@@ -30,7 +30,7 @@ const SideDrawer = ({ show, click }) => {
           <Link to="/trainings">Trainings</Link>
         </li>
         <li>
-          <Link to="/professionals">Professionals</Link>
+          <Link to="/products/3">Professionals</Link>
         </li>
         <li>
           <a href="https://www.posti.fi/en/private/parcels-and-tracking">

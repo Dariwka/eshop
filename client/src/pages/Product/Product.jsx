@@ -120,11 +120,6 @@ const HrBorder = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
 
-const Hr = styled.hr`
-  width: 200px;
-  border: 1px solid rgb(238, 237, 237);
-`;
-
 const Product = () => {
   const id = useParams().id;
   const [selectedImg, setSelectedImg] = useState("img");
@@ -160,19 +155,19 @@ const Product = () => {
           <Left>
             <ImgContainer>
               <Image
-                src={data?.attributes?.img?.data?.attributes.url}
+                src={data?.attributes?.img?.data?.attributes?.url}
                 alt=""
                 onClick={(e) => setSelectedImg("img")}
               />
               <Image
-                src={data?.attributes?.img2?.data?.attributes.url}
+                src={data?.attributes?.img2?.data?.attributes?.url}
                 alt=""
                 onClick={(e) => setSelectedImg("img2")}
               />
             </ImgContainer>
             <MainImg>
               <ImageBig
-                src={data?.attributes[selectedImg]?.data?.attributes.url}
+                src={data?.attributes[selectedImg]?.data?.attributes?.url}
                 alt=""
               />
             </MainImg>
