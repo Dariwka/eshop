@@ -175,6 +175,7 @@ const Product = () => {
           <Right>
             <Title>{data?.attributes?.title}</Title>
             <Price>€{data?.attributes?.price}</Price>
+            <span>{data?.attributes?.volume || data?.attributes?.size}</span>
             <Desc>{data?.attributes?.desc}</Desc>
             <Quantity>
               <MinusButton
@@ -199,6 +200,8 @@ const Product = () => {
               <span>
                 Brand: {data?.attributes?.brands?.data[0].attributes?.title}
               </span>
+              <span>Weight: {data?.attributes?.weight}</span>
+              <span>Size: {data?.attributes?.volume}</span>
               <span>Area: {data?.attributes?.area}</span>
               <span>Goal: {data?.attributes?.goal}</span>
               <span>Tag: {data?.attributes?.tags}</span>
