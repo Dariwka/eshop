@@ -9,11 +9,12 @@ const LinkProduct = styled(Link)`
 `;
 
 const CardProduct = styled.div`
-  width: 280px;
+  width: 275px;
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 50px;
+  padding: 4px;
   ${mobile({ width: "auto", marginBottom: "25px" })};
 `;
 
