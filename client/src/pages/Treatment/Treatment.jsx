@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
@@ -7,6 +7,7 @@ import BookingForm from "../../components/Booking/BookingForm";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
+import { isPromoActive, getActivePrice, getCountdown } from "../../utils/promo";
 
 const ContainerTreatment = styled.div`
   padding: 30px 50px;
@@ -109,10 +110,51 @@ const Hr = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
 
+function Countdown({ attrs }) {
+  const [msLeft, setMsLeft] = useState(getCountdown(attrs));
+
+  useEffect(() => {
+    if (msLeft == null) return;
+    const id = setInterval(() => {
+      setMsLeft((prev) => {
+        if (prev == null) return prev;
+        const next = prev - 1000;
+        return next > 0 ? next : null;
+      });
+    }, 1000);
+    return () => clearInterval(id);
+  }, [msLeft]);
+
+  if (msLeft == null) return null;
+
+  const totalSeconds = Math.floor(msLeft / 1000);
+  const days = Math.floor(totalSeconds / 86400);
+  const hours = Math.floor((totalSeconds % 86400) / 3600);
+  const minutes = Math.floor((totalSeconds % 3600) / 60);
+
+  return (
+    <div style={{ marginTop: 8, fontSize: 14 }}>
+      Tarjous voimassa: {days}dd : {hours}hh : {minutes}mm
+    </div>
+  );
+}
+
 const Treatment = () => {
-  const id = useParams().id;
+  const { slug } = useParams();
   const [selectedImg, setSelectedImg] = useState("img");
-  const { data, loading } = useFetch(`/treatments/${id}?populate=*`);
+  const url =
+    `/treatments?` +
+    `filters[slug][$eq]=${encodeURIComponent(slug)}` +
+    `&fields[0]=title&fields[1]=info&fields[2]=price&fields[3]=duration` +
+    `&fields[4]=area&fields[5]=goal&fields[6]=tags&fields[7]=longDesc&fields[8]=additional&fields[9]=contraindication` +
+    `&fields[10]=promoEnabled&fields[11]=promoPrice&fields[12]=promoStartsAt&fields[13]=promoEndsAt` +
+    `&populate[img][fields][0]=url&populate[img2][fields][0]=url`;
+
+  const { data, loading, error } = useFetch(url);
+
+  const attrs = useMemo(() => data?.[0]?.attributes, [data]);
+  const promo = isPromoActive(attrs);
+  const priceNow = getActivePrice(attrs);
 
   //booking
   const [open, setOpen] = useState(false);
@@ -121,73 +163,69 @@ const Treatment = () => {
     setOpen(!open);
   };
 
+  if (error) return <div>Something went wrong</div>;
+  if (loading) return <LoadingButton loading />;
+
+  if (!attrs) return <div>Not found</div>;
+
   return (
     <ContainerTreatment>
-      {loading ? (
-        <LoadingButton loading={loading} />
-      ) : (
-        <>
-          <LeftContainer>
-            <ImagesContainer>
-              <Image
-                src={data?.attributes?.img?.data?.attributes.url}
-                alt=""
-                onClick={(e) => setSelectedImg("img")}
-              />
-              <Image
-                src={data?.attributes?.img2?.data?.attributes.url}
-                alt=""
-                onClick={(e) => setSelectedImg("img2")}
-              />
-            </ImagesContainer>
-            <MainImg>
-              <ImageBig
-                src={data?.attributes[selectedImg]?.data?.attributes.url}
-                alt=""
-              />
-            </MainImg>
-          </LeftContainer>
-          <Right>
-            <Title>{data?.attributes?.title}</Title>
-            <Price>€{data?.attributes?.price}</Price>
-            <Time>
-              <AccessTimeOutlinedIcon />
-              {data?.attributes?.duration} min
-            </Time>
+      <LeftContainer>
+        <ImagesContainer>
+          <Image
+            src={attrs?.img?.data?.attributes?.url}
+            alt=""
+            onClick={(e) => setSelectedImg("img")}
+          />
+          <Image
+            src={attrs?.img2?.data?.attributes?.url}
+            alt=""
+            onClick={(e) => setSelectedImg("img2")}
+          />
+        </ImagesContainer>
+        <MainImg>
+          <ImageBig src={attrs?.[selectedImg]?.data?.attributes.url} alt="" />
+        </MainImg>
+      </LeftContainer>
+      <Right>
+        <Title>{attrs?.title}</Title>
+        <div style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
+          {promo && (
+            <span style={{ textDecoration: "line-through", opacity: 0.6 }}>
+              €{Number(attrs?.price).toFixed(0)}
+            </span>
+          )}
+          <Price>€{Number(priceNow).toFixed(0)}</Price>
+        </div>
+        {promo && <Countdown attrs={attrs} />}
 
-            <Desc>{data?.attributes?.info}</Desc>
-            <AddButton onClick={bookingOpenHandler}>
-              <CalendarMonthIcon /> Booking a treatment
-            </AddButton>
+        <Time>
+          <AccessTimeOutlinedIcon />
+          {attrs?.duration} min
+        </Time>
 
-            <InfoContainer>
-              <span>Area: {data?.attributes?.area}</span>
-              <span>Goal: {data?.attributes?.goal}</span>
-              <span>Tags: {data?.attributes?.tags}</span>
-            </InfoContainer>
-            <HrBorder />
-            <InfoContainer>
-              <span>DESCRIPTION:{data?.attributes?.longDesc}</span>
-              <Hr />
-              <span>
-                ADDITIONAL INFORMATION: {data?.attributes?.additional}
-              </span>
-              <Hr />
-              <span>
-                CONTRAINDICATIONS: {data?.attributes?.contraindication}
-              </span>
-              <Hr />
-              <span>FAQ</span>
-            </InfoContainer>
-          </Right>
-        </>
-      )}
-      {open && (
-        <BookingForm
-          treatment={data?.attributes?.title}
-          close={bookingOpenHandler}
-        />
-      )}
+        <Desc>{attrs?.info}</Desc>
+        <AddButton onClick={bookingOpenHandler}>
+          <CalendarMonthIcon /> Booking a treatment
+        </AddButton>
+
+        <InfoContainer>
+          <span>Area: {attrs?.area}</span>
+          <span>Goal: {attrs?.goal}</span>
+          <span>Tags: {attrs?.tags}</span>
+        </InfoContainer>
+        <HrBorder />
+        <InfoContainer>
+          <span>DESCRIPTION:{attrs?.longDesc}</span>
+          <Hr />
+          <span>ADDITIONAL INFORMATION: {attrs?.additional}</span>
+          <Hr />
+          <span>CONTRAINDICATIONS: {attrs?.contraindication}</span>
+          <Hr />
+          <span>FAQ</span>
+        </InfoContainer>
+      </Right>
+      {open && <BookingForm treatment={attrs} close={bookingOpenHandler} />}
     </ContainerTreatment>
   );
 };

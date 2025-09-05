@@ -121,22 +121,37 @@ const HrBorder = styled.hr`
 `;
 
 const Product = () => {
-  const id = useParams().id;
+  const { slug } = useParams();
   const [selectedImg, setSelectedImg] = useState("img");
   const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch();
 
-  const { data, loading } = useFetch(`/products/${id}?populate=*`);
+  const url =
+    `/products` +
+    `?filters[slug][$eq]=${encodeURIComponent(slug)}` +
+    `&fields[0]=title&fields[1]=desc&fields[2]=price&fields[3]=oldPrice` +
+    `&fields[4]=stock&fields[5]=contactPrice&fields[6]=weight` +
+    `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags` +
+    `&populate[img][fields][0]=url` +
+    `&populate[img2][fields][0]=url` +
+    `&populate[brands][fields][0]=title`;
+
+  /*const { data, loading } = useFetch(`/products/${id}?populate=*`);*/
+  const { data, loading, error } = useFetch(url);
+
+  const product = data?.[0];
+  const attrs = product?.attributes;
 
   const addHandler = () => {
+    if (!product) return;
     dispatch(
       addToCart({
-        id: data.id,
-        title: data.attributes.title,
-        desc: data.attributes.desc,
-        price: data.attributes.price,
-        img: data.attributes.img.data.attributes.url,
+        id: product.id,
+        title: attrs.title,
+        desc: attrs.desc,
+        price: attrs.price,
+        img: attrs.img?.data?.attributes?.url,
         quantity,
       })
     );
@@ -148,35 +163,39 @@ const Product = () => {
 
   return (
     <ProductContainer>
-      {loading ? (
+      {error ? (
+        <>Something went wrong</>
+      ) : loading ? (
         <LoadingButton loading={loading} />
+      ) : !product ? (
+        <>Product not found</>
       ) : (
         <>
           <Left>
             <ImgContainer>
               <Image
-                src={data?.attributes?.img?.data?.attributes?.url}
+                src={attrs?.img?.data?.attributes?.url}
                 alt=""
                 onClick={(e) => setSelectedImg("img")}
               />
               <Image
-                src={data?.attributes?.img2?.data?.attributes?.url}
+                src={attrs?.img2?.data?.attributes?.url}
                 alt=""
                 onClick={(e) => setSelectedImg("img2")}
               />
             </ImgContainer>
             <MainImg>
               <ImageBig
-                src={data?.attributes[selectedImg]?.data?.attributes?.url}
+                src={attrs?.[selectedImg]?.data?.attributes?.url}
                 alt=""
               />
             </MainImg>
           </Left>
           <Right>
-            <Title>{data?.attributes?.title}</Title>
-            <Price>€{data?.attributes?.price}</Price>
-            <span>{data?.attributes?.volume || data?.attributes?.size}</span>
-            <Desc>{data?.attributes?.desc}</Desc>
+            <Title>{attrs?.title}</Title>
+            <Price>€{attrs?.price}</Price>
+            <span>{attrs?.volume || attrs?.size}</span>
+            <Desc>{attrs?.desc}</Desc>
             <Quantity>
               <MinusButton
                 onClick={() =>
@@ -195,16 +214,16 @@ const Product = () => {
             </AddButton>
             <InfoContainer>
               <HrBorder />
-              <span>Availability: {data?.attributes?.stock}</span>
-              <span>{data?.attributes?.contactPrice}</span>
+              <span>Availability: {attrs?.stock}</span>
+              <span>{attrs?.contactPrice}</span>
               <span>
-                Brand: {data?.attributes?.brands?.data[0].attributes?.title}
+                Brand: {attrs?.brands?.data?.[0]?.attributes?.title || "-"}{" "}
               </span>
-              <span>Weight: {data?.attributes?.weight}</span>
-              <span>Size: {data?.attributes?.volume}</span>
-              <span>Area: {data?.attributes?.area}</span>
-              <span>Goal: {data?.attributes?.goal}</span>
-              <span>Tag: {data?.attributes?.tags}</span>
+              <span>Weight: {attrs?.weight}</span>
+              <span>Size: {attrs?.volume}</span>
+              <span>Area: {attrs?.area}</span>
+              <span>Goal: {attrs?.goal}</span>
+              <span>Tag: {attrs?.tags}</span>
             </InfoContainer>
           </Right>
         </>

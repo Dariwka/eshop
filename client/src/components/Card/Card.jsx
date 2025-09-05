@@ -102,7 +102,7 @@ const Card = ({ item }) => {
     <LinkProduct
       onClick={scrollToTop}
       className="link"
-      to={`/product/${item.id}`}
+      to={`/product/${item.attributes?.slug}`}
     >
       <CardProduct key={item?.attributes?.id}>
         <ImageContainer>

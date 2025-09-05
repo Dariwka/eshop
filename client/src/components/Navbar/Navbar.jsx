@@ -140,13 +140,13 @@ const Navbar = ({ click }) => {
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <StyledLink to="/products/1">Face</StyledLink>
+            <StyledLink to="/products/face">Face</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/products/2">Body</StyledLink>
+            <StyledLink to="/products/body">Body</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/products/3">Professionals</StyledLink>
+            <StyledLink to="/products/professionals">Professionals</StyledLink>
           </Item>
         </Left>
         <Center>

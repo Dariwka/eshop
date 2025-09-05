@@ -1,8 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import useFetch from "../../hooks/useFetch";
+import { getWorkHours, LOCATIONS } from "../../utils/workHours";
+import { generateSlots, subtractBusy } from "../../utils/slots";
+import { hhmmToMin, toISODate, isPastDate } from "../../utils/time";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import emailjs from "@emailjs/browser";
-import useFetch from "../../hooks/useFetch";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 
@@ -11,11 +14,11 @@ const BookingContainer = styled.div`
   right: 275px;
   top: 450px;
   z-index: 999;
+
   background-color: #fff;
   padding: 20px;
-  box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
-  -webkit-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
-  -moz-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+  border: 1px solid var(--border);
+  box-shadow: -12px 5px 28px -6px;
   ${mobile({ width: "85%", right: "20px", top: "450px" })};
 `;
 
@@ -23,158 +26,335 @@ const Wrapper = styled.div``;
 
 const FormContainer = styled.form`
   box-sizing: border-box;
-  border-radius: 1rem;
-  background-color: hsl(0, 0%, 100%);
-  border: 4px solid hsl(0, 0%, 90%);
+  border-radius: var(--radius);
+  background-color: #fff;
+  border: 1px solid var(--border);
+  padding: var(--space-2);
 `;
 
-const InputField = styled.div`
-  padding: 2rem;
+const TopRow = styled.div`
+  display: grid;
+  grid-template-columns: 1fr;
+  padding: 0 1.5rem 1rem;
+  /* сам селект поуже и по центру */
+  select {
+    width: 60%;
+    margin: 0 auto;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: var(--transition);
+  }
+
+  select:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+  select:hover {
+    border-color: var(--brand);
+    box-shadow: 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+  ${mobile({
+    "& select": { width: "100%" },
+  })}
+`;
+
+const FieldsGrid = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1.5rem;
-  ${mobile({ gridTemplateColumns: "auto", gap: "1rem" })};
+  gap: var(--space-2);
+  padding: 0 1.5rem 1rem;
+  ${mobile({ gridTemplateColumns: "1fr" })};
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--text);
+    outline: none;
+    transition: var(--transition);
+  }
+
+  input:focus,
+  select:focus {
+    border-color: var(--brand);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+
+  select:hover {
+    border-color: var(--brand);
+    box-shadow: 0 0 3px color-mix(in srgb, var(--brand) 20%, transparent);
+  }
+
+  select:disabled {
+    background: var(--soft);
+    color: var(--muted);
+    cursor: not-allowed;
+  }
 `;
+
+const Label = styled.label`
+  font-size: 14px;
+  font-weight: 400;
+  color: var(--muted);
+  margin-bottom: 0.5rem;
+  display: block;
+`;
+
 const InputText = styled.input`
   padding: 5px;
 `;
 
 const Acceptation = styled.div`
-  padding: 0 2rem 0.5rem;
-`;
-const Label = styled.label`
-  padding: 0.5rem;
+  margin: var(--space-2) 0;
   font-size: 14px;
-  font-weight: 400;
 `;
 
 const SubmitButton = styled.div`
-  text-align: center;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
+  margin-top: var(--space-2);
+  ${mobile({ gridTemplateColumns: "1fr" })}
 `;
 
 const Submit = styled.button`
-  width: 30%;
-  margin: 1rem;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  border-radius: 0.5rem;
-  background-color: rgb(53, 183, 53);
-  color: white;
-  border: none;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius);
+  background: var(--brand);
+  color: #fff;
+  border: 1px solid transparent;
   cursor: pointer;
+  transition: var(--transition);
   &:hover {
-    background-color: green;
-    border-color: green;
-    color: white;
+    background: var(--brand-hover);
+  }
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
   }
 `;
 const Cancel = styled.button`
-  width: 30%;
-  margin: 1rem;
-  padding: 0.5rem;
-  box-sizing: border-box;
-  border-radius: 0.5rem;
-  background-color: rgb(255, 79, 79);
-  color: white;
-  border: none;
+  width: 100%;
+  padding: 0.6rem 0.8rem;
+  border-radius: var(--radius);
+  background: var(--danger);
+  color: #fff;
+  border: 1px solid transparent;
   cursor: pointer;
+  transition: var(--transition);
+
   &:hover {
-    background-color: red;
-    border-color: red;
-    color: white;
+    background: var(--danger-hover);
   }
 `;
 
 const BookingForm = ({ treatment, close }) => {
-  const form = useRef();
-  const { data } = useFetch(`/time-Slots?populate=*`);
+  const form = useRef(null);
+  // const { data } = useFetch(`/time-Slots?populate=*`);
 
   const [values, setValues] = useState({
     date: "",
-    time: data?.attributes?.time,
+    time: "",
     name: "",
     surname: "",
     email: "",
     phone: "",
     treatment: treatment,
+    location: "",
   });
 
-  const [status, setStatus] = useState("");
+  const [freeSlots, setFreeSlots] = useState([]);
+
+  const [submitStatus, setSubmitStatus] = useState("");
+
+  const { date, location } = values;
+
+  const hours = useMemo(
+    () => (date ? getWorkHours(location, date) : null),
+    [location, date]
+  );
+
+  const busyUrl =
+    date && location
+      ? `/busy-slots?filters[date][$eq]=${date}` +
+        `&filters[location][$eq]=${encodeURIComponent(location)}` +
+        `&pagination[pageSize]=100`
+      : null;
+
+  const { data: busyRaw } = useFetch(busyUrl);
+
+  const busyList = useMemo(() => {
+    const arr = busyRaw || [];
+    return arr.map((i) => ({
+      start: i.attributes.start.slice(0, 5),
+      end: i.attributes.end.slice(0, 5),
+    }));
+  }, [busyRaw]);
+
+  const t = treatment?.attributes ?? treatment ?? {};
+  const baseDurationMin = Number(t.duration) || 30;
+  const GLOBAL_PADDING_MIN = 0;
+  const durationMin = baseDurationMin + GLOBAL_PADDING_MIN;
+
+  // собираем свободные слоты
+
+  useEffect(() => {
+    if (!hours) {
+      setFreeSlots([]);
+      return;
+    }
+
+    const base = generateSlots(hours); // [{from,to},...]
+
+    const free = subtractBusy(base, busyList, durationMin, hours.end); // вычитаем занятое // если выбран сегодня — скрываем прошедшее время
+    if (date === toISODate()) {
+      const now = new Date();
+      const nowMin = now.getHours() * 60 + now.getMinutes();
+      setFreeSlots(free.filter((s) => hhmmToMin(s.from) > nowMin));
+    } else {
+      setFreeSlots(free);
+    }
+  }, [hours, busyList, date, durationMin]);
 
   const handleChange = (e) => {
-    setValues((values) => ({
-      ...values,
-      [e.target.name]: e.target.value,
-    }));
+    const { name, value } = e.target;
+    if (name === "location" || name === "date") {
+      setValues((v) => ({ ...v, [name]: value, time: "" }));
+      return;
+    }
+    setValues((v) => ({ ...v, [name]: value }));
   };
 
   useEffect(() => {
-    if (status === "SUCCESS") {
-      toast.success("You successfulle booked your treatment", {
-        position: toast.POSITION.TOP_CENTER,
-      });
-      setTimeout(() => {
-        setStatus("");
-        close();
+    if (submitStatus === "SUCCESS") {
+      toast.success(
+        "Request sent. If the chosen time is still available, you will receive a confirmation by email.",
+        { position: toast.POSITION.TOP_CENTER }
+      );
+      const t = setTimeout(() => {
+        setSubmitStatus("");
+        close(); // закрываем модалку
       }, 3000);
+      return () => clearTimeout(t);
     }
-  }, [status, close]);
+  }, [submitStatus, close]);
 
-  const handleSubmitAppointment = (e) => {
+  const handleSubmitAppointment = async (e) => {
     e.preventDefault();
-    emailjs
-      .send(
+    const { date, time, location, name, surname, email, phone } = values; // 1) базовая валидация
+    if (!date || !time || !location || !name || !surname || !email || !phone) {
+      toast.error("Please fill all fields.");
+      return;
+    } // 2) дата не в прошлом
+    if (isPastDate(date)) {
+      toast.error("Selected date is in the past.");
+      return;
+    } // 3) выбранный слот всё еще свободен
+    const slotIsFree = freeSlots.some((s) => s.from === time);
+    if (!slotIsFree) {
+      toast.error(
+        "This time is no longer available. Please choose another slot."
+      );
+      return;
+    } // 4) отправка email
+    try {
+      await emailjs.send(
         process.env.REACT_APP_APPOINTMENT_SERVICE_ID,
         process.env.REACT_APP_APPOINTMENT_TEMPLATE_ID,
-        values,
-        process.env.REACT_APP_APPOINTMENT_PUBLIC_KEY
-      )
-      .then(
-        (response) => {
-          console.log("SUCCESS!", response.text);
-          setValues({
-            date: "",
-            time: "",
-            name: "",
-            surname: "",
-            email: "",
-            phone: "",
-            treatment: treatment,
-          });
-          setStatus("SUCCESS");
+        {
+          date,
+          time,
+          location,
+          treatment, // строка с названием процедуры (из пропса)
+          name,
+          surname,
+          email,
+          phone,
         },
-        (error) => {
-          console.log("FAILED...", error.text);
-        }
-      );
-    e.target.reset();
+        process.env.REACT_APP_APPOINTMENT_PUBLIC_KEY
+      ); // очистка формы
+      setValues((v) => ({
+        date: "",
+        time: "",
+        name: "",
+        surname: "",
+        email: "",
+        phone: "",
+        treatment,
+        location: "",
+      }));
+      setSubmitStatus("SUCCESS"); // если используешь <form ref={form}>, можно дополнительно:
+      e.target.reset();
+    } catch (err) {
+      console.log("FAILED...", err?.text || err);
+      setSubmitStatus("ERROR");
+      toast.error("Failed to send the request. Please try again.");
+    }
   };
 
   return (
     <BookingContainer>
       <Wrapper>
         <FormContainer ref={form} onSubmit={handleSubmitAppointment}>
-          <InputField>
+          <TopRow>
+            <select
+              id="location"
+              name="location"
+              value={values.location}
+              onChange={handleChange}
+              required
+            >
+              <option value="" disabled>
+                Select location
+              </option>
+              {Object.entries(LOCATIONS).map(([key, v]) => (
+                <option key={key} value={key}>
+                  {v.label}
+                </option>
+              ))}
+            </select>
+          </TopRow>
+          <FieldsGrid>
             <InputText
+              id="date"
               type="date"
+              lang="en-GB"
               name="date"
-              placeholder="Choose day"
+              min={toISODate()}
+              value={values.date}
               onChange={handleChange}
               required
             />
             <select
-              defaultValue={"DEFAULT"}
+              id="time"
               type="time"
               name="time"
-              required
+              value={values.time}
               onChange={handleChange}
+              disabled={
+                !values.location || !values.date || freeSlots.length === 0
+              }
             >
-              <option disabled value="DEFAULT">
-                Time
+              <option value="" disabled>
+                {!values.location || !values.date
+                  ? "Choose location & date first"
+                  : hours === null
+                  ? "Closed this day"
+                  : freeSlots.length > 0
+                  ? "Choose time"
+                  : "No available time"}
               </option>
-              {data?.map((item) => (
-                <option type="time" name="time" key={item?.attributes?.id}>
-                  {item?.attributes?.time.slice(0, 5)}
+              {freeSlots.map((s) => (
+                <option key={s.from} value={s.from}>
+                  {s.from}
                 </option>
               ))}
             </select>
@@ -211,7 +391,7 @@ const BookingForm = ({ treatment, close }) => {
               value={values.phone}
               onChange={handleChange}
             />
-          </InputField>
+          </FieldsGrid>
           <Acceptation>
             <InputText type="checkbox" id="accept" required />
             <Label htmlFor="accept">
@@ -220,11 +400,13 @@ const BookingForm = ({ treatment, close }) => {
             </Label>
           </Acceptation>
           <SubmitButton>
-            <Submit>Submit</Submit>
-            <Cancel onClick={close}>Cancel</Cancel>
+            <Submit type="submit">Submit</Submit>
+            <Cancel type="button" onClick={close}>
+              Cancel
+            </Cancel>
           </SubmitButton>
+          <ToastContainer />
         </FormContainer>
-        <ToastContainer />
       </Wrapper>
     </BookingContainer>
   );

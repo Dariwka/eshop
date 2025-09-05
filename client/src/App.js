@@ -52,7 +52,7 @@ const router = createBrowserRouter([
         element: <Treatments />,
       },
       {
-        path: "/treatment/:id",
+        path: "/treatment/:slug",
         element: <Treatment />,
       },
       {
@@ -60,7 +60,7 @@ const router = createBrowserRouter([
         element: <Products />,
       },
       {
-        path: "/product/:id",
+        path: "/product/:slug",
         element: <Product />,
       },
       {

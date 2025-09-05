@@ -5,10 +5,11 @@ const InputField = (props) => {
   const { handleChange, label, name, type, value } = props;
   return (
     <div className="container">
-      <span className="filterText" html={name}>
+      <label className="filterText" htmlFor={name}>
         {label}
-      </span>
+      </label>
       <input
+        id={name}
         type={type}
         onChange={handleChange}
         value={value}

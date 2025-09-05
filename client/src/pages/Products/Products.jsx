@@ -49,16 +49,22 @@ const CatImg = styled.img`
 `;
 
 const Products = () => {
-  const catId = parseInt(useParams().id);
+  const { id: param } = useParams();
+  //const catId = parseInt(useParams().id);
 
   const [maxPrice, setMaxPrice] = useState(5000);
   const [prodSort, setProdSort] = useState("asc");
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
 
-  const { data, loading, error } = useFetch(
-    `/sub-categories?[filters][categories][id][$eq]=${catId}`
-  );
+  //checking: param number or line (slug)
+  const isNumeric = /^\d+$/.test(String(param));
+
+  const url = isNumeric
+    ? `/sub-categories?filters[categories][id][$eq]=${param}&fields=title&sort=title:asc`
+    : `/sub-categories?filters[categories][slug][$eq]=${param}&fields=title&sort=title:asc`;
+
+  const { data, loading, error } = useFetch(url);
 
   const listRef = useRef();
 
@@ -88,20 +94,28 @@ const Products = () => {
             "Something went wrong"
           ) : loading ? (
             <LoadingButton loading={loading} />
+          ) : data?.length ? (
+            data?.map((item) => {
+              const cid = `subcat-${item.id}`;
+              return (
+                <InputItem key={item.id}>
+                  <input
+                    id={cid}
+                    type="checkbox"
+                    name="subcat"
+                    value={item.id}
+                    onClick={() => {
+                      scrollIntoView(listRef);
+                    }}
+                    onChange={handleChange}
+                    checked={selectedSubCats.includes(String(item.id))}
+                  />
+                  <Label htmlFor={cid}>{item.attributes?.title}</Label>
+                </InputItem>
+              );
+            })
           ) : (
-            data?.map((item) => (
-              <InputItem key={item.id}>
-                <input
-                  onClick={() => {
-                    scrollIntoView(listRef);
-                  }}
-                  type="checkbox"
-                  value={item.id}
-                  onChange={handleChange}
-                />
-                <Label htmlFor={item.id}>{item.attributes.title}</Label>
-              </InputItem>
-            ))
+            <span>No any categories</span>
           )}
         </FilterItem>
         <FilterItem>
@@ -109,13 +123,15 @@ const Products = () => {
           <InputItem>
             <span>0</span>
             <input
-              onClick={() => {
-                scrollIntoView(listRef);
-              }}
+              id="priceRange"
               type="range"
               min={0}
               max={5000}
-              onChange={(e) => setMaxPrice(e.target.value)}
+              value={maxPrice}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
+              onClick={() => {
+                scrollIntoView(listRef);
+              }}
             />
             <span>{maxPrice}</span>
           </InputItem>
@@ -131,6 +147,7 @@ const Products = () => {
               id="asc"
               value="asc"
               name="price"
+              checked={prodSort === "asc"}
               onChange={(e) => setProdSort("asc")}
             />
             <Label htmlFor="asc">Price (Lowest First)</Label>
@@ -141,6 +158,7 @@ const Products = () => {
               id="desc"
               value="desc"
               name="price"
+              checked={prodSort === "desc"}
               onChange={(e) => setProdSort("desc")}
             />
             <Label htmlFor="desc">Price (Highest First)</Label>
@@ -153,7 +171,7 @@ const Products = () => {
           alt=""
         />
         <List
-          catId={catId}
+          catId={param}
           maxPrice={maxPrice}
           subCats={selectedSubCats}
           prodSort={prodSort}
