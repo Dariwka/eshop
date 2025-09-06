@@ -136,7 +136,7 @@ const Navbar = ({ click }) => {
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <span>EUR</span>
+            <span>FI</span>
             <KeyboardArrowDownIcon />
           </Item>
           <Item>

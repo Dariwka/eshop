@@ -53,6 +53,8 @@ const Treatments = () => {
 
   const [selectedSubCats, setSelectedSubCats] = useState([]);
 
+  const [promoOnly, setPromoOnly] = useState(false);
+
   const { data, loading, error } = useFetch(`/sub-treat-categories?populate=*`);
 
   const listRef = useRef();
@@ -79,6 +81,15 @@ const Treatments = () => {
       <LeftContainer>
         <FilterItem>
           <Title>Treatment's Categories</Title>
+          <InputItem>
+            <input
+              type="checkbox"
+              id="promo"
+              checked={promoOnly}
+              onChange={(e) => setPromoOnly(e.target.checked)}
+            />
+            <Label htmlFor="promo">Tarjoukset</Label>
+          </InputItem>
           {error ? (
             "Something went wrong"
           ) : loading ? (
@@ -111,7 +122,7 @@ const Treatments = () => {
               type="range"
               min={0}
               max={1000}
-              onChange={(e) => setMaxPrice(e.target.value)}
+              onChange={(e) => setMaxPrice(Number(e.target.value))}
             />
             <span>{maxPrice}</span>
           </InputItem>
@@ -127,6 +138,7 @@ const Treatments = () => {
               id="asc"
               value="asc"
               name="price"
+              checked={treatSort === "asc"}
               onChange={(e) => setTreatSort("asc")}
             />
             <Label htmlFor="asc">Price (Lowest First)</Label>
@@ -140,6 +152,7 @@ const Treatments = () => {
               id="desc"
               value="desc"
               name="price"
+              checked={treatSort === "desc"}
               onChange={(e) => setTreatSort("desc")}
             />
             <Label htmlFor="desc">Price (Highest First)</Label>
@@ -156,6 +169,7 @@ const Treatments = () => {
           maxPrice={maxPrice}
           subCatsTreat={selectedSubCats}
           treatSort={treatSort}
+          promoOnly={promoOnly}
         />
       </Right>
     </ContainerTreatments>

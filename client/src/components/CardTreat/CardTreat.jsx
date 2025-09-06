@@ -1,8 +1,12 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
-import { getActivePrice, isPromoActive } from "../../utils/promo";
+import {
+  getActivePrice,
+  isPromoActive,
+  formatCountdownParts,
+} from "../../utils/promo";
 
 const LinkProduct = styled(Link)`
   text-decoration: none;
@@ -64,49 +68,111 @@ const Stick = styled.span`
     background-color: blue;
   }
 `;
-
 const Title = styled.h2`
   font-size: 16px;
   font-weight: 400;
+  margin: 6px 0 2px;
 `;
 const Prices = styled.div`
   display: flex;
-  gap: 8px;
   align-items: baseline;
+  gap: 10px;
+  margin-top: 0px;
 `;
+
 const OldPrice = styled.span`
   text-decoration: line-through;
-  opacity: 0.6;
+  color: var(--muted);
 `;
 
 const NewPrice = styled.span`
-  font-weight: 600;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--brand);
 `;
-const Badge = styled.span`
-  background: #e74c3c;
+
+const DiscountTag = styled.span`
+  margin-left: auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: red;
   color: #fff;
-  font-size: 12px;
-  padding: 2px 6px;
-  border-radius: 4px;
+  border: 1px solid red;
+`;
+
+const CountdownBar = styled.div`
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 34px;
+  padding: 0 10px;
+  color: #fff;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  z-index: 3;
+  background: rgba(0, 0, 0, 0.55);
+  @supports (background: color-mix(in srgb, #000 35%, transparent)) {
+    background: color-mix(in srgb, #000 35%, transparent);
+  }
+  @keyframes pulse {
+    0%,
+    100% {
+      opacity: 0.95;
+    }
+    50% {
+      opacity: 0.75;
+    }
+  }
+  animation: pulse 2s ease-in-out infinite;
+`;
+
+const Blinker = styled.span`
+  @keyframes blink {
+    50% {
+      opacity: 0;
+    }
+  }
+  display: inline-block;
+  width: 0.6ch;
+  text-align: center;
+  animation: blink 1s steps(1, end) infinite;
 `;
 
 const CardTreat = ({ item }) => {
   const attrs = item?.attributes || {};
   const slug = attrs.slug;
   const promo = isPromoActive(attrs);
+
   const priceNow = getActivePrice(attrs);
 
+  const [now, setNow] = useState(Date.now());
+  useEffect(() => {
+    if (!promo || !attrs?.promoEndsAt) return;
+    const id = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(id);
+  }, [promo, attrs?.promoEndsAt]);
+
+  const msLeft =
+    promo && attrs?.promoEndsAt ? new Date(attrs.promoEndsAt) - now : null;
+  const parts = formatCountdownParts(msLeft);
+
+  const discountPct =
+    promo && typeof attrs.price === "number" && attrs.price > 0
+      ? Math.round(100 - (priceNow / attrs.price) * 100)
+      : null;
   return (
     <LinkProduct to={`/treatment/${encodeURIComponent(slug)}`}>
       <CardTreatWrapper>
         <ImageContainer>
-          {item?.attributes.isNew && <Stick className="new">New </Stick>}
-          {item?.attributes.isPopular && (
-            <Stick className="popular">Popular </Stick>
-          )}
-          {item?.attributes.isSpecialOffer && (
-            <Stick className="specOffer">Special Offer</Stick>
-          )}
+          {attrs.isNew && <Stick className="new">New </Stick>}
+          {attrs.isPopular && <Stick className="popular">Popular </Stick>}
+          {attrs.isSpecialOffer && <Stick className="specOffer">TARJOUS</Stick>}
 
           <Image
             src={attrs?.img?.data?.attributes?.url}
@@ -118,14 +184,30 @@ const CardTreat = ({ item }) => {
             alt={attrs?.title || ""}
             className="secondImg"
           />
+          {promo && parts && (
+            <CountdownBar>
+              {parts.d > 0 && <span>{parts.d}d&nbsp;</span>}
+              <span>{String(parts.h).padStart(2, "0")}</span>
+              <Blinker>:</Blinker>
+              <span>{String(parts.m).padStart(2, "0")}</span>
+              <Blinker>:</Blinker>
+              <span>{String(parts.s).padStart(2, "0")}</span>
+            </CountdownBar>
+          )}
         </ImageContainer>
-        <Title>
-          {attrs?.title} {promo && <Badge>Tarjous</Badge>}
-        </Title>
+        <Title>{attrs?.title}</Title>
         <Prices>
-          {promo && <OldPrice>€{Number(attrs?.price).toFixed(0)}</OldPrice>}
-
-          <NewPrice>€{Number(priceNow).toFixed(0)}</NewPrice>
+          {promo ? (
+            <>
+              <OldPrice>€{Number(attrs?.price).toFixed(0)}</OldPrice>
+              <NewPrice>€{Number(priceNow).toFixed(0)}</NewPrice>
+              {discountPct !== null && (
+                <DiscountTag>-{discountPct}%</DiscountTag>
+              )}
+            </>
+          ) : (
+            <NewPrice>€{Number(attrs.price).toFixed(0)}</NewPrice>
+          )}
         </Prices>
       </CardTreatWrapper>
     </LinkProduct>
