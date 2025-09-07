@@ -92,7 +92,6 @@ const NewPrice = styled.span`
 `;
 
 const DiscountTag = styled.span`
-  margin-left: auto;
   font-size: 0.85rem;
   font-weight: 700;
   padding: 2px 8px;
