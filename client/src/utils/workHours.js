@@ -7,6 +7,17 @@ export const LOCATIONS = {
   },
   Malminkartano: { label: "Malminkartano", address: "Kehruutie 4, Helsinki" },
 };
+
+export const getLocationLabel = (id) =>
+  LOCATIONS[id]?.label || String(id || "");
+
+export const getLocationAddress = (id) => LOCATIONS[id]?.address || "";
+
+export const formatLocationLabel = (id) => {
+  const loc = LOCATIONS[id];
+  return loc ? `${loc.label} - ${loc.address}` : String(id || "");
+};
+
 export const WORK_HOURS = {
   Kannelmäki: {
     Mon: { start: "10:00", end: "16:00", stepMin: 30 },

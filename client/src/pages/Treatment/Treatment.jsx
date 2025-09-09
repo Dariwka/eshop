@@ -1,5 +1,5 @@
 import React, { useState, useMemo, useEffect } from "react";
-import { useParams, useLocation } from "react-router-dom";
+import { useParams, useLocation, useNavigate } from "react-router-dom";
 import useFetch from "../../hooks/useFetch";
 import AccessTimeOutlinedIcon from "@mui/icons-material/AccessTimeOutlined";
 import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
@@ -137,10 +137,16 @@ function Countdown({ attrs }) {
   );
 }
 
+const ANY_MARKERS = ["ANY", "Any", "ALL", "All", "Both", "Both location"];
+
+const DEFAULT_LOCATIONS = ["Kannelmäki", "Malminkartano"];
+
 // ===== component =====
+
 const Treatment = () => {
   const { slug } = useParams();
-  const location = useLocation();
+  const routerLocation = useLocation();
+  const navigate = useNavigate();
   const [selectedImg, setSelectedImg] = useState("img");
   const [open, setOpen] = useState(false);
 
@@ -151,6 +157,7 @@ const Treatment = () => {
     `&fields[0]=title&fields[1]=info&fields[2]=price&fields[3]=duration` +
     `&fields[4]=area&fields[5]=goal&fields[6]=tags&fields[7]=longDesc&fields[8]=additional&fields[9]=contraindication` +
     `&fields[10]=promoEnabled&fields[11]=promoPrice&fields[12]=promoStartsAt&fields[13]=promoEndsAt` +
+    `&fields[14]=locationLimit` +
     `&populate[img][fields][0]=url&populate[img2][fields][0]=url`;
 
   const { data, loading, error } = useFetch(url);
@@ -160,15 +167,45 @@ const Treatment = () => {
   const attrs = item?.attributes || {};
   const treatmentId = item?.id;
 
+  const allowedLocations = useMemo(() => {
+    const lim = attrs?.locationLimit;
+    if (!lim) return DEFAULT_LOCATIONS;
+    if (typeof lim === "string") {
+      if (ANY_MARKERS.includes(lim.trim())) return DEFAULT_LOCATIONS;
+      return [lim.trim()];
+    }
+    if (Array.isArray(lim)) {
+      const vals = lim
+        .map((x) => (typeof x === "string" ? x : x?.title || x?.name))
+        .filter(Boolean)
+        .map((s) => s.trim());
+      if (vals.some((v) => ANY_MARKERS.includes(v))) return DEFAULT_LOCATIONS;
+      return vals.length ? vals : DEFAULT_LOCATIONS;
+    }
+    return DEFAULT_LOCATIONS;
+  }, [attrs?.locationLimit]);
+
   const promo = isPromoActive(attrs);
   const priceNow = getActivePrice(attrs);
 
   useEffect(() => {
-    const sp = new URLSearchParams(location.search);
-    if (sp.get("openBooking") === "1") {
-      setOpen(true);
-    }
-  }, [location.search]);
+    const sp = new URLSearchParams(routerLocation.search);
+
+    const shouldOpen =
+      sp.get("openBooking") === "1" ||
+      sp.get("success") === "1" ||
+      sp.has("voucher");
+    if (!shouldOpen) return;
+    setOpen(true);
+
+    ["openBooking", "success"].forEach((k) => sp.delete(k));
+
+    const rest = sp.toString();
+    navigate(
+      { pathname: routerLocation.pathname, search: rest ? `?${rest}` : "" },
+      { replace: true }
+    );
+  }, [routerLocation.search, routerLocation.pathname, navigate]);
 
   const bookingOpenHandler = () => setOpen((v) => !v);
 
@@ -283,7 +320,16 @@ const Treatment = () => {
         </InfoContainer>
       </Right>
 
-      {open && <BookingForm treatment={attrs} close={bookingOpenHandler} />}
+      {open && (
+        <BookingForm
+          treatment={attrs}
+          allowedLocations={allowedLocations}
+          initialLocation={
+            allowedLocations.length === 1 ? allowedLocations[0] : ""
+          }
+          close={bookingOpenHandler}
+        />
+      )}
     </ContainerTreatment>
   );
 };

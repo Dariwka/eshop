@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import useFetch from "../../hooks/useFetch";
-import { getWorkHours, LOCATIONS } from "../../utils/workHours";
+import { getWorkHours, formatLocationLabel } from "../../utils/workHours";
 import { generateSlots, subtractBusy } from "../../utils/slots";
 import { hhmmToMin, toISODate, isPastDate } from "../../utils/time";
 import { ToastContainer, toast } from "react-toastify";
@@ -156,7 +156,16 @@ const Cancel = styled.button`
   }
 `;
 
-const BookingForm = ({ treatment, close }) => {
+const BookingForm = ({
+  treatment,
+  allowedLocations = [],
+  initialLocation = "",
+  close,
+}) => {
+  const treat =
+    treatment && treatment.attributes ? treatment.attributes : treatment || {};
+  const treatmentTitle = treat.title || "";
+
   const form = useRef(null);
   // const { data } = useFetch(`/time-Slots?populate=*`);
 
@@ -167,9 +176,33 @@ const BookingForm = ({ treatment, close }) => {
     surname: "",
     email: "",
     phone: "",
-    treatment: treatment,
-    location: "",
+    location: initialLocation,
   });
+
+  const DEFAULT_LOCATIONS = ["Kannelmäki", "Malminkartano"];
+
+  const RAW = allowedLocations.length ? allowedLocations : DEFAULT_LOCATIONS;
+
+  const options = RAW.filter(
+    (loc) => loc && String(loc).trim().toLowerCase() !== "any"
+  );
+
+  useEffect(() => {
+    if (
+      allowedLocations.length === 1 &&
+      values.location &&
+      allowedLocations[0]
+    ) {
+      setValues((v) => ({ ...v, location: allowedLocations[0] }));
+    }
+    if (
+      allowedLocations.length > 1 &&
+      values.location &&
+      !allowedLocations.includes(values.location)
+    ) {
+      setValues((v) => ({ ...v, location: "" }));
+    }
+  }, [allowedLocations, values.location]);
 
   const [freeSlots, setFreeSlots] = useState([]);
 
@@ -272,11 +305,11 @@ const BookingForm = ({ treatment, close }) => {
         {
           date,
           time,
-          location,
-          treatment, // строка с названием процедуры (из пропса)
           name,
           surname,
           email,
+          location: formatLocationLabel(location),
+          treatment: treatmentTitle, // строка с названием процедуры (из пропса)
           phone,
         },
         process.env.REACT_APP_APPOINTMENT_PUBLIC_KEY
@@ -309,15 +342,20 @@ const BookingForm = ({ treatment, close }) => {
               id="location"
               name="location"
               value={values.location}
-              onChange={handleChange}
+              onChange={(e) =>
+                setValues((v) => ({ ...v, location: e.target.value }))
+              }
+              disabled={options.length === 1}
               required
             >
-              <option value="" disabled>
-                Select location
-              </option>
-              {Object.entries(LOCATIONS).map(([key, v]) => (
-                <option key={key} value={key}>
-                  {v.label}
+              {options.length > 1 && (
+                <option value="" disabled>
+                  Select location
+                </option>
+              )}
+              {options.map((loc) => (
+                <option key={loc} value={loc}>
+                  {formatLocationLabel(loc)}
                 </option>
               ))}
             </select>
@@ -342,6 +380,7 @@ const BookingForm = ({ treatment, close }) => {
               disabled={
                 !values.location || !values.date || freeSlots.length === 0
               }
+              required
             >
               <option value="" disabled>
                 {!values.location || !values.date

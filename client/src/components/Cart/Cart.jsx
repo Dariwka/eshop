@@ -116,7 +116,8 @@ const Cart = ({ close, open }) => {
   };
 
   const stripePromise = loadStripe(
-    "pk_live_51OrOqrJ4503MJ2aYg5Hlfd9ZwMnoNS1zhVqczEV7YEnthFSvFHxwo3T2qVPqcp8zZdCtfHLOP0LPbm4MlgG9fK1g004TPdwKSr"
+    process.env.REACT_APP_STRIPE_PK ||
+      "pk_live_51OrOqrJ4503MJ2aYg5Hlfd9ZwMnoNS1zhVqczEV7YEnthFSvFHxwo3T2qVPqcp8zZdCtfHLOP0LPbm4MlgG9fK1g004TPdwKSr"
   );
 
   const handlePayment = async () => {
