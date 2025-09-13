@@ -276,6 +276,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
               paymentStatus: "succeeded",
               maxRedemptions: 1,
               redemptions: 0,
+              publishedAt: new Date().toISOString(),
             },
             populate: ["treatment"],
           }
