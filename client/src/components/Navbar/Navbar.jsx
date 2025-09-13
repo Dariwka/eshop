@@ -136,7 +136,7 @@ const Navbar = ({ click }) => {
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <span>FI</span>
+            <span>ENG</span>
             <KeyboardArrowDownIcon />
           </Item>
           <Item>

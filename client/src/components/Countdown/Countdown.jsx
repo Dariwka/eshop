@@ -21,7 +21,9 @@ export default function Countdown({ to }) {
   if (left <= 0) return <span>Offer ended</span>;
   return (
     <span>
-      {d}d {h}h {m}m {sec}s
+      {d}d:{h.toString().padStart(2, "0")}h:
+      {m.toString().padStart(2, "0")}m:
+      {sec.toString().padStart(2, "0")}s
     </span>
   );
 }

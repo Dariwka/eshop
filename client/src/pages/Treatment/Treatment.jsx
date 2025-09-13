@@ -8,11 +8,13 @@ import BookingForm from "../../components/Booking/BookingForm";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
-import { isPromoActive, getActivePrice, getCountdown } from "../../utils/promo";
+import { isPromoActive, getActivePrice } from "../../utils/promo";
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from "../../makeRequest";
+import Description from "../../components/Description/Description";
+import Countdown from "../../components/Countdown/Countdown";
 
-// ===== styles =====
+// ===== styles =====//
 const ContainerTreatment = styled.div`
   padding: 30px 50px;
   display: flex;
@@ -66,12 +68,6 @@ const Time = styled.div`
   gap: 10px;
   font-size: 14px;
 `;
-const Desc = styled.p`
-  font-size: 18px;
-  font-weight: 300;
-  text-align: justify;
-  ${mobile({ fontSize: "16px" })};
-`;
 const AddButton = styled.button`
   width: 250px;
   padding: 10px;
@@ -85,7 +81,6 @@ const AddButton = styled.button`
   border: none;
   font-weight: 500;
   ${mobile({ width: "auto" })};
-
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
@@ -106,51 +101,16 @@ const Hr = styled.hr`
   width: 200px;
   border: 1px solid rgb(238, 237, 237);
 `;
-
-// ===== countdown on the details page =====
-function Countdown({ attrs }) {
-  const [msLeft, setMsLeft] = useState(getCountdown(attrs));
-
-  useEffect(() => {
-    if (msLeft == null) return;
-    const id = setInterval(() => {
-      setMsLeft((prev) => {
-        if (prev == null) return prev;
-        const next = prev - 1000;
-        return next > 0 ? next : null;
-      });
-    }, 1000);
-    return () => clearInterval(id);
-  }, [msLeft]);
-
-  if (msLeft == null) return null;
-
-  const totalSeconds = Math.floor(msLeft / 1000);
-  const days = Math.floor(totalSeconds / 86400);
-  const hours = Math.floor((totalSeconds % 86400) / 3600);
-  const minutes = Math.floor((totalSeconds % 3600) / 60);
-
-  return (
-    <div style={{ marginTop: 8, fontSize: 14 }}>
-      Tarjous voimassa: {days}dd : {hours}hh : {minutes}mm
-    </div>
-  );
-}
-
 const ANY_MARKERS = ["ANY", "Any", "ALL", "All", "Both", "Both location"];
-
 const DEFAULT_LOCATIONS = ["Kannelmäki", "Malminkartano"];
-
 // ===== component =====
-
+//
 const Treatment = () => {
   const { slug } = useParams();
   const routerLocation = useLocation();
   const navigate = useNavigate();
   const [selectedImg, setSelectedImg] = useState("img");
   const [open, setOpen] = useState(false);
-
-  // Грузим только нужные поля
   const url =
     `/treatments?` +
     `filters[slug][$eq]=${encodeURIComponent(slug)}` +
@@ -159,14 +119,10 @@ const Treatment = () => {
     `&fields[10]=promoEnabled&fields[11]=promoPrice&fields[12]=promoStartsAt&fields[13]=promoEndsAt` +
     `&fields[14]=locationLimit` +
     `&populate[img][fields][0]=url&populate[img2][fields][0]=url`;
-
   const { data, loading, error } = useFetch(url);
-
-  // первая (и единственная) запись
   const item = useMemo(() => (Array.isArray(data) ? data[0] : data), [data]);
   const attrs = item?.attributes || {};
   const treatmentId = item?.id;
-
   const allowedLocations = useMemo(() => {
     const lim = attrs?.locationLimit;
     if (!lim) return DEFAULT_LOCATIONS;
@@ -184,37 +140,29 @@ const Treatment = () => {
     }
     return DEFAULT_LOCATIONS;
   }, [attrs?.locationLimit]);
-
   const promo = isPromoActive(attrs);
   const priceNow = getActivePrice(attrs);
-
   useEffect(() => {
     const sp = new URLSearchParams(routerLocation.search);
-
     const shouldOpen =
       sp.get("openBooking") === "1" ||
       sp.get("success") === "1" ||
       sp.has("voucher");
     if (!shouldOpen) return;
     setOpen(true);
-
     ["openBooking", "success"].forEach((k) => sp.delete(k));
-
     const rest = sp.toString();
     navigate(
       { pathname: routerLocation.pathname, search: rest ? `?${rest}` : "" },
       { replace: true }
     );
   }, [routerLocation.search, routerLocation.pathname, navigate]);
-
   const bookingOpenHandler = () => setOpen((v) => !v);
 
-  // 🔑 лучше хранить в .env: REACT_APP_STRIPE_PK=pk_...
   const stripePromise = loadStripe(
     process.env.REACT_APP_STRIPE_PK ||
       "pk_live_51OrOqrJ4503MJ2aYg5Hlfd9ZwMnoNS1zhVqczEV7YEnthFSvFHxwo3T2qVPqcp8zZdCtfHLOP0LPbm4MlgG9fK1g004TPdwKSr"
   );
-
   const handleBuy = async () => {
     try {
       if (!treatmentId) {
@@ -229,9 +177,8 @@ const Treatment = () => {
         quantity: 1,
         img: attrs?.img?.data?.attributes?.url || "",
         type: "voucher",
-        slug, // пригодится на стороне success-страницы
+        slug,
       };
-      // создаём checkout-сессию на бэке
       const res = await makeRequest.post(
         `/orders?slug=${encodeURIComponent(slug)}`,
         { products: [product] }
@@ -244,11 +191,9 @@ const Treatment = () => {
       alert(err?.response?.data?.error?.message || "Payment error");
     }
   };
-
   if (error) return <div>Something went wrong</div>;
   if (loading) return <LoadingButton loading />;
   if (!item) return <div>Not found</div>;
-
   return (
     <ContainerTreatment>
       <LeftContainer>
@@ -264,15 +209,12 @@ const Treatment = () => {
             onClick={() => setSelectedImg("img2")}
           />
         </ImagesContainer>
-
         <MainImg>
           <ImageBig src={attrs?.[selectedImg]?.data?.attributes?.url} alt="" />
         </MainImg>
       </LeftContainer>
-
       <Right>
         <Title>{attrs?.title}</Title>
-
         <div style={{ display: "flex", gap: 10, alignItems: "baseline" }}>
           {promo && (
             <span style={{ textDecoration: "line-through", opacity: 0.6 }}>
@@ -281,15 +223,39 @@ const Treatment = () => {
           )}
           <Price>€{Number(priceNow).toFixed(0)}</Price>
         </div>
-
-        {promo && <Countdown attrs={attrs} />}
-
+        {/* таймер акции — используем твой Countdown */}
+        {promo && attrs?.promoEndsAt && (
+          <div
+            style={{
+              marginTop: 8,
+              fontSize: 16,
+              fontWeight: 600,
+              color: "#2e7d32",
+              display: "flex",
+              alignItems: "center",
+              gap: 6,
+            }}
+          >
+            Tarjous voimassa:{" "}
+            <span
+              style={{
+                fontWeight: 700,
+                fontFamily: "monospace",
+                background: "#e8f5e9",
+                padding: "2px 6px",
+                borderRadius: 6,
+              }}
+            >
+              <Countdown to={attrs.promoEndsAt} />
+            </span>
+          </div>
+        )}
         <Time>
           <AccessTimeOutlinedIcon />
           {attrs?.duration} min
         </Time>
-
-        <Desc>{attrs?.info}</Desc>
+        {/* краткое описание */}
+        {attrs?.info && <Description text={attrs.info} />}
         {promo ? (
           <AddButton as="button" onClick={handleBuy}>
             <ShoppingCartIcon />
@@ -300,26 +266,35 @@ const Treatment = () => {
             <CalendarMonthIcon /> Booking a treatment
           </AddButton>
         )}
-
         <InfoContainer>
-          <span>Area: {attrs?.area}</span>
-          <span>Goal: {attrs?.goal}</span>
+          <span>Area: {attrs?.area}</span> <span>Goal: {attrs?.goal}</span>
           <span>Tags: {attrs?.tags}</span>
         </InfoContainer>
-
         <HrBorder />
-
         <InfoContainer>
-          <span>DESCRIPTION: {attrs?.longDesc}</span>
-          <Hr />
-          <span>ADDITIONAL INFORMATION: {attrs?.additional}</span>
-          <Hr />
-          <span>CONTRAINDICATIONS: {attrs?.contraindication}</span>
-          <Hr />
+          {attrs?.longDesc && (
+            <>
+              <span>DESCRIPTION:</span> <Description text={attrs.longDesc} />
+              <Hr />
+            </>
+          )}
+          {attrs?.additional && (
+            <>
+              <span>ADDITIONAL INFORMATION:</span>
+              <Description text={attrs.additional} />
+              <Hr />
+            </>
+          )}
+          {attrs?.contraindication && (
+            <>
+              <span>CONTRAINDICATIONS:</span>
+              <Description text={attrs.contraindication} />
+              <Hr />
+            </>
+          )}
           <span>FAQ</span>
         </InfoContainer>
       </Right>
-
       {open && (
         <BookingForm
           treatment={attrs}
@@ -333,5 +308,4 @@ const Treatment = () => {
     </ContainerTreatment>
   );
 };
-
 export default Treatment;

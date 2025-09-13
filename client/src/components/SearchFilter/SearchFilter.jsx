@@ -10,8 +10,6 @@ const SearchFilter = () => {
   const [selectedSubCats, setSelectedSubCats] = useState([]);
   const [prodSort, setProdSort] = useState("asc");
 
-  // console.log("values", prodSort, maxPrice, selectedSubCats);
-
   const handleChange = (e) => {
     const value = e.target.value;
     const isChecked = e.target.checked;
