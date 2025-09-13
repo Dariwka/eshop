@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * appoinment controller
+ * busy-slot controller
  */
 
 const { createCoreController } = require('@strapi/strapi').factories;
 
-module.exports = createCoreController('api::appoinment.appoinment');
+module.exports = createCoreController('api::busy-slot.busy-slot');

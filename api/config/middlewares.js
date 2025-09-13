@@ -30,7 +30,18 @@ module.exports = [
   "strapi::poweredBy",
   "strapi::logger",
   "strapi::query",
-  "strapi::body",
+  // ← единственный парсер тела
+  //
+  {
+    name: "strapi::body",
+    config: {
+      jsonLimit: "10mb",
+      formLimit: "10mb",
+      textLimit: "10mb",
+      includeUnparsed: true, // нужно для Stripe webhook
+      //
+    },
+  },
   "strapi::session",
   "strapi::favicon",
   "strapi::public",

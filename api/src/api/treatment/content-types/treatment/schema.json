@@ -81,6 +81,40 @@
     },
     "contraindication": {
       "type": "text"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
+    },
+    "promoEnabled": {
+      "type": "boolean",
+      "default": false
+    },
+    "promoPrice": {
+      "type": "decimal",
+      "min": 0
+    },
+    "promoStartsAt": {
+      "type": "datetime"
+    },
+    "promoEndsAt": {
+      "type": "datetime"
+    },
+    "promoNote": {
+      "type": "string"
+    },
+    "locationLimit": {
+      "type": "enumeration",
+      "enum": [
+        "ANY",
+        "Kannelmäki",
+        "Malminkartano"
+      ],
+      "default": "ANY"
+    },
+    "voucherValidDays": {
+      "type": "integer",
+      "default": 30
     }
   }
 }

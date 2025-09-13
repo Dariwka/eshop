@@ -1,9 +1,9 @@
 'use strict';
 
 /**
- * appoinment service
+ * booking service
  */
 
 const { createCoreService } = require('@strapi/strapi').factories;
 
-module.exports = createCoreService('api::appoinment.appoinment');
+module.exports = createCoreService('api::booking.booking');

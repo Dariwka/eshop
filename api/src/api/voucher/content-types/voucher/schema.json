@@ -1,0 +1,118 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vouchers",
+  "info": {
+    "singularName": "voucher",
+    "pluralName": "vouchers",
+    "displayName": "Voucher",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "code": {
+      "type": "string",
+      "unique": true,
+      "required": true
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "paid",
+        "active",
+        "redeemed",
+        "expired",
+        "cancelled",
+        "refunded"
+      ],
+      "default": "active"
+    },
+    "treatment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::treatment.treatment"
+    },
+    "priceOriginal": {
+      "type": "decimal",
+      "required": true
+    },
+    "discountType": {
+      "type": "enumeration",
+      "enum": [
+        "prepaid",
+        "fixed",
+        "percent"
+      ],
+      "required": true,
+      "default": "prepaid"
+    },
+    "discountValue": {
+      "type": "decimal"
+    },
+    "pricePaid": {
+      "type": "decimal",
+      "required": true
+    },
+    "currency": {
+      "type": "string",
+      "default": "EUR"
+    },
+    "validFrom": {
+      "type": "datetime"
+    },
+    "validTo": {
+      "required": true,
+      "type": "datetime"
+    },
+    "redeemedAt": {
+      "type": "datetime"
+    },
+    "buyerName": {
+      "type": "string"
+    },
+    "buyerEmail": {
+      "type": "email"
+    },
+    "recipientEmail": {
+      "type": "email"
+    },
+    "emailSentAt": {
+      "type": "datetime"
+    },
+    "paymentProvider": {
+      "type": "enumeration",
+      "enum": [
+        "stripe",
+        "paypal",
+        "manual",
+        "other"
+      ],
+      "default": "stripe"
+    },
+    "paymentIntentId": {
+      "type": "string"
+    },
+    "paymentStatus": {
+      "type": "enumeration",
+      "enum": [
+        "succeeded",
+        "processing",
+        "requires_action",
+        "failed",
+        "refunded"
+      ],
+      "default": "succeeded"
+    },
+    "maxRedemptions": {
+      "type": "integer",
+      "default": 1
+    },
+    "redemptions": {
+      "type": "integer",
+      "default": 0
+    }
+  }
+}

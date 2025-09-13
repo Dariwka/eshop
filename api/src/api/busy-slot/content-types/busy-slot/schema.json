@@ -1,0 +1,35 @@
+{
+  "kind": "collectionType",
+  "collectionName": "busy_slots",
+  "info": {
+    "singularName": "busy-slot",
+    "pluralName": "busy-slots",
+    "displayName": "BusySlot",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "date": {
+      "type": "date"
+    },
+    "start": {
+      "type": "time"
+    },
+    "end": {
+      "type": "time"
+    },
+    "note": {
+      "type": "text"
+    },
+    "location": {
+      "type": "enumeration",
+      "enum": [
+        "Kannelmäki",
+        "Malminkartano"
+      ]
+    }
+  }
+}

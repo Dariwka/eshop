@@ -1,0 +1,105 @@
+{
+  "kind": "collectionType",
+  "collectionName": "bookings",
+  "info": {
+    "singularName": "booking",
+    "pluralName": "bookings",
+    "displayName": "Booking",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": true
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "clientName": {
+      "type": "string"
+    },
+    "clientSurname": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "treatment": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::treatment.treatment"
+    },
+    "date": {
+      "type": "date"
+    },
+    "start": {
+      "type": "time"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending",
+        "hold",
+        "confirmed",
+        "declined",
+        "expired"
+      ],
+      "default": "pending"
+    },
+    "prepaid": {
+      "type": "boolean",
+      "default": false
+    },
+    "comment": {
+      "type": "text"
+    },
+    "location": {
+      "type": "enumeration",
+      "enum": [
+        "Kannelmäki",
+        "Malminkartano"
+      ]
+    },
+    "lockKey": {
+      "type": "string",
+      "unique": true,
+      "private": true
+    },
+    "holdExpiresAt": {
+      "type": "datetime",
+      "required": false
+    },
+    "priceOriginal": {
+      "type": "decimal",
+      "required": true
+    },
+    "discount": {
+      "type": "integer",
+      "default": 0
+    },
+    "total": {
+      "type": "decimal",
+      "required": true
+    },
+    "couponCode": {
+      "type": "string"
+    },
+    "paymentProvider": {
+      "type": "enumeration",
+      "enum": [
+        "none",
+        "stripe"
+      ]
+    },
+    "paymentStatus": {
+      "type": "enumeration",
+      "enum": [
+        "unpaid",
+        "pending",
+        "succeeded",
+        "failed",
+        "refunded"
+      ]
+    }
+  }
+}
