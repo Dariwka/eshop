@@ -73,7 +73,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       ); // базовый payload
       //
       const sessionPayload = {
-        automatic_payment_methods: { enabled: true },
+        payment_method_types: ["card"],
         mode: "payment",
         cancel_url: `${
           process.env.CLIENT_URL || "http://localhost:3000"
