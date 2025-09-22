@@ -1,29 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
 
-  <!-- Главные разделы -->
-  <url><loc>https://www.kosmedik.eu/</loc><changefreq>daily</changefreq><priority>1.0</priority></url>
-
-  <!-- Каталоги -->
-  <url><loc>https://www.kosmedik.eu/treatments</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.kosmedik.eu/trainings</loc><changefreq>weekly</changefreq><priority>0.8</priority></url>
-  <url><loc>https://www.kosmedik.eu/brands</loc><changefreq>weekly</changefreq><priority>0.6</priority></url>
-  <url><loc>https://www.kosmedik.eu/products</loc><changefreq>daily</changefreq><priority>0.9</priority></url>
-
-  <!-- Инфо-страницы -->
-  <url><loc>https://www.kosmedik.eu/about</loc><changefreq>monthly</changefreq><priority>0.4</priority></url>
-  <url><loc>https://www.kosmedik.eu/contact</loc><changefreq>monthly</changefreq><priority>0.5</priority></url>
-  <url><loc>https://www.kosmedik.eu/terms</loc><changefreq>yearly</changefreq><priority>0.2</priority></url>
-  <url><loc>https://www.kosmedik.eu/search</loc><changefreq>weekly</changefreq><priority>0.3</priority></url>
-
-  <!-- Служебные страницы оплаты -->
-  <url><loc>https://www.kosmedik.eu/checkout-success</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
-  <url><loc>https://www.kosmedik.eu/cancel-payment</loc><changefreq>yearly</changefreq><priority>0.1</priority></url>
-
-  <!-- Динамические страницы (пример вручную, если знаешь slug):
-  <url><loc>https://www.kosmedik.eu/product/vaniljaviiva-brow-lamination-kit</loc></url>
-  <url><loc>https://www.kosmedik.eu/treatment/sokerointi</loc></url>
-  <url><loc>https://www.kosmedik.eu/training/brow-lamination</loc></url>
-  <url><loc>https://www.kosmedik.eu/brand/vaniljaviiva</loc></url>
-  -->
+<!-- Главная -->
+<url>
+<loc>https://www.kosmedik.eu/</loc><lastmod>2025-09-22</lastmod><changefreq>daily</changefreq><priority>1.0</priority>
+</url>
+<!-- Каталоги -->
+<url>
+<loc>https://www.kosmedik.eu/treatments</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+<url><loc>https://www.kosmedik.eu/trainings</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.8</priority></url>
+<url><loc>https://www.kosmedik.eu/brands</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.6</priority></url>
+<url><loc>https://www.kosmedik.eu/products</loc><lastmod>2025-09-22</lastmod><changefreq>daily</changefreq><priority>0.9</priority>
+</url>
+<!-- Инфо-страницы -->
+<url>
+<loc>https://www.kosmedik.eu/about</loc><lastmod>2025-09-22</lastmod><changefreq>monthly</changefreq><priority>0.3</priority></url>
+<url><loc>https://www.kosmedik.eu/contact</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.3</priority></url>
+<url><loc>https://www.kosmedik.eu/search</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.3</priority>
+</url>
+<!-- Динамические страницы (пример) -->
+<url>
+<loc>https://www.kosmedik.eu/product/vaniljaviiva-brow-lamination-kit</loc><lastmod>2025-09-22</lastmod><changefreq>weekly</changefreq><priority>0.7</priority></url>
+<url><loc>https://www.kosmedik.eu/treatment/sokerointi</loc><lastmod>2025-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://www.kosmedik.eu/training/brow-lamination</loc><lastmod>2025-09-22</lastmod><changefreq>monthly</changefreq><priority>0.6</priority></url>
+<url><loc>https://www.kosmedik.eu/brand/vaniljaviiva</loc><lastmod>2025-09-22</lastmod><changefreq>monthly</changefreq><priority>0.5</priority>
+</url>
 </urlset>
