@@ -43,11 +43,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: <Layout />,
+    errorElement: <Navigate to="/" replace />,
     children: [
-      {
-        path: "/",
-        element: <Home />,
-      },
+      { index: true, element: <Home /> },
       {
         path: "/treatments",
         element: <Treatments />,
@@ -108,6 +106,7 @@ const router = createBrowserRouter([
         path: "/terms",
         element: <Terms />,
       },
+      { path: "*", element: <Navigate to="/" replace /> },
     ],
   },
 ]);
