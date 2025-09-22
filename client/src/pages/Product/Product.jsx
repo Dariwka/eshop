@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useFetch from "../../hooks/useFetch";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
@@ -126,6 +126,7 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const url =
     `/products` +
@@ -140,8 +141,21 @@ const Product = () => {
   /*const { data, loading } = useFetch(`/products/${id}?populate=*`);*/
   const { data, loading, error } = useFetch(url);
 
-  const product = data?.[0];
+  const product = useMemo(() => (Array.isArray(data) ? data[0] : null), [data]);
   const attrs = product?.attributes;
+
+  useEffect(() => {
+    if (loading) return;
+    if (error || !product) {
+      navigate("/products", { replace: true });
+    }
+  }, [loading, error, product, navigate]);
+
+  if (loading) {
+    return <LoadingButton loading={loading} />;
+  }
+
+  if (!product) return null;
 
   const addHandler = () => {
     if (!product) return;
