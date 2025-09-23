@@ -1,9 +1,9 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useFetch from "../../hooks/useFetch";
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
@@ -126,7 +126,7 @@ const Product = () => {
   const [quantity, setQuantity] = useState(1);
 
   const dispatch = useDispatch();
-  const navigate = useNavigate();
+  /*const navigate = useNavigate();*/
 
   const url =
     `/products` +
@@ -141,10 +141,11 @@ const Product = () => {
   /*const { data, loading } = useFetch(`/products/${id}?populate=*`);*/
   const { data, loading, error } = useFetch(url);
 
-  const product = useMemo(() => (Array.isArray(data) ? data[0] : null), [data]);
+  /*const product = useMemo(() => (Array.isArray(data) ? data[0] : null), [data]);*/
+  const product = data?.[0];
   const attrs = product?.attributes;
 
-  useEffect(() => {
+  /*useEffect(() => {
     if (loading) return;
     if (error || !product) {
       navigate("/products", { replace: true });
@@ -155,7 +156,7 @@ const Product = () => {
     return <LoadingButton loading={loading} />;
   }
 
-  if (!product) return null;
+  if (!product) return null;*/
 
   const addHandler = () => {
     if (!product) return;
@@ -231,7 +232,7 @@ const Product = () => {
               <span>Availability: {attrs?.stock}</span>
               <span>{attrs?.contactPrice}</span>
               <span>
-                Brand: {attrs?.brands?.data?.[0]?.attributes?.title || "-"}{" "}
+                Brand: {attrs?.brands?.data?.[0]?.attributes?.title || "-"}
               </span>
               <span>Weight: {attrs?.weight}</span>
               <span>Size: {attrs?.volume}</span>
