@@ -1,7 +1,7 @@
 <IfModule mod_rewrite.c>
   RewriteEngine On RewriteBase / # 1) Редиректим /sitemap.xml на Strapi (Render)
   # Сначала протестируй как 302 (временный), потом поменяй на 301 (постоянный)
-  RewriteRule ^sitemap\.xml$
+  RewriteRule ^sitemap-products\.xml$
   https://kosmedikbackend.onrender.com/api/feeds/sitemap.xml [R=302,L] # 2) Если
   файл/папка существует — отдать как есть RewriteCond %{REQUEST_FILENAME} -f
   [OR] RewriteCond %{REQUEST_FILENAME} -d RewriteRule ^ - [L] # 3) Иначе —
