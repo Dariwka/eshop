@@ -15,26 +15,21 @@ const Container = styled.div`
   font-family: "Urbanist", sans-serif;
   ${mobile({ flexDirection: "column" })}
 `;
-
 const Left = styled.div`
   flex: 0.5;
   display: flex;
   flex-direction: column;
   padding: 20px;
 `;
-
 const Logo = styled.h1`
   font-family: "Orbitron", sans-serif;
 `;
-
 const Desc = styled.p`
   margin: 20px 0px;
 `;
-
 const SocialContainer = styled.div`
   display: flex;
 `;
-
 const SocialIcon = styled.a`
   width: 40px;
   height: 40px;
@@ -47,17 +42,16 @@ const SocialIcon = styled.a`
   margin-right: 20px;
   cursor: pointer;
 `;
-
 const Center = styled.div`
   flex: 1;
   padding: 20px;
-  ${mobile({ display: "none" })}
+  ${mobile({
+    display: "none",
+  })}
 `;
-
 const Title = styled.h3`
   margin-bottom: 30px;
 `;
-
 const List = styled.ul`
   margin: 0px;
   padding: 0px;
@@ -65,7 +59,6 @@ const List = styled.ul`
   display: flex;
   flex-wrap: wrap;
 `;
-
 const ListItem = styled(Link)`
   width: 50%;
   margin-bottom: 10px;
@@ -104,23 +97,21 @@ const Tunnus = styled.a`
   color: black;
   cursor: pointer;
 `;
-
 const Right = styled.div`
   flex: 0.5;
   padding: 20px;
-  ${mobile({ backgroundColor: "#c7e286" })}
+  ${mobile({
+    backgroundColor: "#c7e286",
+  })}
 `;
-
 const ContactItem = styled.div`
   margin-bottom: 20px;
   display: flex;
   align-items: center;
 `;
-
 const Payment = styled.img`
-  width: 50%;
+  width: 70%;
 `;
-
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: black;
@@ -132,11 +123,12 @@ const StyledLink = styled(Link)`
     text-decoration: none;
   }
 `;
-
 const showInMapClicked = () => {
-  window.open("https://maps.google.com?q=" + 60.238074 + "," + 24.876132);
+  window.open("https://maps.google.com?q=60.238074,24.876132", "_blank");
 };
-
+const showMalminkartanoMapClicked = () => {
+  window.open("https://maps.google.com?q=60.257056,24.851493", "_blank");
+};
 const Footer = () => {
   const scrollToTop = () => {
     window.scrollTo(0, 0);
@@ -148,10 +140,9 @@ const Footer = () => {
           <Logo>kosmeDiK</Logo>
         </StyledLink>
         <Desc>
-          Ahti Pro Oy "KosmeDiK" is beauty room, shop and training center,
-          located in Helsinki, Kannelmäki.
-          <br />
-          Pleasant shopping in our Online Store!
+          Ahti Pro Oy "KosmeDiK" on kauneushoitola, myymälä ja koulutuskeskus,
+          sijaitsee Helsingissä, Kannelmäessä ja Malminkartanossa. <br />
+          Mukavaa ostoshetkeä verkkokaupassamme!
         </Desc>
         <SocialContainer>
           <SocialIcon
@@ -161,8 +152,10 @@ const Footer = () => {
             <FacebookIcon />
           </SocialIcon>
           <SocialIcon
-            color="7232bd"
             href="https://www.instagram.com/kosmedik.eu/"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="833AB4"
           >
             <InstagramIcon />
           </SocialIcon>
@@ -170,7 +163,7 @@ const Footer = () => {
             href="https://wa.me/00358400979610"
             target="_blank"
             rel="noopener noreferrer"
-            color="25d366"
+            color="25D366"
           >
             <WhatsAppIcon />
           </SocialIcon>
@@ -182,7 +175,10 @@ const Footer = () => {
           <ListItem onClick={scrollToTop} to="/products/1">
             Face
           </ListItem>
-          <ListItemOrder href="https://www.posti.fi/en/private/parcels-and-tracking">
+          <ListItemOrder
+            href="https://www.posti.fi/en/private/parcels-and-tracking"
+            target="_blank"
+          >
             Order Tracking
           </ListItemOrder>
           <ListItem onClick={scrollToTop} to="/products/2">
@@ -194,8 +190,12 @@ const Footer = () => {
           <ListItem onClick={scrollToTop} to="/products/3">
             Professionals
           </ListItem>
-          <ListItem onClick={scrollToTop}>Brands</ListItem>
-          <ListItem onClick={scrollToTop}>Devices</ListItem>
+          <ListItem onClick={scrollToTop} to="/brands">
+            Brands
+          </ListItem>
+          <ListItem onClick={scrollToTop} to="/devices">
+            Devices
+          </ListItem>
           <ListItem onClick={scrollToTop} to="/contact">
             Be our Partner
           </ListItem>
@@ -212,7 +212,13 @@ const Footer = () => {
         <ContactItem>
           <RoomIcon style={{ marginRight: "10px" }} />
           <AddressOnMap onClick={showInMapClicked}>
-            Klaneettitie 6as, 2 floor, Helsinki
+            Klaneettitie 6A, 2. krs, Helsinki
+          </AddressOnMap>
+        </ContactItem>
+        <ContactItem>
+          <RoomIcon style={{ marginRight: "10px" }} />
+          <AddressOnMap onClick={showMalminkartanoMapClicked}>
+            Kehruutie 4, Malminkartano, Helsinki
           </AddressOnMap>
         </ContactItem>
         <ContactItem>
@@ -225,12 +231,11 @@ const Footer = () => {
         </ContactItem>
         <ContactItem>
           <StoreIcon style={{ marginRight: "10px" }} />
-          <Tunnus> Y-tunnus: 3281350-8</Tunnus>
+          <Tunnus>Y-tunnus: 3281350-8</Tunnus>
         </ContactItem>
-        <Payment src="https://i.ibb.co/Qfvn4z6/payment.png" />
+        <Payment src="/img/payment.png" alt="payment methods" />
       </Right>
     </Container>
   );
 };
-
 export default Footer;
