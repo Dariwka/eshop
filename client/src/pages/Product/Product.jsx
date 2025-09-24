@@ -1,14 +1,16 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useFetch from "../../hooks/useFetch";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import { ToastContainer, toast } from "react-toastify";
 
+// -------- стили (без изменений) ----------
+//
 const ProductContainer = styled.div`
   font-family: "Urbanist", sans-serif;
   padding: 30px 50px;
@@ -16,20 +18,19 @@ const ProductContainer = styled.div`
   gap: 50px;
   ${mobile({ flexDirection: "column", gap: "30px", padding: "15px" })};
 `;
-
 const Left = styled.div`
   flex: 1;
   display: flex;
   gap: 20px;
-  ${mobile({ gap: "10px" })};
+  ${mobile({
+    gap: "10px",
+  })};
 `;
 const ImgContainer = styled.div`
   flex: 1;
 `;
-
 const Image = styled.img`
   width: 100%;
-  //height: 150px;
   object-fit: cover;
   cursor: pointer;
   margin-bottom: 10px;
@@ -38,13 +39,11 @@ const MainImg = styled.div`
   flex: 5;
   ${mobile({ flex: "3" })};
 `;
-
 const ImageBig = styled.img`
   width: 100%;
   max-height: 800px;
   object-fit: cover;
 `;
-
 const Right = styled.div`
   flex: 1;
   display: flex;
@@ -52,7 +51,6 @@ const Right = styled.div`
   gap: 30px;
   ${mobile({ gap: "20px" })};
 `;
-
 const Title = styled.span`
   font-size: 25px;
   font-weight: bold;
@@ -92,7 +90,6 @@ const PlusButton = styled.button`
   cursor: pointer;
   border: none;
 `;
-
 const AddButton = styled.button`
   width: 250px;
   padding: 10px;
@@ -107,7 +104,6 @@ const AddButton = styled.button`
   font-weight: 500;
   ${mobile({ width: "auto" })};
 `;
-
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -119,44 +115,59 @@ const InfoContainer = styled.div`
 const HrBorder = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
-
+// ------------- компонент -------------------
+//
 const Product = () => {
+  // теперь параметр называется idOrSlug
+  //
   const { slug } = useParams();
+  const navigate = useNavigate();
   const [selectedImg, setSelectedImg] = useState("img");
   const [quantity, setQuantity] = useState(1);
+  const dispatch = useDispatch(); // Определяем, что нам передали: числовой id или slug
 
-  const dispatch = useDispatch();
-  /*const navigate = useNavigate();*/
+  //
+  const isId = /^\d+$/.test(slug || "");
 
-  const url =
-    `/products` +
-    `?filters[slug][$eq]=${encodeURIComponent(slug)}` +
-    `&fields[0]=title&fields[1]=desc&fields[2]=price&fields[3]=oldPrice` +
+  //
+  const fields =
+    `fields[0]=title&fields[1]=desc&fields[2]=price&fields[3]=oldPrice` +
     `&fields[4]=stock&fields[5]=contactPrice&fields[6]=weight` +
-    `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags` +
-    `&populate[img][fields][0]=url` +
-    `&populate[img2][fields][0]=url` +
-    `&populate[brands][fields][0]=title`;
+    `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags`;
 
-  /*const { data, loading } = useFetch(`/products/${id}?populate=*`);*/
-  const { data, loading, error } = useFetch(url);
+  const populate = `populate[img][fields][0]=url&populate[img2][fields][0]=url&populate[brands][fields][0]=title`;
 
-  /*const product = useMemo(() => (Array.isArray(data) ? data[0] : null), [data]);*/
-  const product = data?.[0];
-  const attrs = product?.attributes;
+  const common = `${fields}&${populate}&publicationState=live`;
 
-  /*useEffect(() => {
-    if (loading) return;
-    if (error || !product) {
-      navigate("/products", { replace: true });
-    }
-  }, [loading, error, product, navigate]);
+  // Строим URL — если id -> /products/:id, если slug -> /products?filters[slug]
 
-  if (loading) {
-    return <LoadingButton loading={loading} />;
-  }
+  //
+  const url = isId
+    ? `/products/${slug}?${common}`
+    : `/products?filters[slug][$eq]=${encodeURIComponent(
+        slug || ""
+      )}&${common}`;
 
-  if (!product) return null;*/
+  console.log("PRODUCT FETCH URL:", url);
+
+  const { data, loading, error } = useFetch(url); // Нормализуем ответ: если массив — берём первый, если объект — берём его
+
+  const list = Array.isArray(data)
+    ? data
+    : Array.isArray(data?.data)
+    ? data.data
+    : data
+    ? [data]
+    : [];
+
+  const product = list[0] || null;
+
+  const attrs = product?.attributes || product || null;
+  //
+  useEffect(() => {
+    if (!isId || !attrs?.slug) return;
+    navigate(`/product/${attrs.slug}`, { replace: true });
+  }, [isId, attrs?.slug, navigate]);
 
   const addHandler = () => {
     if (!product) return;
@@ -170,12 +181,11 @@ const Product = () => {
         quantity,
       })
     );
-    toast.success("Product successfulle added to your shopping cart", {
+    toast.success("Product successfully added to your shopping cart", {
       position: toast.POSITION.TOP_CENTER,
     });
     window.scrollTo(0, 0);
   };
-
   return (
     <ProductContainer>
       {error ? (
@@ -188,16 +198,20 @@ const Product = () => {
         <>
           <Left>
             <ImgContainer>
-              <Image
-                src={attrs?.img?.data?.attributes?.url}
-                alt=""
-                onClick={(e) => setSelectedImg("img")}
-              />
-              <Image
-                src={attrs?.img2?.data?.attributes?.url}
-                alt=""
-                onClick={(e) => setSelectedImg("img2")}
-              />
+              {attrs?.img?.data?.attributes?.url && (
+                <Image
+                  src={attrs.img.data.attributes.url}
+                  alt=""
+                  onClick={() => setSelectedImg("img")}
+                />
+              )}
+              {attrs?.img2?.data?.attributes?.url && (
+                <Image
+                  src={attrs.img2.data.attributes.url}
+                  alt=""
+                  onClick={() => setSelectedImg("img2")}
+                />
+              )}
             </ImgContainer>
             <MainImg>
               <ImageBig
@@ -208,7 +222,7 @@ const Product = () => {
           </Left>
           <Right>
             <Title>{attrs?.title}</Title>
-            <Price>€{attrs?.price}</Price>
+            {attrs?.price != null && <Price>€{attrs.price}</Price>}
             <span>{attrs?.volume || attrs?.size}</span>
             <Desc>{attrs?.desc}</Desc>
             <Quantity>
@@ -228,16 +242,14 @@ const Product = () => {
               <AddShoppingCartIcon /> ADD TO CART
             </AddButton>
             <InfoContainer>
-              <HrBorder />
-              <span>Availability: {attrs?.stock}</span>
+              <HrBorder /> <span>Availability: {attrs?.stock}</span>
               <span>{attrs?.contactPrice}</span>
               <span>
                 Brand: {attrs?.brands?.data?.[0]?.attributes?.title || "-"}
               </span>
               <span>Weight: {attrs?.weight}</span>
               <span>Size: {attrs?.volume}</span>
-              <span>Area: {attrs?.area}</span>
-              <span>Goal: {attrs?.goal}</span>
+              <span>Area: {attrs?.area}</span> <span>Goal: {attrs?.goal}</span>
               <span>Tag: {attrs?.tags}</span>
             </InfoContainer>
           </Right>
@@ -247,5 +259,4 @@ const Product = () => {
     </ProductContainer>
   );
 };
-
 export default Product;
