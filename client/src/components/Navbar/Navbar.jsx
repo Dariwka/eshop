@@ -132,21 +132,23 @@ const Navbar = ({ click }) => {
         </HamburgerMenu>
         <Left>
           <Item>
-            <img src="/img/en.png" alt="flag" />
+            <img src="/img/fi.png" alt="flag" />
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <span>ENG</span>
+            <span>FI</span>
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <StyledLink to="/products/face">Face</StyledLink>
+            <StyledLink to="/products/face">Kasvot</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/products/body">Body</StyledLink>
+            <StyledLink to="/products/body">Vartalo</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/products/professionals">Professionals</StyledLink>
+            <StyledLink to="/products/professionals">
+              Ammattilaisille
+            </StyledLink>
           </Item>
         </Left>
         <Center>
@@ -154,16 +156,16 @@ const Navbar = ({ click }) => {
         </Center>
         <Right>
           <Item>
-            <StyledLink to="/treatments">Treatments</StyledLink>
+            <StyledLink to="/treatments">Hoidot</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/trainings">Trainings</StyledLink>
+            <StyledLink to="/trainings">Koulutukset</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/about">About</StyledLink>
+            <StyledLink to="/about">Meistä</StyledLink>
           </Item>
           <Item>
-            <StyledLink to="/contact">Contact</StyledLink>
+            <StyledLink to="/contact">Yhteystiedot</StyledLink>
           </Item>
           <Icons>
             <StyledLinkSearch to="/search">

@@ -28,6 +28,8 @@ import Success from "./pages/Success/Success.jsx";
 import Terms from "./pages/Terms/Terms.jsx";
 import Cancel from "./pages/Cancel/Cancel.jsx";
 import CheckoutSuccess from "./pages/CheckoutSuccess/CheckoutSuccess.jsx";
+import ConsentBar from "./components/Consent/ConsentBar.jsx";
+import PromoSquareModal from "./components/PromoBanner/PromoSquareModal.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -36,9 +38,11 @@ const Layout = () => {
     <div className="app">
       <Announcement />
       <Navbar click={() => setSideToggle(true)} />
+      <PromoSquareModal />
       <SideDrawer show={sideToggle} click={() => setSideToggle(false)} />
       <BackDrop show={sideToggle} click={() => setSideToggle(false)} />
       <Outlet />
+      <ConsentBar />
       <Footer />
     </div>
   );

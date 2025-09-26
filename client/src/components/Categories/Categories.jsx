@@ -69,8 +69,8 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link onClick={scrollToTop} className="link" to="/products/1">
-              Face
+            <Link onClick={scrollToTop} className="link" to="/products/face">
+              Kasvot
             </Link>
           </Button>
         </Row>
@@ -80,8 +80,8 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link onClick={scrollToTop} className="link" to="/products/2">
-              Body
+            <Link onClick={scrollToTop} className="link" to="/products/body">
+              Vartalo
             </Link>
           </Button>
         </Row>
@@ -94,7 +94,7 @@ const Categories = () => {
           />
           <Button>
             <Link onClick={scrollToTop} className="link" to="/trainings">
-              Trainings
+              Koulutukset
             </Link>
           </Button>
         </Row>
@@ -109,7 +109,7 @@ const Categories = () => {
               />
               <Button>
                 <Link onClick={scrollToTop} className="link" to="/treatments">
-                  Treatments
+                  Hoidot
                 </Link>
               </Button>
             </Row>
@@ -121,8 +121,12 @@ const Categories = () => {
                 alt=""
               />
               <Button>
-                <Link onClick={scrollToTop} className="link" to="/products/3">
-                  Devices
+                <Link
+                  onClick={scrollToTop}
+                  className="link"
+                  to="/products/professionals"
+                >
+                  Laitteet
                 </Link>
               </Button>
             </Row>
@@ -134,8 +138,12 @@ const Categories = () => {
             alt=""
           />
           <Button>
-            <Link onClick={scrollToTop} className="link" to="/products/3">
-              Professionals
+            <Link
+              onClick={scrollToTop}
+              className="link"
+              to="/products/professionals"
+            >
+              Ammattilaisille
             </Link>
           </Button>
         </Row>
