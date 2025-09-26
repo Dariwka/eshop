@@ -275,11 +275,9 @@ export default function PromoSquareModal() {
     (async () => {
       try {
         const url = `${API_URL}${buildQuery()}`;
-        console.info("[PromoSquareModal] fetch:", url);
         const r = await fetch(url, { credentials: "include" });
         const ct = r.headers.get("content-type") || "";
         if (!ct.includes("application/json")) {
-          console.error("[PromoSquareModal] fetch error: content-type", ct);
           return;
         }
         const json = await r.json();
@@ -293,7 +291,6 @@ export default function PromoSquareModal() {
         if (!alive) return;
         setItems(list);
         setIdx(0);
-        console.info("[PromoSquareModal] items:", list.length);
       } catch (e) {
         console.error("[PromoSquareModal] fetch error:", e);
       }

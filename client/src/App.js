@@ -84,7 +84,7 @@ const router = createBrowserRouter([
         element: <Brands />,
       },
       {
-        path: "/brand/:id",
+        path: "/brands/:slug",
         element: <Brand />,
       },
       {
