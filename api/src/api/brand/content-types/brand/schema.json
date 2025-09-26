@@ -46,6 +46,10 @@
       "relation": "manyToMany",
       "target": "api::professional.professional",
       "mappedBy": "brands"
+    },
+    "slug": {
+      "type": "uid",
+      "targetField": "title"
     }
   }
 }
