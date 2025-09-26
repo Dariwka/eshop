@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
@@ -8,6 +8,39 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import { ToastContainer, toast } from "react-toastify";
+
+/* ===== Cloudinary helpers (безопасные) ===== */
+function clTransform(url, t) {
+  if (!url) return url;
+  const i = url.indexOf("/upload/");
+  if (i === -1) return url; // не Cloudinary
+  //
+  const head = url.slice(0, i + 8); // включая "/upload/"
+  //
+  const tail = url.slice(i + 8); // если уже есть параметры — не дублируем
+  //
+  if (/(\bw_|h_|c_|q_auto|f_auto)/.test(tail)) return url;
+  return `${head}${t}/${tail}`;
+}
+function clUrl(url, { w, h, fit = "fill" } = {}) {
+  // fit: "fill" (обрезка по контейнеру) или "fit" (без обрезки)
+  //
+  const c = fit === "fit" ? "c_fit" : "c_fill";
+  const base = `f_auto,q_auto,dpr_auto,${c}${w ? `,w_${w}` : ""}${
+    h ? `,h_${h}` : ""
+  }`;
+  return clTransform(url, base);
+}
+function srcSet(url, widths, { fit = "fill", ratioH } = {}) {
+  // если передали ratioH — считаем высоту как w * ratioH (для карточек с фикс. высотой)
+  //
+  return widths
+    .map((w) => {
+      const h = ratioH ? Math.round(w * ratioH) : undefined;
+      return `${clUrl(url, { w, h, fit })} ${w}w`;
+    })
+    .join(", ");
+}
 
 // -------- стили (без изменений) ----------
 //
@@ -148,22 +181,22 @@ const Product = () => {
         slug || ""
       )}&${common}`;
 
-  console.log("PRODUCT FETCH URL:", url);
-
   const { data, loading, error } = useFetch(url); // Нормализуем ответ: если массив — берём первый, если объект — берём его
 
-  const list = Array.isArray(data)
-    ? data
-    : Array.isArray(data?.data)
-    ? data.data
-    : data
-    ? [data]
-    : [];
-
-  const product = list[0] || null;
+  // Нормализуем ответ
+  const product = useMemo(() => {
+    const list = Array.isArray(data)
+      ? data
+      : Array.isArray(data?.data)
+      ? data.data
+      : data
+      ? [data]
+      : [];
+    return list[0] || null;
+  }, [data]);
 
   const attrs = product?.attributes || product || null;
-  //
+
   useEffect(() => {
     if (!isId || !attrs?.slug) return;
     navigate(`/product/${attrs.slug}`, { replace: true });
@@ -186,6 +219,17 @@ const Product = () => {
     });
     window.scrollTo(0, 0);
   };
+
+  const url1 = attrs?.img?.data?.attributes?.url || "";
+  const url2 = attrs?.img2?.data?.attributes?.url || "";
+  const title = attrs?.title || "";
+
+  // превью (слева) — только ширина, без фикс. высоты
+  //
+  const leftWidths = [160, 220, 320, 420]; // большое фото — адаптивные ширины, без обрезки (fit) чтобы не резало упаковки
+  //
+  const bigWidths = [640, 900, 1200, 1600];
+
   return (
     <ProductContainer>
       {error ? (
@@ -198,25 +242,45 @@ const Product = () => {
         <>
           <Left>
             <ImgContainer>
-              {attrs?.img?.data?.attributes?.url && (
+              {url1 && (
                 <Image
-                  src={attrs.img.data.attributes.url}
-                  alt=""
+                  src={clUrl(url1, { w: 320 })} // быстрый первый пик
+                  srcSet={srcSet(url1, leftWidths)}
+                  sizes="(max-width: 768px) 24vw, 140px"
+                  alt={title}
+                  loading="lazy"
+                  decoding="async"
                   onClick={() => setSelectedImg("img")}
                 />
               )}
-              {attrs?.img2?.data?.attributes?.url && (
+              {url2 && (
                 <Image
-                  src={attrs.img2.data.attributes.url}
-                  alt=""
+                  src={clUrl(url2, { w: 320 })}
+                  srcSet={srcSet(url2, leftWidths)}
+                  sizes="(max-width: 768px) 24vw, 140px"
+                  alt={title}
+                  loading="lazy"
+                  decoding="async"
                   onClick={() => setSelectedImg("img2")}
                 />
               )}
             </ImgContainer>
             <MainImg>
               <ImageBig
-                src={attrs?.[selectedImg]?.data?.attributes?.url}
-                alt=""
+                src={
+                  selectedImg === "img2"
+                    ? clUrl(url2, { w: 900, fit: "fit" })
+                    : clUrl(url1, { w: 900, fit: "fit" })
+                }
+                srcSet={
+                  selectedImg === "img2"
+                    ? srcSet(url2, bigWidths, { fit: "fit" })
+                    : srcSet(url1, bigWidths, { fit: "fit" })
+                }
+                sizes="(max-width: 768px) 92vw, 50vw"
+                alt={title}
+                fetchPriority="high"
+                decoding="async"
               />
             </MainImg>
           </Left>

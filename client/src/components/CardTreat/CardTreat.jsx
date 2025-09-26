@@ -8,6 +8,33 @@ import {
   formatCountdownParts,
 } from "../../utils/promo";
 
+function clTransform(url, t) {
+  if (!url) return url;
+  const i = url.indexOf("/upload/");
+  if (i === -1) return url; // не cloudinary — отдаём как есть
+  //
+  const head = url.slice(0, i + 8); // включая "/upload/"
+  //
+  const tail = url.slice(i + 8); // если уже есть параметры размера — не дублируем
+  //
+  if (/(\bw_|h_|c_|q_auto|f_auto)/.test(tail)) return url;
+  return `${head}${t}/${tail}`;
+}
+function clUrl(url, { w, h, fit = "fill" } = {}) {
+  const base = `f_auto,q_auto,w_${w}${h ? `,h_${h}` : ""},c_${fit}`;
+  return clTransform(url, base);
+}
+function srcSet(url, widths, ratioH) {
+  // ratioH — какая высота нужна при ширине w (для карточки 275x400 -> 400/275)
+  //
+  return widths
+    .map((w) => {
+      const h = Math.round(w * ratioH);
+      return `${clUrl(url, { w, h, fit: "fill" })} ${w}w`;
+    })
+    .join(", ");
+}
+
 const LinkProduct = styled(Link)`
   text-decoration: none;
   color: unset;
@@ -165,6 +192,14 @@ const CardTreat = ({ item }) => {
     promo && typeof attrs.price === "number" && attrs.price > 0
       ? Math.round(100 - (priceNow / attrs.price) * 100)
       : null;
+
+  const url1 = attrs?.img?.data?.attributes?.url || "";
+  const url2 = attrs?.img2?.data?.attributes?.url || "";
+  const title = attrs?.title || "";
+
+  // Для карточки фикс. слот 275x400 -> генерим srcset под это соотношение
+  const widths = [300, 450, 600]; // браузер выберет сам
+  const ratio = 400 / 275; // чтобы не мылить изображение
   return (
     <LinkProduct to={`/treatment/${encodeURIComponent(slug)}`}>
       <CardTreatWrapper>
@@ -172,17 +207,29 @@ const CardTreat = ({ item }) => {
           {attrs.isNew && <Stick className="new">New </Stick>}
           {attrs.isPopular && <Stick className="popular">Popular </Stick>}
           {attrs.isSpecialOffer && <Stick className="specOffer">TARJOUS</Stick>}
+          {url1 && (
+            <Image
+              alt={title}
+              className="mainImg"
+              src={clUrl(url1, { w: 450, h: Math.round(450 * ratio) })}
+              srcSet={srcSet(url1, widths, ratio)}
+              sizes="(max-width: 768px) 50vw, 275px"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          {url2 && (
+            <Image
+              alt={title}
+              className="secondImg"
+              src={clUrl(url2, { w: 450, h: Math.round(450 * ratio) })}
+              srcSet={srcSet(url2, widths, ratio)}
+              sizes="(max-width: 768px) 50vw, 275px"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
 
-          <Image
-            src={attrs?.img?.data?.attributes?.url}
-            alt={attrs?.title || ""}
-            className="mainImg"
-          />
-          <Image
-            src={attrs?.img2?.data?.attributes?.url}
-            alt={attrs?.title || ""}
-            className="secondImg"
-          />
           {promo && parts && (
             <CountdownBar>
               {parts.d > 0 && <span>{parts.d}d&nbsp;</span>}

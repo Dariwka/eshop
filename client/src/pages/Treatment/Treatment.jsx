@@ -14,6 +14,39 @@ import { makeRequest } from "../../makeRequest";
 import Description from "../../components/Description/Description";
 import Countdown from "../../components/Countdown/Countdown";
 
+/* ===== Cloudinary helpers (безопасные) ===== */
+function clTransform(url, t) {
+  if (!url) return url;
+  const i = url.indexOf("/upload/");
+  if (i === -1) return url; // не Cloudinary
+  //
+  const head = url.slice(0, i + 8); // включая "/upload/"
+  //
+  const tail = url.slice(i + 8); // если уже есть параметры — не дублируем
+  //
+  if (/(\bw_|h_|c_|q_auto|f_auto)/.test(tail)) return url;
+  return `${head}${t}/${tail}`;
+}
+function clUrl(url, { w, h, fit = "fill" } = {}) {
+  // fit: "fill" (обрезка по контейнеру) или "fit" (без обрезки)
+  //
+  const c = fit === "fit" ? "c_fit" : "c_fill";
+  const base = `f_auto,q_auto,dpr_auto,${c}${w ? `,w_${w}` : ""}${
+    h ? `,h_${h}` : ""
+  }`;
+  return clTransform(url, base);
+}
+function srcSet(url, widths, { fit = "fill", ratioH } = {}) {
+  // если передали ratioH — считаем высоту как w * ratioH (для карточек с фикс. высотой)
+  //
+  return widths
+    .map((w) => {
+      const h = ratioH ? Math.round(w * ratioH) : undefined;
+      return `${clUrl(url, { w, h, fit })} ${w}w`;
+    })
+    .join(", ");
+}
+
 // ===== styles =====//
 const ContainerTreatment = styled.div`
   padding: 30px 50px;
@@ -119,10 +152,14 @@ const Treatment = () => {
     `&fields[10]=promoEnabled&fields[11]=promoPrice&fields[12]=promoStartsAt&fields[13]=promoEndsAt` +
     `&fields[14]=locationLimit` +
     `&populate[img][fields][0]=url&populate[img2][fields][0]=url`;
+
   const { data, loading, error } = useFetch(url);
   const item = useMemo(() => (Array.isArray(data) ? data[0] : data), [data]);
+
   const attrs = item?.attributes || {};
+
   const treatmentId = item?.id;
+
   const allowedLocations = useMemo(() => {
     const lim = attrs?.locationLimit;
     if (!lim) return DEFAULT_LOCATIONS;
@@ -194,23 +231,59 @@ const Treatment = () => {
   if (error) return <div>Something went wrong</div>;
   if (loading) return <LoadingButton loading />;
   if (!item) return <div>Not found</div>;
+
+  const url1 = attrs?.img?.data?.attributes?.url || "";
+  const url2 = attrs?.img2?.data?.attributes?.url || "";
+  const title = attrs?.title || "";
+
+  const leftWidths = [160, 220, 320, 420]; // большое фото — адаптивные ширины, без обрезки (fit) чтобы не резало упаковки
+  //
+  const bigWidths = [640, 900, 1200, 1600];
+
   return (
     <ContainerTreatment>
       <LeftContainer>
         <ImagesContainer>
-          <Image
-            src={attrs?.img?.data?.attributes?.url}
-            alt=""
-            onClick={() => setSelectedImg("img")}
-          />
-          <Image
-            src={attrs?.img2?.data?.attributes?.url}
-            alt=""
-            onClick={() => setSelectedImg("img2")}
-          />
+          {url1 && (
+            <Image
+              src={clUrl(url1, { w: 320 })} // быстрый первый пик
+              srcSet={srcSet(url1, leftWidths)}
+              sizes="(max-width: 768px) 24vw, 140px"
+              alt={title}
+              loading="lazy"
+              decoding="async"
+              onClick={() => setSelectedImg("img")}
+            />
+          )}
+          {url2 && (
+            <Image
+              src={clUrl(url2, { w: 320 })}
+              srcSet={srcSet(url2, leftWidths)}
+              sizes="(max-width: 768px) 24vw, 140px"
+              alt={title}
+              loading="lazy"
+              decoding="async"
+              onClick={() => setSelectedImg("img2")}
+            />
+          )}
         </ImagesContainer>
         <MainImg>
-          <ImageBig src={attrs?.[selectedImg]?.data?.attributes?.url} alt="" />
+          <ImageBig
+            src={
+              selectedImg === "img2"
+                ? clUrl(url2, { w: 900, fit: "fit" })
+                : clUrl(url1, { w: 900, fit: "fit" })
+            }
+            srcSet={
+              selectedImg === "img2"
+                ? srcSet(url2, bigWidths, { fit: "fit" })
+                : srcSet(url1, bigWidths, { fit: "fit" })
+            }
+            sizes="(max-width: 768px) 92vw, 50vw"
+            alt={title}
+            fetchPriority="high"
+            decoding="async"
+          />
         </MainImg>
       </LeftContainer>
       <Right>

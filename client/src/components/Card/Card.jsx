@@ -3,6 +3,34 @@ import styled from "styled-components";
 import { mobile } from "../../responsive";
 import { Link } from "react-router-dom";
 
+/* ===== helpers: Cloudinary трансформация + srcset (безопасные) ===== */
+function clTransform(url, t) {
+  if (!url) return url;
+  const i = url.indexOf("/upload/");
+  if (i === -1) return url; // не cloudinary — отдаём как есть
+  //
+  const head = url.slice(0, i + 8); // включая "/upload/"
+  //
+  const tail = url.slice(i + 8); // если уже есть параметры размера — не дублируем
+  //
+  if (/(\bw_|h_|c_|q_auto|f_auto)/.test(tail)) return url;
+  return `${head}${t}/${tail}`;
+}
+function clUrl(url, { w, h, fit = "fill" } = {}) {
+  const base = `f_auto,q_auto,w_${w}${h ? `,h_${h}` : ""},c_${fit}`;
+  return clTransform(url, base);
+}
+function srcSet(url, widths, ratioH) {
+  // ratioH — какая высота нужна при ширине w (для карточки 275x400 -> 400/275)
+  //
+  return widths
+    .map((w) => {
+      const h = Math.round(w * ratioH);
+      return `${clUrl(url, { w, h, fit: "fill" })} ${w}w`;
+    })
+    .join(", ");
+}
+
 const LinkProduct = styled(Link)`
   text-decoration: none;
   color: unset;
@@ -67,11 +95,13 @@ const Stick = styled.span`
 const Title = styled.h2`
   font-size: 16px;
   font-weight: 400;
+  margin: 6px 0 2px;
 `;
 
 const Prices = styled.div`
   display: flex;
   gap: 20px;
+  margin-top: 0px;
 `;
 
 const OldPrice = styled.h3`
@@ -98,11 +128,20 @@ const Card = ({ item }) => {
   const scrollToTop = () => {
     window.scrollTo(0, 0);
   };
+
+  const url1 = item?.attributes?.img?.data?.attributes?.url || "";
+  const url2 = item?.attributes?.img2?.data?.attributes?.url || "";
+  const title = item?.attributes?.title || "";
+
+  // Для карточки фикс. слот 275x400 -> генерим srcset под это соотношение
+  const widths = [300, 450, 600]; // браузер выберет сам
+  const ratio = 400 / 275; // чтобы не мылить изображение
+
   return (
     <LinkProduct
       onClick={scrollToTop}
       className="link"
-      to={`/product/${item.attributes?.slug}`}
+      to={`/product/${encodeURIComponent(item.attributes?.slug)}`}
     >
       <CardProduct key={item?.attributes?.id}>
         <ImageContainer>
@@ -111,16 +150,28 @@ const Card = ({ item }) => {
           {item?.attributes.isPopular && (
             <Stick className="popular">Popular </Stick>
           )}
-          <Image
-            src={item.attributes?.img?.data?.attributes?.url}
-            alt=""
-            className="mainImg"
-          />
-          <Image
-            src={item.attributes?.img2?.data?.attributes?.url}
-            alt=""
-            className="secondImg"
-          />
+          {url1 && (
+            <Image
+              alt={title}
+              className="mainImg"
+              src={clUrl(url1, { w: 450, h: Math.round(450 * ratio) })}
+              srcSet={srcSet(url1, widths, ratio)}
+              sizes="(max-width: 768px) 50vw, 275px"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
+          {url2 && (
+            <Image
+              alt={title}
+              className="secondImg"
+              src={clUrl(url2, { w: 450, h: Math.round(450 * ratio) })}
+              srcSet={srcSet(url2, widths, ratio)}
+              sizes="(max-width: 768px) 50vw, 275px"
+              loading="lazy"
+              decoding="async"
+            />
+          )}
         </ImageContainer>
         <Title>{item?.attributes.title}</Title>
         <Prices>

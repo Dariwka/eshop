@@ -76,7 +76,7 @@ const router = createBrowserRouter([
         element: <Courses />,
       },
       {
-        path: "/training/:id",
+        path: "/training/:slug",
         element: <Course />,
       },
       {
