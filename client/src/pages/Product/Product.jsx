@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { mobile } from "../../responsive";
 import AddShoppingCartIcon from "@mui/icons-material/AddShoppingCart";
 import useFetch from "../../hooks/useFetch";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
@@ -72,11 +72,15 @@ const MainImg = styled.div`
   flex: 5;
   ${mobile({ flex: "3" })};
 `;
-const ImageBig = styled.img`
+/*const ImageBig = styled.img.attrs(({ $priority }) => ({
+  fetchpriority: $priority || "low",
+  loading: $priority === "high" ? "eager" : "lazy",
+  decoding: "async",
+}))`
   width: 100%;
   max-height: 800px;
   object-fit: cover;
-`;
+`;*/
 const Right = styled.div`
   flex: 1;
   display: flex;
@@ -148,6 +152,36 @@ const InfoContainer = styled.div`
 const HrBorder = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
+
+const BrandRow = styled.div`
+  margin: 8px 0;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+
+  .label {
+    font-weight: 600;
+    color: #333;
+  }
+
+  .brand-link {
+    color: #0a7c5f;
+    font-weight: 600;
+    text-decoration: none;
+    transition: color 0.2s ease;
+  }
+
+  .brand-link:hover {
+    color: #0ccf9c;
+    text-decoration: underline;
+  }
+
+  .brand-text {
+    font-weight: 600;
+    color: #555;
+  }
+`;
 // ------------- компонент -------------------
 //
 const Product = () => {
@@ -168,7 +202,11 @@ const Product = () => {
     `&fields[4]=stock&fields[5]=contactPrice&fields[6]=weight` +
     `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags`;
 
-  const populate = `populate[img][fields][0]=url&populate[img2][fields][0]=url&populate[brands][fields][0]=title`;
+  const populate =
+    `populate[img][fields][0]=url` +
+    `&populate[img2][fields][0]=url` +
+    `&populate[brands][fields][0]=title` +
+    `&populate[brands][fields][1]=slug`;
 
   const common = `${fields}&${populate}&publicationState=live`;
 
@@ -230,6 +268,10 @@ const Product = () => {
   //
   const bigWidths = [640, 900, 1200, 1600];
 
+  const brandAttrs = attrs?.brands?.data?.[0]?.attributes || null;
+  const brandTitle = brandAttrs?.title || "-";
+  const brandSlug = brandAttrs?.slug || null;
+
   return (
     <ProductContainer>
       {error ? (
@@ -266,21 +308,18 @@ const Product = () => {
               )}
             </ImgContainer>
             <MainImg>
-              <ImageBig
-                src={
-                  selectedImg === "img2"
-                    ? clUrl(url2, { w: 900, fit: "fit" })
-                    : clUrl(url1, { w: 900, fit: "fit" })
-                }
-                srcSet={
-                  selectedImg === "img2"
-                    ? srcSet(url2, bigWidths, { fit: "fit" })
-                    : srcSet(url1, bigWidths, { fit: "fit" })
-                }
-                sizes="(max-width: 768px) 92vw, 50vw"
+              <img
+                src={attrs?.[selectedImg]?.data?.attributes?.url}
                 alt={title}
-                fetchPriority="high"
+                fetchpriority="high"
+                loading="eager"
                 decoding="async"
+                style={{
+                  width: "100%",
+                  maxHeight: 800,
+                  objectFit: "cover",
+                  display: "block",
+                }}
               />
             </MainImg>
           </Left>
@@ -308,9 +347,19 @@ const Product = () => {
             <InfoContainer>
               <HrBorder /> <span>Availability: {attrs?.stock}</span>
               <span>{attrs?.contactPrice}</span>
-              <span>
-                Brand: {attrs?.brands?.data?.[0]?.attributes?.title || "-"}
-              </span>
+              <BrandRow>
+                <span className="label">Brand:</span>
+                {brandSlug ? (
+                  <Link
+                    className="brand-link"
+                    to={`/brands/${encodeURIComponent(brandSlug)}`}
+                  >
+                    {brandTitle}
+                  </Link>
+                ) : (
+                  <span className="brand-text">{brandTitle}</span>
+                )}
+              </BrandRow>
               <span>Weight: {attrs?.weight}</span>
               <span>Size: {attrs?.volume}</span>
               <span>Area: {attrs?.area}</span> <span>Goal: {attrs?.goal}</span>

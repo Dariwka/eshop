@@ -62,6 +62,7 @@ function toDDHHMMSS(ms) {
 const appear = keyframes` from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; }`;
 const pulse = keyframes` 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }`;
 const blink = keyframes` 0%, 49% { opacity: 1; } 50%,100%{ opacity: .15; }`;
+
 const Overlay = styled.div`
   position: fixed;
   inset: 0;
@@ -319,6 +320,19 @@ export default function PromoSquareModal() {
     };
   }, [open]); // автокарусель 5с
 
+  useEffect(() => {
+    if (!open || items.length < 2) return;
+    const warm = (index) => {
+      const x = items[index];
+      if (!x?.imgUrl) return;
+      const im = new Image();
+      im.src = x.imgUrl;
+    };
+    warm((idx + 1) % items.length); // следующий
+    //
+    warm((idx - 1 + items.length) % items.length); // предыдущий
+    //
+  }, [open, idx, items]);
   //
   const startAuto = useCallback(() => {
     if (autoRef.current || items.length <= 1) return;
@@ -331,6 +345,7 @@ export default function PromoSquareModal() {
     clearInterval(autoRef.current);
     autoRef.current = null;
   }, []);
+
   useEffect(() => {
     if (!open) return;
     startAuto();
@@ -355,14 +370,14 @@ export default function PromoSquareModal() {
     [navigate, closeModal]
   );
   if (!open || items.length === 0) {
-    console.debug(
+    /*console.debug(
       "[PromoSquareModal] hidden. open:",
       open,
       "items:",
       items.length
-    );
-    return null;
+    )*/ return null;
   }
+
   const it = items[idx];
   const priceNow = activePrice(it);
   const old = Number(it.price || 0);
@@ -384,7 +399,13 @@ export default function PromoSquareModal() {
           </Close>
         </Head>
         <Body>
-          <Pic src={it.imgUrl} alt={it.title} loading="lazy" decoding="async" />
+          <Pic
+            key={it.imgUrl}
+            src={it.imgUrl}
+            alt={it.title}
+            loading={idx == 0 ? "eager" : "lazy"}
+            decoding="async"
+          />
           <Caption>{it.title}</Caption>
           <PriceRow>
             <b>€{Number(priceNow).toFixed(0)}</b>
@@ -410,16 +431,18 @@ export default function PromoSquareModal() {
         </Body>
         <Footer>
           <NavBtn
+            type="button"
             onClick={() => setIdx((i) => (i - 1 + items.length) % items.length)}
             disabled={items.length <= 1}
             aria-label="Edellinen"
           >
             ‹
           </NavBtn>
-          <Cta onClick={() => goTo(it.slug)} aria-label="Katso">
+          <Cta type="button" onClick={() => goTo(it.slug)} aria-label="Katso">
             Katso
           </Cta>
           <NavBtn
+            type="button"
             onClick={() => setIdx((i) => (i + 1) % items.length)}
             disabled={items.length <= 1}
             aria-label="Seuraava"

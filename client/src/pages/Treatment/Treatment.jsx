@@ -74,11 +74,15 @@ const MainImg = styled.div`
   flex: 5;
   ${mobile({ flex: "3" })};
 `;
-const ImageBig = styled.img`
+/*const ImageBig = styled.img.attrs(({ $priority }) => ({
+  fetchpriority: $priority || "low",
+  loading: $priority === "high" ? "eager" : "lazy",
+  decoding: "async",
+}))`
   width: 100%;
   max-height: 800px;
   object-fit: cover;
-`;
+`;*/
 const Right = styled.div`
   flex: 1;
   display: flex;
@@ -268,7 +272,7 @@ const Treatment = () => {
           )}
         </ImagesContainer>
         <MainImg>
-          <ImageBig
+          <img
             src={
               selectedImg === "img2"
                 ? clUrl(url2, { w: 900, fit: "fit" })
@@ -281,8 +285,15 @@ const Treatment = () => {
             }
             sizes="(max-width: 768px) 92vw, 50vw"
             alt={title}
-            fetchPriority="high"
+            fetchpriority="high"
+            loading="eager"
             decoding="async"
+            style={{
+              width: "100%",
+              maxHeight: 800,
+              objectFit: "cover",
+              display: "block",
+            }}
           />
         </MainImg>
       </LeftContainer>

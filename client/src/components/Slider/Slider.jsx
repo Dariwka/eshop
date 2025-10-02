@@ -46,12 +46,16 @@ const Slide = styled.div`
   flex: 0 0 100vw;
   height: 100%;
 `;
-const Img = styled.img`
+/*const Img = styled.img.attrs(({ $eager }) => ({
+  fetchpriority: $eager ? "high" : "low",
+  loading: $eager ? "eager" : "lazy",
+  decoding: "async",
+}))`
   width: 100%;
   height: 100%;
   object-fit: cover;
-  display: block; /* убираем лишние пробелы/скачки */
-`;
+  display: block; 
+`;*/
 const Icons = styled.div`
   position: absolute;
   bottom: 50px;
@@ -120,7 +124,7 @@ const Slider = () => {
           const url = s.img;
           return (
             <Slide key={s.id ?? i}>
-              <Img
+              <img
                 src={clUrl(url, { w: 1200 })} // базовая
                 //
                 srcSet={srcSet(url, widths)} // вариативная
@@ -128,11 +132,15 @@ const Slider = () => {
                 sizes="100vw" // всегда во всю ширину
                 //
                 alt=""
-                loading={eager ? "eager" : "lazy"} // ленивые остальные
-                //
-                fetchpriority={eager ? "high" : "low"} // приоритет загрузки
-                //
+                fetchpriority={eager ? "high" : "low"}
+                loading={eager ? "eager" : "lazy"}
                 decoding="async"
+                style={{
+                  width: "100vw",
+                  height: "100%",
+                  objectFit: "cover",
+                  display: "block",
+                }}
               />
             </Slide>
           );
