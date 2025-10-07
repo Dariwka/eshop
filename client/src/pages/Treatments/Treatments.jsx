@@ -55,7 +55,11 @@ const Treatments = () => {
 
   const [promoOnly, setPromoOnly] = useState(false);
 
-  const { data, loading, error } = useFetch(`/sub-treat-categories?populate=*`);
+  const { data, loading, error } = useFetch(
+    `/sub-treat-categories?publicationState=live` +
+      `&fields[0]=title` +
+      `&pagination[page]=1&pagination[pageSize]=200`
+  );
 
   const listRef = useRef();
 

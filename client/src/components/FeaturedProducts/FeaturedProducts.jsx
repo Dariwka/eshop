@@ -38,7 +38,14 @@ const Bottom = styled.div`
 
 const FeaturedProducts = ({ type }) => {
   const { data, loading, error } = useFetch(
-    `/products?populate=*&[filters][type][$eq]=${type}`
+    `/products` +
+      `?publicationState=live` +
+      `&filters[type][$eq]=${encodeURIComponent(type)}` +
+      `&fields[0]=title&fields[1]=price&fields[2]=oldPrice&fields[3]=slug` +
+      `&populate[img][fields][0]=url` +
+      `&populate[brands][fields][0]=title` +
+      `&pagination[page]=1&pagination[pageSize]=12` +
+      `&sort=createdAt:desc`
   );
 
   return (
