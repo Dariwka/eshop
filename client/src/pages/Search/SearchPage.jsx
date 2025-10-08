@@ -1,11 +1,12 @@
-import React, { useMemo, useState, useCallback } from "react";
+import React, { useMemo, useState, useCallback, useEffect } from "react";
 import styled from "styled-components";
 import LoadingButton from "@mui/lab/LoadingButton";
 import { mobile } from "../../responsive";
 import useFetch from "../../hooks/useFetch";
 import { Link } from "react-router-dom";
 
-/* ============ layout ============ */
+/* ============ layout / ui ============ */
+
 const Container = styled.div`
   padding: 30px 24px;
   max-width: 1200px;
@@ -88,10 +89,10 @@ const Results = styled.div`
   grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 18px;
   @media (max-width: 1100px) {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
+    grid-template-columns: repeat(3, 1fr);
   }
   @media (max-width: 820px) {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, 1fr);
   }
   ${mobile({ gridTemplateColumns: "1fr" })}
 `;
@@ -108,7 +109,6 @@ const Card = styled(Link)`
     box-shadow: 0 8px 18px rgba(0, 0, 0, 0.08);
   }
 `;
-
 const Pic = styled.img`
   width: 100%;
   height: 100%;
@@ -139,6 +139,8 @@ const Price = styled.div`
 `;
 
 /* ============ helpers ============ */
+
+const PAGE_SIZE = 200;
 function normalizeProduct(p) {
   const a = p?.attributes || {};
   return {
@@ -149,7 +151,6 @@ function normalizeProduct(p) {
     price: Number(a.price || 0),
     slug: a.slug || "",
     imgUrl: a?.img?.data?.attributes?.url || "",
-    brand: a?.brands?.data?.[0]?.attributes?.title || "",
     category: a?.categories?.data?.[0]?.attributes?.title || "",
     tags: a?.tags || "",
     date: a?.createdAt || "",
@@ -188,29 +189,60 @@ function normalizeCourse(c) {
     url: `/training/${encodeURIComponent(a.slug || c.id)}`,
   };
 }
+function norm(s = "") {
+  return String(s)
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "");
+}
+function matchesQuery(q, item) {
+  const t = norm(q).trim();
+  if (!t) return true;
+  const title = norm(item.title);
+  const slug = norm(item.slug || "");
+  const bag = norm(
+    [item.desc, item.category, item.tags].filter(Boolean).join(" ")
+  );
+  return title.includes(t) || slug.includes(t) || bag.includes(t);
+}
 function scoreItem(q, item) {
-  if (!q) return 1;
-  const hay =
-    `${item.title} ${item.desc} ${item.category} ${item.tags}`.toLowerCase();
-  const terms = q.toLowerCase().split(/\s+/).filter(Boolean);
+  const t = norm(q).trim();
+  if (!t) return 1;
   let s = 0;
-  terms.forEach((t) => {
-    if (hay.includes(t)) s += 2;
-    if (item.title.toLowerCase().includes(t)) s += 3;
-  });
+  if (norm(item.title).includes(t)) s += 3;
+  if (norm(item.slug || "").includes(t)) s += 1;
+  if (norm(`${item.desc} ${item.category} ${item.tags}`).includes(t)) s += 1;
   return s;
 }
 /* ============ component ============ */ export default function SearchPage() {
-  const qCommon =
-    `?publicationState=live` +
-    `&fields[0]=title&fields[1]=desc&fields[2]=price&fields[3]=slug&fields[4]=createdAt` +
-    `&populate[img][fields][0]=url` +
-    `&populate[categories][fields][0]=title` +
-    `&populate[sub_treat_categories][fields][0]=title` +
-    `&populate[sub_course_categories][fields][0]=title`;
-  const { data: prodRaw, loading: lp } = useFetch(`/products${qCommon}`);
-  const { data: treatRaw, loading: lt } = useFetch(`/treatments${qCommon}`);
-  const { data: courseRaw, loading: lc } = useFetch(`/courses${qCommon}`);
+  const base = `?publicationState=live&pagination[page]=1&pagination[pageSize]=${PAGE_SIZE}&sort=createdAt:desc`;
+  const prodQ =
+    base +
+    `&populate[img][fields][0]=url&populate[categories][fields][0]=title&populate[brands][fields][0]=title`;
+  const treatQ =
+    base +
+    `&populate[img][fields][0]=url&populate[sub_treat_categories][fields][0]=title`;
+  const courseQ =
+    base +
+    `&populate[img][fields][0]=url&populate[sub_course_categories][fields][0]=title`;
+  const {
+    data: prodRaw,
+    loading: lp,
+    error: ep,
+  } = useFetch(`/products${prodQ}`);
+  const {
+    data: treatRaw,
+    loading: lt,
+    error: et,
+  } = useFetch(`/treatments${treatQ}`);
+  const {
+    data: courseRaw,
+    loading: lc,
+    error: ec,
+  } = useFetch(`/courses${courseQ}`);
+  useEffect(() => {
+    if (ep || et || ec) console.error("[search error]", ep || et || ec);
+  }, [ep, et, ec]);
   const [query, setQuery] = useState("");
   const [view, setView] = useState({
     product: true,
@@ -225,18 +257,20 @@ function scoreItem(q, item) {
     return [...ps, ...ts, ...cs];
   }, [prodRaw, treatRaw, courseRaw]);
   const results = useMemo(() => {
-    const filtered = allItems.filter((it) => view[it.type]);
-    const scored = filtered
-      .map((it) => ({ ...it, _score: scoreItem(query, it) }))
-      .filter((it) => (query ? it._score > 0 : true));
-    const sorted = [...scored].sort((a, b) => {
+    const filtered = allItems
+      .filter((it) => view[it.type])
+      .filter((it) => matchesQuery(query, it));
+    const withScore = filtered.map((it) => ({
+      ...it,
+      _score: scoreItem(query, it),
+    }));
+    return withScore.sort((a, b) => {
       if (sort === "priceAsc") return a.price - b.price;
       if (sort === "priceDesc") return b.price - a.price;
       if (sort === "newest") return new Date(b.date) - new Date(a.date);
       if (b._score !== a._score) return b._score - a._score;
       return a.title.localeCompare(b.title);
     });
-    return sorted;
   }, [allItems, view, query, sort]);
   const onSubmit = useCallback((e) => e.preventDefault(), []);
   const loading = lp || lt || lc;
