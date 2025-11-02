@@ -115,6 +115,19 @@
     "voucherValidDays": {
       "type": "integer",
       "default": 30
+    },
+    "promoVariant": {
+      "type": "enumeration",
+      "enum": [
+        "default",
+        "blackFriday",
+        "christmas",
+        "newyear",
+        "valentines",
+        "march8",
+        "easter"
+      ],
+      "default": "default"
     }
   }
 }

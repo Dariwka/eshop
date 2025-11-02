@@ -1,12 +1,12 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { mobile } from "../../responsive"; // ← как в остальных компонентах
+import { mobile } from "../../responsive";
+import { VARIANTS } from "../PromoVariants/PromoVariants"; // ← проверь путь (../PromoVariants)
 
-// ================= helpers =================
-// Если у тебя настроен proxy ("/api" → бекенд), можно оставить "/api".// Иначе выставь REACT_APP_API_URL="https://<твой-домен>/api"
-//
 const API_URL = process.env.REACT_APP_API_URL || "/api";
+
+/* ================= helpers ================= */
 
 function buildQuery() {
   const nowIso = new Date().toISOString();
@@ -18,7 +18,9 @@ function buildQuery() {
     "promoStartsAt",
     "promoEndsAt",
     "slug",
+    "promoVariant", // ← берём тему из Strapi (Enumeration)
   ];
+
   const p = new URLSearchParams();
   fields.forEach((f, i) => p.append(`fields[${i}]`, f));
   p.append("publicationState", "live");
@@ -28,6 +30,7 @@ function buildQuery() {
   p.append("sort", "promoEndsAt:asc");
   return `/treatments?${p.toString()}`;
 }
+
 function inPromoWindow(a) {
   if (!a?.promoEnabled) return false;
   const start = a?.promoStartsAt ? new Date(a.promoStartsAt).getTime() : 0;
@@ -35,14 +38,17 @@ function inPromoWindow(a) {
   const now = Date.now();
   return (start ? now >= start : true) && (end ? now <= end : true);
 }
+
 function activePrice(a) {
   return inPromoWindow(a) && a?.promoPrice
     ? Number(a.promoPrice)
     : Number(a?.price || 0);
 }
+
 function getImgUrl(a) {
   return a?.img?.data?.attributes?.url || "";
 }
+
 function toDDHHMMSS(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   const dd = Math.floor(s / 86400);
@@ -57,11 +63,21 @@ function toDDHHMMSS(ms) {
   };
 }
 
-// ================ styles (в духе treatments/product) ================
+/* ================= styles ================= */
 
-const appear = keyframes` from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; }`;
-const pulse = keyframes` 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }`;
-const blink = keyframes` 0%, 49% { opacity: 1; } 50%,100%{ opacity: .15; }`;
+const appear = keyframes`
+  from { transform: translateY(8px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+`;
+const pulse = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.03); }
+  100% { transform: scale(1); }
+`;
+const blink = keyframes`
+  0%, 49% { opacity: 1; }
+  50%,100%{ opacity: .15; }
+`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -72,6 +88,7 @@ const Overlay = styled.div`
   place-items: center;
   padding: 16px;
 `;
+
 const Modal = styled.div`
   width: min(540px, 92vw);
   background: #ffffff;
@@ -81,6 +98,7 @@ const Modal = styled.div`
   overflow: hidden;
   ${mobile({ width: "min(520px, 94vw)", borderRadius: "16px" })}
 `;
+
 const Head = styled.div`
   position: relative;
   display: flex;
@@ -89,6 +107,7 @@ const Head = styled.div`
   gap: 6px;
   padding: 12px 16px 8px 16px;
 `;
+
 const Badge = styled.span`
   background: red;
   color: white;
@@ -97,6 +116,7 @@ const Badge = styled.span`
   font-size: 14px;
   padding: 6px 10px;
 `;
+
 const Title = styled.h3`
   margin: 0;
   font-size: 20px;
@@ -110,18 +130,19 @@ const Title = styled.h3`
     `}
   ${mobile({ fontSize: "16px" })}
 `;
+
 const Close = styled.button`
   appearance: none;
   position: absolute;
   top: 10px;
   right: 12px;
-  width: 36px; /* было 32px — чуть крупнее */
+  width: 36px;
   height: 36px;
   border: 1px solid rgba(0, 0, 0, 0.08);
   border-radius: 999px;
   background: rgba(255, 255, 255, 0.95);
-  color: #111827; /* тёмный цвет иконки */
-  font-size: 18px; /* больше «Х» */
+  color: #111827;
+  font-size: 18px;
   line-height: 1;
   display: grid;
   place-items: center;
@@ -137,7 +158,7 @@ const Close = styled.button`
     transform: scale(0.96);
   }
   &:focus-visible {
-    outline: 2px solid #2563eb; /* видимый focus */
+    outline: 2px solid #2563eb;
     outline-offset: 2px;
   }
 `;
@@ -145,6 +166,7 @@ const Close = styled.button`
 const Body = styled.div`
   padding: 10px 16px 6px 16px;
 `;
+
 const Pic = styled.img`
   display: block;
   width: 100%;
@@ -154,11 +176,13 @@ const Pic = styled.img`
   border-radius: 16px;
   ${mobile({ borderRadius: "14px" })}
 `;
+
 const Caption = styled.div`
   text-align: center;
   color: #6b7280;
   margin-top: 10px;
 `;
+
 const PriceRow = styled.div`
   text-align: center;
   margin: 6px 0 2px;
@@ -204,15 +228,18 @@ const TimerCell = styled.div`
     color: #9ca3af;
   }
 `;
+
 const Colon = styled.span`
   align-self: center;
   font-weight: 800;
   opacity: 0.6;
   animation: ${blink} 1s steps(1, end) infinite;
 `;
+
 const SecondsValue = styled.b`
   animation: ${blink} 1s steps(1, end) infinite;
 `;
+
 const Footer = styled.div`
   display: grid;
   grid-template-columns: 40px 1fr 40px;
@@ -220,6 +247,7 @@ const Footer = styled.div`
   gap: 8px;
   padding: 12px 16px 16px;
 `;
+
 const NavBtn = styled.button`
   appearance: none;
   border: none;
@@ -239,6 +267,7 @@ const NavBtn = styled.button`
     cursor: default;
   }
 `;
+
 const Cta = styled.button`
   appearance: none;
   border: none;
@@ -258,19 +287,22 @@ const Cta = styled.button`
   }
 `;
 
-// ================= component =================
+/* ================= component ================= */
 
 export default function PromoSquareModal() {
   const navigate = useNavigate();
+
   const [open, setOpen] = useState(
     () => !sessionStorage.getItem("promoClosed")
   );
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);
   const [now, setNow] = useState(Date.now());
+
   const tickRef = useRef(null);
-  const autoRef = useRef(null); // fetch (один раз)
-  //
+  const autoRef = useRef(null);
+
+  // Fetch промо-элементов
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -278,38 +310,39 @@ export default function PromoSquareModal() {
         const url = `${API_URL}${buildQuery()}`;
         const r = await fetch(url, { credentials: "include" });
         const ct = r.headers.get("content-type") || "";
-        if (!ct.includes("application/json")) {
-          return;
-        }
+        if (!ct.includes("application/json")) return;
         const json = await r.json();
+
         const list = (json?.data || [])
           .map((it) => ({
             id: it.id,
             ...it.attributes,
             imgUrl: getImgUrl(it.attributes),
+            promoVariant: it?.attributes?.promoVariant || "default",
           }))
           .filter((a) => inPromoWindow(a) && a.imgUrl && a.slug);
+
         if (!alive) return;
         setItems(list);
         setIdx(0);
-      } catch (e) {
-        console.error("[PromoSquareModal] fetch error:", e);
+      } catch {
+        // молчим — по UX лучше, чем валить консоль
       }
     })();
     return () => {
       alive = false;
     };
-  }, []); // lock scroll
+  }, []);
 
-  //
+  // Лочим скролл, если модалка открыта
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = "hidden";
     return () => (document.body.style.overflow = prev);
-  }, [open]); // секундный тик
+  }, [open]);
 
-  //
+  // Тик таймера (секунды)
   useEffect(() => {
     if (!open) return;
     if (tickRef.current) clearInterval(tickRef.current);
@@ -318,8 +351,9 @@ export default function PromoSquareModal() {
       if (tickRef.current) clearInterval(tickRef.current);
       tickRef.current = null;
     };
-  }, [open]); // автокарусель 5с
+  }, [open]);
 
+  // Подогрев изображений и автокарусель
   useEffect(() => {
     if (!open || items.length < 2) return;
     const warm = (index) => {
@@ -328,18 +362,17 @@ export default function PromoSquareModal() {
       const im = new Image();
       im.src = x.imgUrl;
     };
-    warm((idx + 1) % items.length); // следующий
-    //
-    warm((idx - 1 + items.length) % items.length); // предыдущий
-    //
+    warm((idx + 1) % items.length);
+    warm((idx - 1 + items.length) % items.length);
   }, [open, idx, items]);
-  //
+
   const startAuto = useCallback(() => {
     if (autoRef.current || items.length <= 1) return;
     autoRef.current = setInterval(() => {
       setIdx((i) => (i + 1) % items.length);
     }, 5000);
   }, [items.length]);
+
   const stopAuto = useCallback(() => {
     if (!autoRef.current) return;
     clearInterval(autoRef.current);
@@ -351,6 +384,7 @@ export default function PromoSquareModal() {
     startAuto();
     return () => stopAuto();
   }, [open, startAuto, stopAuto]);
+
   const closeModal = useCallback(() => {
     stopAuto();
     if (tickRef.current) clearInterval(tickRef.current);
@@ -358,38 +392,40 @@ export default function PromoSquareModal() {
     sessionStorage.setItem("promoClosed", "1");
     setOpen(false);
   }, [stopAuto]);
+
   const goTo = useCallback(
     (slug) => {
       if (!slug) return;
       navigate(`/treatment/${encodeURIComponent(slug)}`);
       closeModal();
-
-      // закрываем при переходе
-      //
     },
     [navigate, closeModal]
   );
-  if (!open || items.length === 0) {
-    /*console.debug(
-      "[PromoSquareModal] hidden. open:",
-      open,
-      "items:",
-      items.length
-    )*/ return null;
-  }
+
+  if (!open || items.length === 0) return null;
 
   const it = items[idx];
+  const theme = VARIANTS[it?.promoVariant] || VARIANTS.default;
+
   const priceNow = activePrice(it);
   const old = Number(it.price || 0);
   const discount = old > 0 ? Math.round((1 - priceNow / old) * 100) : null;
+
   const endsMs = it?.promoEndsAt ? new Date(it.promoEndsAt).getTime() - now : 0;
   const { dd, hh, mm, ss } = toDDHHMMSS(endsMs);
   const urgent = endsMs > 0 && endsMs < 3 * 60 * 60 * 1000; // < 3 часа
+
   return (
     <Overlay role="dialog" aria-modal="true">
-      <Modal onMouseEnter={stopAuto} onMouseLeave={startAuto}>
+      <Modal
+        onMouseEnter={stopAuto}
+        onMouseLeave={startAuto}
+        style={{ background: theme.bg, color: theme.fg }}
+      >
         <Head>
-          <Badge>TARJOUS!</Badge>
+          <Badge style={{ background: theme.badgeBg, color: theme.badgeFg }}>
+            TARJOUS!
+          </Badge>
           <Title $urgent={urgent}>
             Pidä kiirettä — tarjous päättyy pian
             {discount !== null ? ` (${discount}%)` : ""}
@@ -398,19 +434,22 @@ export default function PromoSquareModal() {
             ×
           </Close>
         </Head>
+
         <Body>
           <Pic
             key={it.imgUrl}
             src={it.imgUrl}
             alt={it.title}
-            loading={idx == 0 ? "eager" : "lazy"}
+            loading={idx === 0 ? "eager" : "lazy"}
             decoding="async"
           />
           <Caption>{it.title}</Caption>
+
           <PriceRow>
-            <b>€{Number(priceNow).toFixed(0)}</b>
+            <b style={{ color: theme.price }}>€{Number(priceNow).toFixed(0)}</b>
             {old > priceNow ? <s>€{Number(old).toFixed(0)}</s> : null}
           </PriceRow>
+
           <TimerRow $urgent={urgent} aria-label="Tarjouksen loppumiseen">
             <TimerCell>
               <b>{dd}</b> <span>Päivää</span>
@@ -429,6 +468,7 @@ export default function PromoSquareModal() {
             </TimerCell>
           </TimerRow>
         </Body>
+
         <Footer>
           <NavBtn
             type="button"
@@ -438,9 +478,16 @@ export default function PromoSquareModal() {
           >
             ‹
           </NavBtn>
-          <Cta type="button" onClick={() => goTo(it.slug)} aria-label="Katso">
+
+          <Cta
+            type="button"
+            onClick={() => goTo(it.slug)}
+            aria-label="Katso"
+            style={{ background: theme.price, color: theme.ctaFg }}
+          >
             Katso
           </Cta>
+
           <NavBtn
             type="button"
             onClick={() => setIdx((i) => (i + 1) % items.length)}
