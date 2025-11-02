@@ -2,14 +2,14 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import styled, { keyframes, css } from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { mobile } from "../../responsive";
-import { VARIANTS } from "../PromoVariants/PromoVariants"; // ← проверь путь (../PromoVariants)
+import { VARIANTS } from "../PromoVariants/PromoVariants";
 
+// ================= helpers =================
 const API_URL = process.env.REACT_APP_API_URL || "/api";
-
-/* ================= helpers ================= */
 
 function buildQuery() {
   const nowIso = new Date().toISOString();
+
   const fields = [
     "title",
     "price",
@@ -18,9 +18,8 @@ function buildQuery() {
     "promoStartsAt",
     "promoEndsAt",
     "slug",
-    "promoVariant", // ← берём тему из Strapi (Enumeration)
+    "promoVariant", // 👈 тянем тему из Strapi
   ];
-
   const p = new URLSearchParams();
   fields.forEach((f, i) => p.append(`fields[${i}]`, f));
   p.append("publicationState", "live");
@@ -30,7 +29,6 @@ function buildQuery() {
   p.append("sort", "promoEndsAt:asc");
   return `/treatments?${p.toString()}`;
 }
-
 function inPromoWindow(a) {
   if (!a?.promoEnabled) return false;
   const start = a?.promoStartsAt ? new Date(a.promoStartsAt).getTime() : 0;
@@ -38,17 +36,14 @@ function inPromoWindow(a) {
   const now = Date.now();
   return (start ? now >= start : true) && (end ? now <= end : true);
 }
-
 function activePrice(a) {
   return inPromoWindow(a) && a?.promoPrice
     ? Number(a.promoPrice)
     : Number(a?.price || 0);
 }
-
 function getImgUrl(a) {
   return a?.img?.data?.attributes?.url || "";
 }
-
 function toDDHHMMSS(ms) {
   const s = Math.max(0, Math.floor(ms / 1000));
   const dd = Math.floor(s / 86400);
@@ -63,21 +58,10 @@ function toDDHHMMSS(ms) {
   };
 }
 
-/* ================= styles ================= */
-
-const appear = keyframes`
-  from { transform: translateY(8px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
-`;
-const pulse = keyframes`
-  0% { transform: scale(1); }
-  50% { transform: scale(1.03); }
-  100% { transform: scale(1); }
-`;
-const blink = keyframes`
-  0%, 49% { opacity: 1; }
-  50%,100%{ opacity: .15; }
-`;
+// ================ styles =================
+const appear = keyframes` from { transform: translateY(8px); opacity: 0; } to { transform: translateY(0); opacity: 1; }`;
+const pulse = keyframes` 0% { transform: scale(1); } 50% { transform: scale(1.03); } 100% { transform: scale(1); }`;
+const blink = keyframes` 0%, 49% { opacity: 1; } 50%,100%{ opacity: .15; }`;
 
 const Overlay = styled.div`
   position: fixed;
@@ -88,17 +72,29 @@ const Overlay = styled.div`
   place-items: center;
   padding: 16px;
 `;
-
 const Modal = styled.div`
-  width: min(540px, 92vw);
-  background: #ffffff;
+  position: relative;
+  width: min(560px, 92vw);
+  background: ${(p) => p.$bg || "#ffffff"};
+  color: ${(p) => p.$fg || "#242e3e"};
   border-radius: 20px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 20px 60px ${(p) => p.$shadow || "rgba(0,0,0,.25)"};
   animation: ${appear} 0.18s ease-out both;
   overflow: hidden;
   ${mobile({ width: "min(520px, 94vw)", borderRadius: "16px" })}
 `;
-
+const DecoImg = styled.img`
+  position: absolute;
+  width: ${(p) => (p.$size ? `${p.$size}px` : "100px")};
+  height: auto;
+  opacity: ${(p) => p.$opacity ?? 1};
+  transform: rotate(${(p) => p.$rotate ?? 0}deg);
+  pointer-events: none;
+  ${(p) => (p.$top !== undefined ? `top:${p.$top}px;` : "")}
+  ${(p) => (p.$left !== undefined ? `left:${p.$left}px;` : "")}
+  ${(p) => (p.$right !== undefined ? `right:${p.$right}px;` : "")}
+  ${(p) => (p.$bottom !== undefined ? `bottom:${p.$bottom}px;` : "")}
+`;
 const Head = styled.div`
   position: relative;
   display: flex;
@@ -107,28 +103,34 @@ const Head = styled.div`
   gap: 6px;
   padding: 12px 16px 8px 16px;
 `;
-
 const Badge = styled.span`
-  background: red;
-  color: white;
+  background: ${(p) => p.$bg || "red"};
+  color: ${(p) => p.$fg || "white"};
   border-radius: 999px;
   font-weight: 800;
   font-size: 14px;
-  padding: 6px 10px;
+  padding: 6px 12px;
+  letter-spacing: 0.2px;
 `;
-
 const Title = styled.h3`
   margin: 0;
   font-size: 20px;
   font-weight: 800;
-  color: #242e3e;
+  color: ${(p) => p.$color || "#242e3e"};
+  text-shadow: ${(p) => p.$shadow || "none"};
   ${(p) =>
     p.$urgent &&
     css`
-      color: #b91c1c;
       animation: ${pulse} 1.2s ease-in-out infinite;
     `}
   ${mobile({ fontSize: "16px" })}
+`;
+
+const TitleBar = styled.div`
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: ${(p) => p.$bg || "transparent"}; /* полупрозрачный фон */
+  backdrop-filter: blur(2px);
 `;
 
 const Close = styled.button`
@@ -143,13 +145,11 @@ const Close = styled.button`
   background: rgba(255, 255, 255, 0.95);
   color: #111827;
   font-size: 18px;
-  line-height: 1;
   display: grid;
   place-items: center;
   cursor: pointer;
   z-index: 1;
-  transition: background 0.15s ease, box-shadow 0.15s ease, color 0.15s ease,
-    transform 0.06s ease;
+  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.06s ease;
   &:hover {
     background: #fff;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
@@ -162,11 +162,9 @@ const Close = styled.button`
     outline-offset: 2px;
   }
 `;
-
 const Body = styled.div`
   padding: 10px 16px 6px 16px;
 `;
-
 const Pic = styled.img`
   display: block;
   width: 100%;
@@ -176,10 +174,14 @@ const Pic = styled.img`
   border-radius: 16px;
   ${mobile({ borderRadius: "14px" })}
 `;
-
 const Caption = styled.div`
   text-align: center;
-  color: #6b7280;
+  color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* было #6b7280 — на тёмной теме плохо видно */
   margin-top: 10px;
 `;
 
@@ -188,15 +190,15 @@ const PriceRow = styled.div`
   margin: 6px 0 2px;
   b {
     font-size: 28px;
-    color: #065f46;
+    color: ${(p) => p.$price || "#065f46"};
+    text-shadow: ${(p) => p.$glow || "none"};
   }
   s {
-    color: #9ca3af;
+    color: rgba(255, 255, 255, 0.6); /* лучше читается на тёмном фоне */
     margin-left: 10px;
   }
   ${mobile({ "& b": { fontSize: "26px" } })}
 `;
-
 const TimerRow = styled.div`
   margin-top: 6px;
   display: flex;
@@ -205,16 +207,14 @@ const TimerRow = styled.div`
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
     "Liberation Mono", "Courier New", monospace;
   font-size: 14px;
-  color: #065f46;
+  color: ${(p) => p.$color || "#065f46"};
   ${(p) =>
     p.$urgent &&
     css`
-      color: #b91c1c;
       animation: ${pulse} 1.4s ease-in-out infinite;
     `}
   ${mobile({ gap: "12px", fontSize: "13px" })}
 `;
-
 const TimerCell = styled.div`
   display: grid;
   gap: 2px;
@@ -228,18 +228,15 @@ const TimerCell = styled.div`
     color: #9ca3af;
   }
 `;
-
 const Colon = styled.span`
   align-self: center;
   font-weight: 800;
   opacity: 0.6;
   animation: ${blink} 1s steps(1, end) infinite;
 `;
-
 const SecondsValue = styled.b`
   animation: ${blink} 1s steps(1, end) infinite;
 `;
-
 const Footer = styled.div`
   display: grid;
   grid-template-columns: 40px 1fr 40px;
@@ -247,7 +244,6 @@ const Footer = styled.div`
   gap: 8px;
   padding: 12px 16px 16px;
 `;
-
 const NavBtn = styled.button`
   appearance: none;
   border: none;
@@ -255,19 +251,18 @@ const NavBtn = styled.button`
   width: 36px;
   height: 36px;
   border-radius: 999px;
-  background: #eef2ff;
-  color: #3730a3;
+  background: rgba(255, 255, 255, 0.08);
+  color: ${(p) => p.$fg || "#fff"};
   font-weight: 900;
   font-size: 18px;
   &:hover {
-    background: #e0e7ff;
+    background: rgba(255, 255, 255, 0.12);
   }
   &:disabled {
     opacity: 0.35;
     cursor: default;
   }
 `;
-
 const Cta = styled.button`
   appearance: none;
   border: none;
@@ -276,33 +271,30 @@ const Cta = styled.button`
   height: 44px;
   padding: 0 24px;
   border-radius: 999px;
-  background: #166534;
-  color: #fff;
+  background: ${(p) => p.$bg || "#166534"};
+  color: ${(p) => p.$fg || "#fff"};
   font-weight: 700;
   font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 6px 16px rgba(22, 101, 52, 0.35);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.35);
   &:hover {
-    background: #15803d;
+    filter: brightness(1.05);
   }
 `;
 
-/* ================= component ================= */
-
+// ================= component =================
 export default function PromoSquareModal() {
   const navigate = useNavigate();
-
   const [open, setOpen] = useState(
     () => !sessionStorage.getItem("promoClosed")
   );
   const [items, setItems] = useState([]);
   const [idx, setIdx] = useState(0);
   const [now, setNow] = useState(Date.now());
-
   const tickRef = useRef(null);
   const autoRef = useRef(null);
 
-  // Fetch промо-элементов
+  // fetch
   useEffect(() => {
     let alive = true;
     (async () => {
@@ -312,21 +304,19 @@ export default function PromoSquareModal() {
         const ct = r.headers.get("content-type") || "";
         if (!ct.includes("application/json")) return;
         const json = await r.json();
-
         const list = (json?.data || [])
           .map((it) => ({
             id: it.id,
             ...it.attributes,
             imgUrl: getImgUrl(it.attributes),
-            promoVariant: it?.attributes?.promoVariant || "default",
           }))
           .filter((a) => inPromoWindow(a) && a.imgUrl && a.slug);
-
         if (!alive) return;
         setItems(list);
         setIdx(0);
-      } catch {
-        // молчим — по UX лучше, чем валить консоль
+      } catch (e) {
+        // молчим в проде
+        // console.error("[PromoSquareModal] fetch error:", e);
       }
     })();
     return () => {
@@ -334,7 +324,7 @@ export default function PromoSquareModal() {
     };
   }, []);
 
-  // Лочим скролл, если модалка открыта
+  // lock scroll
   useEffect(() => {
     if (!open) return;
     const prev = document.body.style.overflow;
@@ -342,7 +332,7 @@ export default function PromoSquareModal() {
     return () => (document.body.style.overflow = prev);
   }, [open]);
 
-  // Тик таймера (секунды)
+  // секундный тик
   useEffect(() => {
     if (!open) return;
     if (tickRef.current) clearInterval(tickRef.current);
@@ -353,37 +343,34 @@ export default function PromoSquareModal() {
     };
   }, [open]);
 
-  // Подогрев изображений и автокарусель
-  useEffect(() => {
-    if (!open || items.length < 2) return;
-    const warm = (index) => {
-      const x = items[index];
-      if (!x?.imgUrl) return;
-      const im = new Image();
-      im.src = x.imgUrl;
-    };
-    warm((idx + 1) % items.length);
-    warm((idx - 1 + items.length) % items.length);
-  }, [open, idx, items]);
-
+  // прелоад соседних картинок + автокарусель
   const startAuto = useCallback(() => {
     if (autoRef.current || items.length <= 1) return;
     autoRef.current = setInterval(() => {
       setIdx((i) => (i + 1) % items.length);
     }, 5000);
   }, [items.length]);
-
   const stopAuto = useCallback(() => {
     if (!autoRef.current) return;
     clearInterval(autoRef.current);
     autoRef.current = null;
   }, []);
-
   useEffect(() => {
     if (!open) return;
+    // warm next & prev
+    if (items.length > 0) {
+      const warm = (index) => {
+        const x = items[index];
+        if (!x?.imgUrl) return;
+        const im = new Image();
+        im.src = x.imgUrl;
+      };
+      warm((idx + 1) % items.length);
+      warm((idx - 1 + items.length) % items.length);
+    }
     startAuto();
     return () => stopAuto();
-  }, [open, startAuto, stopAuto]);
+  }, [open, idx, items, startAuto, stopAuto]);
 
   const closeModal = useCallback(() => {
     stopAuto();
@@ -405,12 +392,14 @@ export default function PromoSquareModal() {
   if (!open || items.length === 0) return null;
 
   const it = items[idx];
-  const theme = VARIANTS[it?.promoVariant] || VARIANTS.default;
-
   const priceNow = activePrice(it);
+  const variantKey = String(it.promoVariant || "default")
+    .toLowerCase()
+    .trim();
+  const theme = VARIANTS[variantKey] || VARIANTS.default;
+
   const old = Number(it.price || 0);
   const discount = old > 0 ? Math.round((1 - priceNow / old) * 100) : null;
-
   const endsMs = it?.promoEndsAt ? new Date(it.promoEndsAt).getTime() - now : 0;
   const { dd, hh, mm, ss } = toDDHHMMSS(endsMs);
   const urgent = endsMs > 0 && endsMs < 3 * 60 * 60 * 1000; // < 3 часа
@@ -418,18 +407,58 @@ export default function PromoSquareModal() {
   return (
     <Overlay role="dialog" aria-modal="true">
       <Modal
+        $bg={theme.bg}
+        $fg={theme.fg}
+        $shadow={theme.shadow}
         onMouseEnter={stopAuto}
         onMouseLeave={startAuto}
-        style={{ background: theme.bg, color: theme.fg }}
       >
+        {/* Декоративные наложения (веточки/сердечки/проценты) */}
+        {Array.isArray(theme.overlay) &&
+          theme.overlay.map((o, i) => (
+            <DecoImg
+              key={i}
+              src={o.src}
+              alt=""
+              aria-hidden="true"
+              $size={o.size}
+              $top={o.top}
+              $left={o.left}
+              $right={o.right}
+              $bottom={o.bottom}
+              $opacity={o.opacity}
+              $rotate={o.rotate}
+            />
+          ))}
+
         <Head>
-          <Badge style={{ background: theme.badgeBg, color: theme.badgeFg }}>
-            TARJOUS!
+          <Badge $bg={theme.badgeBg} $fg={theme.badgeFg}>
+            {theme.badgeText || "TARJOUS!"}
           </Badge>
-          <Title $urgent={urgent}>
-            Pidä kiirettä — tarjous päättyy pian
-            {discount !== null ? ` (${discount}%)` : ""}
-          </Title>
+          <TitleBar $bg={theme.titleBg}>
+            {" "}
+            <Title
+              $color={theme.fg}
+              $shadow={theme.titleShadow}
+              $urgent={urgent}
+            >
+              {theme.name === "blackfriday"
+                ? `BLACK FRIDAY — tarjous päättyy pian${
+                    discount !== null ? ` (${discount}%)` : ""
+                  }`
+                : theme.name === "christmas"
+                ? `Joulutarjous — tarjous päättyy pian${
+                    discount !== null ? ` (${discount}%)` : ""
+                  }`
+                : theme.name === "valentines"
+                ? `Ystävänpäivä — tarjous päättyy pian${
+                    discount !== null ? ` (${discount}%)` : ""
+                  }`
+                : `Pidä kiirettä — tarjous päättyy pian${
+                    discount !== null ? ` (${discount}%)` : ""
+                  }`}
+            </Title>
+          </TitleBar>
           <Close aria-label="Sulje" onClick={closeModal}>
             ×
           </Close>
@@ -445,12 +474,16 @@ export default function PromoSquareModal() {
           />
           <Caption>{it.title}</Caption>
 
-          <PriceRow>
-            <b style={{ color: theme.price }}>€{Number(priceNow).toFixed(0)}</b>
+          <PriceRow $price={theme.price} $glow={theme.priceGlow}>
+            <b>€{Number(priceNow).toFixed(0)}</b>
             {old > priceNow ? <s>€{Number(old).toFixed(0)}</s> : null}
           </PriceRow>
 
-          <TimerRow $urgent={urgent} aria-label="Tarjouksen loppumiseen">
+          <TimerRow
+            $color={theme.price}
+            $urgent={urgent}
+            aria-label="Tarjouksen loppumiseen"
+          >
             <TimerCell>
               <b>{dd}</b> <span>Päivää</span>
             </TimerCell>
@@ -471,6 +504,7 @@ export default function PromoSquareModal() {
 
         <Footer>
           <NavBtn
+            $fg={theme.fg}
             type="button"
             onClick={() => setIdx((i) => (i - 1 + items.length) % items.length)}
             disabled={items.length <= 1}
@@ -480,15 +514,17 @@ export default function PromoSquareModal() {
           </NavBtn>
 
           <Cta
+            $bg={theme.ctaBg}
+            $fg={theme.ctaFg}
             type="button"
             onClick={() => goTo(it.slug)}
             aria-label="Katso"
-            style={{ background: theme.price, color: theme.ctaFg }}
           >
             Katso
           </Cta>
 
           <NavBtn
+            $fg={theme.fg}
             type="button"
             onClick={() => setIdx((i) => (i + 1) % items.length)}
             disabled={items.length <= 1}
