@@ -99,21 +99,27 @@ const FieldsGrid = styled.div`
   }
 `;
 
-const Label = styled.label`
-  font-size: 14px;
-  font-weight: 400;
-  color: var(--muted);
-  margin-bottom: 0.5rem;
-  display: block;
-`;
-
 const InputText = styled.input`
   padding: 5px;
 `;
 
 const Acceptation = styled.div`
-  margin: var(--space-2) 0;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-top: 12px;
   font-size: 14px;
+  line-height: 1.45;
+
+  input {
+    flex: 0 0 auto;
+    margin-top: 3px;
+  }
+
+  a {
+    color: #2563eb;
+    text-decoration: underline;
+  }
 `;
 
 const SubmitButton = styled.div`
@@ -432,11 +438,14 @@ const BookingForm = ({
             />
           </FieldsGrid>
           <Acceptation>
-            <InputText type="checkbox" id="accept" required />
-            <Label htmlFor="accept">
-              I accept that I'm informed about contradiction and I don't have
-              any illness that can preclude this treatment.
-            </Label>
+            <input type="checkbox" id="accept" required />
+            <label htmlFor="accept">
+              Olen lukenut{" "}
+              <a href="/precare" target="_blank" rel="noopener">
+                hoito-ohjeet ja vasta-aiheet
+              </a>{" "}
+              ja vahvistan, ettei minulla ole vasta-aiheita.
+            </label>
           </Acceptation>
           <SubmitButton>
             <Submit type="submit">Submit</Submit>

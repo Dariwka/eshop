@@ -30,6 +30,8 @@ import Cancel from "./pages/Cancel/Cancel.jsx";
 import CheckoutSuccess from "./pages/CheckoutSuccess/CheckoutSuccess.jsx";
 import ConsentBar from "./components/Consent/ConsentBar.jsx";
 import PromoSquareModal from "./components/PromoBanner/PromoSquareModal.jsx";
+import Privacy from "./pages/Privacy/Privacy.jsx";
+import Precare from "./pages/Precare/Precare.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -114,6 +116,14 @@ const router = createBrowserRouter([
       {
         path: "/terms",
         element: <Terms />,
+      },
+      {
+        path: "/precare",
+        element: <Precare />,
+      },
+      {
+        path: "/privacy",
+        element: <Privacy />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
