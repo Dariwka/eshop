@@ -1,104 +1,145 @@
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { mobile } from "../../responsive";
 
-const KEY = "cookieConsent"; // "accept" | "deny" | null
-
-const WRAP = styled.div`
-  position: fixed;
-  left: 12px;
-  right: 12px;
-  bottom: 12px;
-  z-index: 1200; /* выше промо-модалки */
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px 14px;
-  border-radius: 12px;
-  background: rgba(17, 24, 39, 0.92);
-  color: #e5e7eb;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-  backdrop-filter: blur(6px);
-`;
-
-const InfoIcon = styled.span`
-  flex: 0 0 auto;
-  width: 22px;
-  height: 22px;
-  border-radius: 999px;
-  display: grid;
-  place-items: center;
-  background: #334155;
-  color: #fff;
-  font-weight: 900;
-`;
-
-const TXT = styled.p`
-  margin: 0;
-  line-height: 1.4;
-  font-size: 14px;
-  a {
-    color: #60a5fa; /* голубая ссылка */
-    text-decoration: underline;
-  }
-`;
-
-const NO = styled.button`
-  margin-left: auto;
-  height: 36px;
-  padding: 0 14px;
-  border-radius: 10px;
-  border: 1px solid #64748b;
-  background: transparent;
-  color: #e5e7eb;
-  font-weight: 700;
-  cursor: pointer;
-  &:hover {
-    background: rgba(100, 116, 139, 0.25);
-  }
-`;
-
-const OK = styled.button`
-  height: 36px;
-  padding: 0 16px;
-  border-radius: 10px;
-  border: none;
-  background: #16a34a;
-  color: #fff;
-  font-weight: 800;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
-  &:hover {
-    background: #15803d;
-  }
-`;
-
+const KEY = "privacyConsent";
+// "accept" | "deny"
 export default function ConsentBar() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false); // Показываем баннер только если согласие ещё не дано
 
+  //
   useEffect(() => {
-    const v = localStorage.getItem(KEY);
-    if (!v) setOpen(true);
+    try {
+      const v = localStorage.getItem(KEY);
+      setOpen(!v);
+    } catch {
+      setOpen(true);
+    }
   }, []);
-
   const choose = (val) => {
-    localStorage.setItem(KEY, val); // "accept" | "deny"
+    try {
+      localStorage.setItem(KEY, val);
+    } catch {}
     setOpen(false);
   };
-
   if (!open) return null;
-
   return (
-    <WRAP role="dialog" aria-label="Tietosuojalupa">
-      <InfoIcon>i</InfoIcon>
-      <TXT>
-        Käytämme evästeitä palvelun parantamiseksi ja analytiikkaan. Lue lisää{" "}
-        <a href="/privacy" target="_blank" rel="noopener">
-          tietosuojaselosteesta
-        </a>
-        .
-      </TXT>
-      <NO onClick={() => choose("deny")}>Hylkään</NO>
-      <OK onClick={() => choose("accept")}>Hyväksyn</OK>
-    </WRAP>
+    <Wrap
+      role="dialog"
+      aria-modal="false"
+      aria-label="Evästeiden suostumus"
+      aria-live="polite"
+    >
+      <Inner>
+        <Icon aria-hidden="true">i</Icon>
+        <Text>
+          Käytämme evästeitä palvelun parantamiseksi ja analytiikkaan. Lue lisää
+          <Link href="/privacy" target="_blank" rel="noopener">
+            tietosuojaselosteesta
+          </Link>
+          .
+        </Text>
+        <Actions>
+          <BtnSecondary type="button" onClick={() => choose("deny")}>
+            Hylkään
+          </BtnSecondary>
+          <BtnPrimary type="button" onClick={() => choose("accept")}>
+            Hyväksyn
+          </BtnPrimary>
+        </Actions>
+      </Inner>
+    </Wrap>
   );
 }
+/* =========================== styles =========================== */
+const Wrap = styled.div`
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 900; /* ниже твоего промо-модала (у тебя было ~999) */
+  padding: 12px;
+  pointer-events: none; /* контейнер пропускает клики, а содержимое — нет */
+  ${mobile({ padding: "10px" })}
+`;
+const Inner = styled.div`
+  pointer-events: auto;
+  max-width: 980px;
+  margin: 0 auto;
+  background: rgba(17, 24, 39, 0.92);
+  color: #e5e7eb;
+  border-radius: 14px;
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(6px);
+  display: grid;
+  grid-template-columns: 40px 1fr auto;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+  ${mobile({ gridTemplateColumns: "40px 1fr", gap: "12px", padding: "12px" })}
+`;
+const Icon = styled.div`
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.1);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #ffffff;
+  user-select: none;
+`;
+const Text = styled.p`
+  margin: 0;
+  line-height: 1.45;
+  font-size: 15px;
+  ${mobile({ fontSize: "14px" })}
+`;
+const Link = styled.a`
+  color: #93c5fd;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  &:hover {
+    text-decoration-thickness: 2px;
+  }
+`;
+const Actions = styled.div`
+  display: inline-grid;
+  grid-auto-flow: column;
+  gap: 10px;
+  ${mobile({ gridColumn: "1 / -1", width: "100%", gridAutoFlow: "row" })}
+`;
+const BtnBase = styled.button`
+  appearance: none;
+  border: none;
+  cursor: pointer;
+  height: 40px;
+  padding: 0 16px;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 14px;
+  transition: transform 0.06s ease, filter 0.15s ease;
+  &:active {
+    transform: translateY(1px);
+  }
+  ${mobile({
+    width: "100%", // на мобилке кнопки — на всю ширину
+    //
+  })}
+`;
+const BtnPrimary = styled(BtnBase)`
+  background: #16a34a;
+  color: #ffffff;
+  box-shadow: 0 6px 16px rgba(22, 163, 74, 0.35);
+  &:hover {
+    filter: brightness(1.05);
+  }
+`;
+const BtnSecondary = styled(BtnBase)`
+  background: rgba(255, 255, 255, 0.1);
+  color: #e5e7eb;
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  &:hover {
+    filter: brightness(1.08);
+  }
+`;
