@@ -33,10 +33,10 @@ import PromoSquareModal from "./components/PromoBanner/PromoSquareModal.jsx";
 import Privacy from "./pages/Privacy/Privacy.jsx";
 import Precare from "./pages/Precare/Precare.jsx";
 import LipolaserHoitoHelsinki from "./pages/Seo/LipolaserHoitoHelsinki.jsx";
-import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
 import KriolipolyysiHelsinki from "./pages/Seo/KriolipolyysiHelsinki.jsx";
 import DiodilaserHelsinki from "./pages/Seo/DiodilaserHelsinki.jsx";
 import RipsienpidennysHelsinki from "./pages/Seo/RipsienpidennysHelsinki.jsx";
+import SokerointiHelsinki from "./pages/SEO/SokerointiHelsinki.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -135,10 +135,6 @@ const router = createBrowserRouter([
         element: <LipolaserHoitoHelsinki />,
       },
       {
-        path: "/sokerointi-helsinki",
-        element: <SokerointiHelsinki />,
-      },
-      {
         path: "/kriolipolyysi-helsinki",
         element: <KriolipolyysiHelsinki />,
       },
@@ -149,6 +145,10 @@ const router = createBrowserRouter([
       {
         path: "/ripsienpidennys-helsinki",
         element: <RipsienpidennysHelsinki />,
+      },
+      {
+        path: "/sokerointi-helsinki",
+        element: <SokerointiHelsinki />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
