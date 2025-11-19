@@ -32,6 +32,11 @@ import ConsentBar from "./components/Consent/ConsentBar.jsx";
 import PromoSquareModal from "./components/PromoBanner/PromoSquareModal.jsx";
 import Privacy from "./pages/Privacy/Privacy.jsx";
 import Precare from "./pages/Precare/Precare.jsx";
+import LipolaserHoitoHelsinki from "./pages/Seo/LipolaserHoitoHelsinki.jsx";
+import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
+import KriolipolyysiHelsinki from "./pages/Seo/KriolipolyysiHelsinki.jsx";
+import DiodilaserHelsinki from "./pages/Seo/DiodilaserHelsinki.jsx";
+import RipsienpidennysHelsinki from "./pages/Seo/RipsienpidennysHelsinki.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -124,6 +129,26 @@ const router = createBrowserRouter([
       {
         path: "/privacy",
         element: <Privacy />,
+      },
+      {
+        path: "/lipolaser-hoito-helsinki",
+        element: <LipolaserHoitoHelsinki />,
+      },
+      {
+        path: "/sokerointi-helsinki",
+        element: <SokerointiHelsinki />,
+      },
+      {
+        path: "/kriolipolyysi-helsinki",
+        element: <KriolipolyysiHelsinki />,
+      },
+      {
+        path: "/diodilaser-helsinki",
+        element: <DiodilaserHelsinki />,
+      },
+      {
+        path: "/ripsienpidennys-helsinki",
+        element: <RipsienpidennysHelsinki />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
