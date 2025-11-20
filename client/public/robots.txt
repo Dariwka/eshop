@@ -2,7 +2,7 @@ User-agent: *
 Allow: /
 Sitemap: https://www.kosmedik.eu/sitemap.xml
 Sitemap: https://kosmedikbackend.onrender.com/api/feeds/sitemap.xml
-Host: www.kosmedik.eu 
+Host: www.kosmedik.eu
 Disallow: /checkout-success
 Disallow: /cancel-payment
 Disallow: /cart

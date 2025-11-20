@@ -36,7 +36,7 @@ import LipolaserHoitoHelsinki from "./pages/Seo/LipolaserHoitoHelsinki.jsx";
 import KriolipolyysiHelsinki from "./pages/Seo/KriolipolyysiHelsinki.jsx";
 import DiodilaserHelsinki from "./pages/Seo/DiodilaserHelsinki.jsx";
 import RipsienpidennysHelsinki from "./pages/Seo/RipsienpidennysHelsinki.jsx";
-import SokerointiHelsinki from "./pages/SEO/SokerointiHelsinki.jsx";
+import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);

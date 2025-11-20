@@ -3,21 +3,20 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Favicon -->
     <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
     <!-- === BASIC SEO === -->
     <title>
-      KosmeDiK - Kosmetiikan verkkokauppa | Kauneushoitola & Koulutukset
-      Helsingissä
+      KosmeDiK - Kosmetiikan verkkokauppa | Kauneushoitola &amp; Koulutukset   
+      Helsingissä   
     </title>
     <meta
       name="description"
-      content="KosmeDiK on kosmetiikan verkkokauppa sekä kauneushoitola ja koulutuskeskus Helsingissä. Sokerointi, laser-karvanpoisto, ripsien laminointi, cryolipolyysi. Nopea toimitus ja nouto. Kannelmäki & Malminkartano."
+      content="KosmeDiK on kosmetiikan verkkokauppa sekä kauneushoitola ja koulutuskeskus Helsingissä. Sokerointi, laser-karvanpoisto, ripsien laminointi, cryolipolyysi. Nopea toimitus ja nouto. Kannelmäki &amp; Malminkartano."
     />
-    <link rel="canonical" href="https://www.kosmedik.eu/" />
-    <!-- === LOCALE / MULTI-LANG  === -->
+    <!-- ВАЖНО: canonical убран, им управляет react-helmet на страницах -->
+    <!-- === LOCALE / MULTI-LANG (только fi + x-default) === -->
     <link rel="alternate" href="https://www.kosmedik.eu/" hreflang="fi" />
-    <link rel="alternate" href="https://www.kosmedik.eu/ru" hreflang="ru" />
-    <link rel="alternate" href="https://www.kosmedik.eu/en" hreflang="en" />
     <link
       rel="alternate"
       href="https://www.kosmedik.eu/"
@@ -41,15 +40,10 @@
     <meta name="twitter:image" content="https://www.kosmedik.eu/og-image.jpg" />
     <!-- === PWA / MANIFEST === -->
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <meta name="theme-color" content="#ffffff" />
     <!-- === PERFORMANCE === -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <!--
-      <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap"
-      rel="stylesheet"
-    />
-  -->
-    <meta name="theme-color" content="#ffffff" />
+    <!--      <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet"      />    -->
     <!-- === STRUCTURED DATA: Organization === -->
     <script type="application/ld+json">
       {
@@ -116,25 +110,30 @@
           }
         ]
       }
-    </script>
-  </head>
+    </script></head
+  > 
   <body>
-    <noscript>
+    <noscript
+      >     
       <h1>
-        KosmeDiK - kauneushoitola, verkkokauppa ja koulutuskeskus Helsingissä
+        KosmeDiK - kauneushoitola, verkkokauppa ja koulutuskeskus Helsingissä   
       </h1>
+
       <p>
         KosmeDiK ei ole vain kauneushoitola, vaan myös kosmetiikan verkkokauppa
         sekä koulutuskeskus. Palvelut: sokerointi, laser-karvanpoisto, ripsien
         laminointi, cryolipolyysi. Nouto ja nopeat toimitukset. Toimipisteet
-        Kannelmäessä ja Malminkartanossa.
+        Kannelmäessä ja Malminkartanossa.     
       </p>
+
       <h2>Toimipisteet</h2>
+
       <ul>
         <li>Kannelmäki: Klaneettitie 6A, 2. krs, 00420 Helsinki</li>
+
         <li>Malminkartano: Kehruutie 4, 00410 Helsinki</li>
-      </ul>
-    </noscript>
+      </ul> </noscript
+    >   
     <div id="root"></div>
   </body>
 </html>
