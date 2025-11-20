@@ -1,9 +1,25 @@
 <IfModule mod_rewrite.c>
-  RewriteEngine On RewriteBase / # 1) Редиректим /sitemap.xml на Strapi (Render)
-  # Сначала протестируй как 302 (временный), потом поменяй на 301 (постоянный)
-  RewriteRule ^sitemap-products\.xml$
-  https://kosmedikbackend.onrender.com/api/feeds/sitemap.xml [R=302,L] # 2) Если
-  файл/папка существует — отдать как есть RewriteCond %{REQUEST_FILENAME} -f
-  [OR] RewriteCond %{REQUEST_FILENAME} -d RewriteRule ^ - [L] # 3) Иначе —
-  отдать index.html (SPA) RewriteRule ^ index.html [L]
+  RewriteEngine On
+  RewriteBase /
+
+  # --- 1. Редирект на WWW (канонический домен) ---
+  # Если хочешь, чтобы всё было только с www.kosmedik.eu
+  RewriteCond %{HTTP_HOST} !^www\.kosmedik\.eu$ [NC]
+  RewriteRule ^(.*)$ https://www.kosmedik.eu/$1 [L,R=301]
+
+  # --- 2. Не трогаем реальные файлы sitemap и robots.txt ---
+  # sitemap.xml и robots.txt отдаются как есть
+  RewriteRule ^(sitemap\.xml|robots\.txt)$ - [L]
+
+  # --- 3. Отдельный sitemap от backend (если он нужен) ---
+  # https://www.kosmedik.eu/sitemap-products.xml -> Render backend
+  RewriteRule ^sitemap-products\.xml$ https://kosmedikbackend.onrender.com/api/feeds/sitemap.xml [L,R=302]
+
+  # --- 4. Если файл или папка существуют – отдать как есть ---
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # --- 5. Всё остальное отдаём через index.html (SPA React) ---
+  RewriteRule . /index.html [L]
 </IfModule>
