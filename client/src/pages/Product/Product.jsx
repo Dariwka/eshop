@@ -265,8 +265,7 @@ const Product = () => {
   // превью (слева) — только ширина, без фикс. высоты
   //
   const leftWidths = [160, 220, 320, 420]; // большое фото — адаптивные ширины, без обрезки (fit) чтобы не резало упаковки
-  //
-  const bigWidths = [640, 900, 1200, 1600];
+  //const bigWidths = [640, 900, 1200, 1600];
 
   const brandAttrs = attrs?.brands?.data?.[0]?.attributes || null;
   const brandTitle = brandAttrs?.title || "-";
