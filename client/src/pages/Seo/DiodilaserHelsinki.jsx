@@ -158,9 +158,7 @@ export default function DiodilaserHelsinki() {
       </Section>
       <Section>
         <H3>Diodilaser karvanpoisto Helsinki – KosmeDiK</H3>
-        <Price>
-          alkaen €300 <span>€390</span>
-        </Price>
+        <Price>alkaen €80</Price>
         <Small>
           Hinta riippuu käsiteltävästä alueesta ja hoitosarjan
           pituudesta. Ajantasaiset hinnat näet{" "}

@@ -171,9 +171,7 @@ export default function KriolipolyysiHelsinki() {
       </Section>
       <Section>
         <H3>Kriolipolyysi Helsinki – KosmeDiK</H3>
-        <Price>
-          alkaen €XX <span>€YY</span>
-        </Price>
+        <Price>alkaen €160</Price>
         <Small>
           Hinta riippuu käsiteltävien alueiden määrästä ja siitä,
           tehdäänkö hoito Malminkartanossa (1 alue) vai Kannelmäessä (jopa 4

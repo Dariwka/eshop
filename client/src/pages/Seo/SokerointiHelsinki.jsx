@@ -185,9 +185,7 @@ export default function SokerointiHelsinki() {
       </Section>
       <Section>
         <H3>Sokerointi Helsinki – KosmeDiK</H3>
-        <Price>
-          alkaen €10<span>€YY</span>
-        </Price>
+        <Price>alkaen €10</Price>
         <P>
           Tarkka hinta riippuu alueesta ja valitusta palvelusta (esim.kainalot,
           sääret, brasilialainen). Ajankohtaiset hinnat ja kampanjat löydät{" "}

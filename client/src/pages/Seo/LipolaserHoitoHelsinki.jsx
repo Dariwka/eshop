@@ -202,10 +202,7 @@ export default function LipolaserHoitoHelsinki() {
       </Section>
       <Section>
         <H3>Lipolaser-hoito Helsinki - KosmeDiK</H3>         
-        <Price>
-          alkaen €45<span>€65</span>         
-        </Price>
-               
+        <Price>alkaen €45 </Price>       
         <Small>
           Tarkka hinta riippuu alueesta ja hoitokertojen määrästä. Ajankohtaiset
           kampanjat näet Hoidot-sivulta ja etusivun tarjouksista.         
