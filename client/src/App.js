@@ -37,6 +37,7 @@ import KriolipolyysiHelsinki from "./pages/Seo/KriolipolyysiHelsinki.jsx";
 import DiodilaserHelsinki from "./pages/Seo/DiodilaserHelsinki.jsx";
 import RipsienpidennysHelsinki from "./pages/Seo/RipsienpidennysHelsinki.jsx";
 import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
+import LoginPage from "./pages/Auth/LoginPage.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -149,6 +150,10 @@ const router = createBrowserRouter([
       {
         path: "/sokerointi-helsinki",
         element: <SokerointiHelsinki />,
+      },
+      {
+        path: "/login",
+        element: <LoginPage />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],

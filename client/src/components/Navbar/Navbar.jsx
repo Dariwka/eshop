@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+import MailOutlineIcon from "@mui/icons-material/MailOutline";
 import { Link } from "react-router-dom";
 import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
@@ -87,10 +89,12 @@ const Right = styled.div`
   align-items: center;
   gap: 25px;
 `;
+
 const Icons = styled.div`
   display: flex;
+  align-items: center;
   cursor: pointer;
-  gap: 15px;
+  gap: 18px;
   color: #777;
 `;
 
@@ -136,10 +140,6 @@ const Navbar = ({ click }) => {
             <KeyboardArrowDownIcon />
           </Item>
           <Item>
-            <span>FI</span>
-            <KeyboardArrowDownIcon />
-          </Item>
-          <Item>
             <StyledLink to="/products/face">Kasvot</StyledLink>
           </Item>
           <Item>
@@ -164,12 +164,16 @@ const Navbar = ({ click }) => {
           <Item>
             <StyledLink to="/about">Meistä</StyledLink>
           </Item>
-          <Item>
-            <StyledLink to="/contact">Yhteystiedot</StyledLink>
-          </Item>
           <Icons>
-            <StyledLinkSearch to="/search">
+            <StyledLinkSearch to="/search" arial-label="Haku">
               <SearchIcon />
+            </StyledLinkSearch>
+            <StyledLinkSearch to="/login" arial-label="Kirjaudu sisään">
+              <PersonOutlineIcon />
+            </StyledLinkSearch>
+
+            <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
+              <MailOutlineIcon />
             </StyledLinkSearch>
             <CartIcon>
               <ShoppingCartOutlinedIcon
