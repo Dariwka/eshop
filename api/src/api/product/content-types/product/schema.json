@@ -117,6 +117,13 @@
     "slug": {
       "type": "uid",
       "targetField": "title"
+    },
+    "isPro": {
+      "type": "boolean",
+      "default": false
+    },
+    "proPrice": {
+      "type": "decimal"
     }
   }
 }

@@ -16,6 +16,7 @@ function clTransform(url, t) {
   if (/(\bw_|h_|c_|q_auto|f_auto)/.test(tail)) return url;
   return `${head}${t}/${tail}`;
 }
+
 function clUrl(url, { w, h, fit = "fill" } = {}) {
   const base = `f_auto,q_auto,w_${w}${h ? `,h_${h}` : ""},c_${fit}`;
   return clTransform(url, base);
@@ -77,10 +78,12 @@ const Stick = styled.span`
   top: 5px;
   left: 5px;
   color: white;
-  padding: 3px;
+  padding: 3px 6px;
   z-index: 3;
   font-weight: 500;
   font-size: 14px;
+  border-radius: 3px;
+
   &.new {
     background-color: green;
   }
@@ -100,28 +103,27 @@ const Title = styled.h2`
 
 const Prices = styled.div`
   display: flex;
-  gap: 20px;
-  margin-top: 0px;
+  gap: 14px;
+  margin-top: 2px;
+  align-items: baseline;
+  min-height: 22px;
 `;
 
-const OldPrice = styled.h3`
-  font-size: 18px;
+const OldPrice = styled.span`
+  font-size: 16px;
   font-weight: 500;
-
-  &:first-child {
-    color: gray;
-    text-decoration: line-through;
-  }
+  color: gray;
+  text-decoration: line-through;
 `;
 
-const NewPrice = styled.h3`
+const NewPrice = styled.span`
   font-size: 18px;
-  font-weight: 500;
+  font-weight: 600;
+`;
 
-  &:first-child {
-    color: gray;
-    text-decoration: line-through;
-  }
+const ProOnlyText = styled.span`
+  font-size: 13px;
+  color: #6b7280;
 `;
 
 const Card = ({ item }) => {
@@ -129,9 +131,49 @@ const Card = ({ item }) => {
     window.scrollTo(0, 0);
   };
 
-  const url1 = item?.attributes?.img?.data?.attributes?.url || "";
-  const url2 = item?.attributes?.img2?.data?.attributes?.url || "";
-  const title = item?.attributes?.title || "";
+  const attrs = item?.attributes || {};
+  const url1 = attrs?.img?.data?.attributes?.url || "";
+  const url2 = attrs?.img2?.data?.attributes?.url || "";
+  const title = attrs?.title || "";
+  const slug = attrs?.slug;
+
+  // === логика пользователя / профи ===
+  let user = null;
+  try {
+    const raw = localStorage.getItem("user");
+    if (raw) user = JSON.parse(raw);
+  } catch (e) {
+    // игнор
+  }
+  // Пока считаем: если пользователь залогинен — он профи.  // Потом можно заменить на user?.isProfessional.
+  //
+  const isProUser = !!user;
+  const proOnly = attrs.proOnly === true; // если заведёшь в Strapi
+  //
+  const price = attrs.price ?? null;
+  const oldPrice = attrs.oldPrice ?? null;
+  const proPrice = attrs.proPrice ?? null;
+  let mainPrice = price;
+  let crossedPrice = null;
+
+  // обычная логика "старой цены", если нет proPrice
+  //
+  if (!isProUser || !proPrice) {
+    if (oldPrice && price && Number(oldPrice) > Number(price)) {
+      crossedPrice = oldPrice;
+      mainPrice = price;
+    } else {
+      crossedPrice = null;
+      mainPrice = price;
+    }
+  } // если профи и есть специальная цена
+  //
+  if (isProUser && proPrice) {
+    // зачёркнутой показываем "обычную" цену (oldPrice или price)
+    //
+    crossedPrice = oldPrice || price || null;
+    mainPrice = proPrice;
+  }
 
   // Для карточки фикс. слот 275x400 -> генерим srcset под это соотношение
   const widths = [300, 450, 600]; // браузер выберет сам
@@ -141,15 +183,14 @@ const Card = ({ item }) => {
     <LinkProduct
       onClick={scrollToTop}
       className="link"
-      to={`/product/${encodeURIComponent(item.attributes?.slug)}`}
+      to={`/product/${encodeURIComponent(slug)}`}
     >
-      <CardProduct key={item?.attributes?.id}>
+      <CardProduct>
         <ImageContainer>
-          {item?.attributes.isNew && <Stick className="new">New</Stick>}
-          {item?.attributes.isSale && <Stick className="specOffer">Sale</Stick>}
-          {item?.attributes.isPopular && (
-            <Stick className="popular">Popular </Stick>
-          )}
+          {attrs.isNew && <Stick className="new">New</Stick>}
+          {attrs.isSale && <Stick className="specOffer">Sale</Stick>}
+          {attrs.isPopular && <Stick className="popular">Popular</Stick>}
+
           {url1 && (
             <Image
               alt={title}
@@ -173,12 +214,22 @@ const Card = ({ item }) => {
             />
           )}
         </ImageContainer>
-        <Title>{item?.attributes.title}</Title>
+        <Title>{attrs.title}</Title>
         <Prices>
-          <OldPrice>
-            €{item?.attributes.oldPrice || item?.attributes.price + 20}
-          </OldPrice>
-          <NewPrice>€{item?.attributes.price}</NewPrice>
+          {proOnly && !isProUser ? (
+            <ProOnlyText>
+              Vain ammattilaisille – kirjaudu nähdäksesi hinnan
+            </ProOnlyText>
+          ) : (
+            <>
+              {crossedPrice != null && (
+                <OldPrice>€{Number(crossedPrice).toFixed(2)}</OldPrice>
+              )}
+              {mainPrice != null && (
+                <NewPrice>€{Number(mainPrice).toFixed(2)}</NewPrice>
+              )}
+            </>
+          )}
         </Prices>
       </CardProduct>
     </LinkProduct>

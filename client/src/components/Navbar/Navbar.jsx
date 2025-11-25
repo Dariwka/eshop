@@ -115,6 +115,12 @@ const Circle = styled.span`
   align-items: center;
   justify-content: center;
 `;
+
+const DesktopOnly = styled.div`
+  display: flex;
+  ${mobile({ display: "none" })}
+`;
+
 const Navbar = ({ click }) => {
   const [show, setShow] = useState(false);
 
@@ -172,9 +178,11 @@ const Navbar = ({ click }) => {
               <PersonOutlineIcon />
             </StyledLinkSearch>
 
-            <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
-              <MailOutlineIcon />
-            </StyledLinkSearch>
+            <DesktopOnly>
+              <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
+                <MailOutlineIcon />
+              </StyledLinkSearch>
+            </DesktopOnly>
             <CartIcon>
               <ShoppingCartOutlinedIcon
                 ref={openButtonRef}
