@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
 import { Link } from "react-router-dom";
+import { isProUser } from "../../utils/auth";
 
 /* ===== helpers: Cloudinary трансформация + srcset (безопасные) ===== */
 function clTransform(url, t) {
@@ -95,6 +96,7 @@ const Stick = styled.span`
     background-color: blue;
   }
 `;
+
 const Title = styled.h2`
   font-size: 16px;
   font-weight: 400;
@@ -126,6 +128,11 @@ const ProOnlyText = styled.span`
   color: #6b7280;
 `;
 
+const ContactText = styled.span`
+  font-size: 13px;
+  color: #6b7280;
+`;
+
 const Card = ({ item }) => {
   const scrollToTop = () => {
     window.scrollTo(0, 0);
@@ -135,49 +142,91 @@ const Card = ({ item }) => {
   const url1 = attrs?.img?.data?.attributes?.url || "";
   const url2 = attrs?.img2?.data?.attributes?.url || "";
   const title = attrs?.title || "";
-  const slug = attrs?.slug;
+  const slug = attrs?.slug || "";
 
-  // === логика пользователя / профи ===
-  let user = null;
-  try {
-    const raw = localStorage.getItem("user");
-    if (raw) user = JSON.parse(raw);
-  } catch (e) {
-    // игнор
-  }
-  // Пока считаем: если пользователь залогинен — он профи.  // Потом можно заменить на user?.isProfessional.
-  //
-  const isProUser = !!user;
-  const proOnly = attrs.proOnly === true; // если заведёшь в Strapi
-  //
-  const price = attrs.price ?? null;
-  const oldPrice = attrs.oldPrice ?? null;
-  const proPrice = attrs.proPrice ?? null;
-  let mainPrice = price;
-  let crossedPrice = null;
+  const isProProduct = attrs.isPro === true;
+  const userIsPro = isProUser();
 
-  // обычная логика "старой цены", если нет proPrice
-  //
-  if (!isProUser || !proPrice) {
-    if (oldPrice && price && Number(oldPrice) > Number(price)) {
-      crossedPrice = oldPrice;
-      mainPrice = price;
-    } else {
-      crossedPrice = null;
-      mainPrice = price;
+  const normalizeNumber = (val) => {
+    if (val === undefined || val === null) return null;
+    if (typeof val === "number") return val;
+    if (typeof val === "string") {
+      const cleaned = val.replace(",", ".").trim();
+      const num = Number(cleaned);
+      return Number.isNaN(num) ? null : num;
     }
-  } // если профи и есть специальная цена
+    return null;
+  };
+
+  const price = normalizeNumber(attrs.price);
+  const proPrice = normalizeNumber(attrs.proPrice);
+  const oldPrice = normalizeNumber(attrs.oldPrice);
+
+  const hasPrice = price !== null && !Number.isNaN(price);
+  const hasProPrice = proPrice !== null && !Number.isNaN(proPrice);
+  const hasOldPrice = oldPrice !== null && !Number.isNaN(oldPrice);
+  const isZeroPrice = hasPrice && price === 0;
+  const contactText = attrs.contactPrice || "Ota yhteyttä hinnasta";
+
+  // === ЛОГИКА ЦЕН ДЛЯ КАРТОЧКИ ===
   //
-  if (isProUser && proPrice) {
-    // зачёркнутой показываем "обычную" цену (oldPrice или price)
-    //
-    crossedPrice = oldPrice || price || null;
-    mainPrice = proPrice;
+  let priceContent = null;
+
+  // 1) Pro-товар, гость -> только текст "только для профи"
+  //
+  if (isProProduct && !userIsPro && hasProPrice) {
+    priceContent = (
+      <ProOnlyText>
+        Vain ammattilaisille – kirjaudu nähdäksesi hinnan
+      </ProOnlyText>
+    );
+  }
+  // 2) Проф-юзер, есть спец. цена — показываем её, даже если price = 0
+  //
+  else if (userIsPro && hasProPrice) {
+    const crossed =
+      (hasPrice && price > 0 && price) ||
+      (hasOldPrice && oldPrice > 0 && oldPrice) ||
+      null;
+    priceContent = (
+      <>
+        {crossed !== null && <OldPrice>€{crossed.toFixed(2)}</OldPrice>}
+        <NewPrice>€{proPrice.toFixed(2)}</NewPrice>
+      </>
+    );
+  }
+  // 3) Цена = 0 и proPrice нет → контакт
+  //
+  else if (isZeroPrice && !hasProPrice) {
+    priceContent = <ContactText>{contactText}</ContactText>;
+  }
+
+  // 4) Обычная скидка
+  //
+  else if (hasOldPrice && hasPrice && oldPrice > price) {
+    priceContent = (
+      <>
+        <OldPrice>€{oldPrice.toFixed(2)}</OldPrice> 
+        <NewPrice>€{price.toFixed(2)}</NewPrice> 
+      </>
+    );
+  }
+  // 5) Обычная цена
+  //
+  else if (hasPrice && price > 0) {
+    priceContent = <NewPrice>€{price.toFixed(2)}</NewPrice>;
+  }
+
+  // 6) Фолбек — просто текст «Ota yhteyttä hinnasta»
+  //
+  else if (contactText) {
+    priceContent = <ContactText>{contactText}</ContactText>;
   }
 
   // Для карточки фикс. слот 275x400 -> генерим srcset под это соотношение
-  const widths = [300, 450, 600]; // браузер выберет сам
-  const ratio = 400 / 275; // чтобы не мылить изображение
+  //
+  const widths = [300, 450, 600];
+  const ratio = 400 / 275;
 
   return (
     <LinkProduct
@@ -215,22 +264,7 @@ const Card = ({ item }) => {
           )}
         </ImageContainer>
         <Title>{attrs.title}</Title>
-        <Prices>
-          {proOnly && !isProUser ? (
-            <ProOnlyText>
-              Vain ammattilaisille – kirjaudu nähdäksesi hinnan
-            </ProOnlyText>
-          ) : (
-            <>
-              {crossedPrice != null && (
-                <OldPrice>€{Number(crossedPrice).toFixed(2)}</OldPrice>
-              )}
-              {mainPrice != null && (
-                <NewPrice>€{Number(mainPrice).toFixed(2)}</NewPrice>
-              )}
-            </>
-          )}
-        </Prices>
+        <Prices>{priceContent}</Prices>
       </CardProduct>
     </LinkProduct>
   );

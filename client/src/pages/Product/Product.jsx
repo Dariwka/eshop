@@ -8,9 +8,9 @@ import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/cartReducer";
 import LoadingButton from "@mui/lab/LoadingButton/LoadingButton";
 import { ToastContainer, toast } from "react-toastify";
+import { isProUser } from "../../utils/auth";
 
-/* ===== Cloudinary helpers (как в других файлах) ===== */
-
+/* ===== Cloudinary helpers ===== */
 function clTransform(url, t) {
   if (!url) return url;
   const i = url.indexOf("/upload/");
@@ -49,19 +49,23 @@ const Left = styled.div`
     gap: "10px",
   })};
 `;
+
 const ImgContainer = styled.div`
   flex: 1;
 `;
+
 const Image = styled.img`
   width: 100%;
   object-fit: cover;
   cursor: pointer;
   margin-bottom: 10px;
 `;
+
 const MainImg = styled.div`
   flex: 5;
   ${mobile({ flex: "3" })};
 `;
+
 const Right = styled.div`
   flex: 1;
   display: flex;
@@ -69,45 +73,89 @@ const Right = styled.div`
   gap: 30px;
   ${mobile({ gap: "20px" })};
 `;
+
 const Title = styled.span`
   font-size: 25px;
   font-weight: bold;
 `;
-const Price = styled.span`
+
+const PriceRow = styled.div`
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+`;
+
+const OldPrice = styled.span`
+  font-size: 20px;
+  font-weight: 500;
+  color: gray;
+  text-decoration: line-through;
+`;
+
+const NewPrice = styled.span`
   font-size: 30px;
   color: green;
-  font-weight: 500;
+  font-weight: 600;
 `;
+
+const ProOnlyText = styled.span`
+  font-size: 15px;
+  color: #6b7280;
+`;
+
+const ContactText = styled.span`
+  font-size: 15px;
+  color: #6b7280;
+`;
+
 const Desc = styled.p`
   font-size: 18px;
   font-weight: 300;
   text-align: justify;
   ${mobile({ fontSize: "16px" })};
 `;
+
 const Quantity = styled.div`
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   ${mobile({ justifyContent: "center" })};
+
+  span {
+    font-size: 22px;
+    font-weight: 600;
+    width: 35px;
+    text-align: center;
+  }
 `;
+
 const MinusButton = styled.button`
   width: 50px;
   height: 50px;
+  border-radius: 50%;
+  background-color: #0f7036; /* зелёный стиль */
+  color: white;
+  font-size: 26px;
+  font-weight: 700;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
-  border: none;
+
+  &:hover {
+    background-color: #0c5a2c; /* чуть темнее */
+  }
+
+  &:active {
+    transform: scale(0.92);
+  }
 `;
-const PlusButton = styled.button`
-  width: 50px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  border: none;
-`;
+
+const PlusButton = styled(MinusButton)``;
+
 const AddButton = styled.button`
   width: 250px;
   padding: 10px;
@@ -122,6 +170,7 @@ const AddButton = styled.button`
   font-weight: 500;
   ${mobile({ width: "auto" })};
 `;
+
 const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -133,6 +182,7 @@ const InfoContainer = styled.div`
 const HrBorder = styled.hr`
   border: 1px solid rgb(238, 237, 237);
 `;
+
 const BrandRow = styled.div`
   margin: 8px 0;
   font-size: 14px;
@@ -151,7 +201,6 @@ const BrandRow = styled.div`
     text-decoration: none;
     transition: color 0.2s ease;
   }
-
   .brand-link:hover {
     color: #0ccf9c;
     text-decoration: underline;
@@ -162,19 +211,21 @@ const BrandRow = styled.div`
     color: #555;
   }
 `;
-
 /* ============ компонент ============ */
+
 const Product = () => {
-  const { slug } = useParams(); // всегда работаем только со slug
-  //
+  const { slug } = useParams();
   const dispatch = useDispatch();
   const [selectedImg, setSelectedImg] = useState("img");
-  const [quantity, setQuantity] = useState(1); // какие поля нам нужны
+  const [quantity, setQuantity] = useState(1);
+  // какие поля нам нужны
   //
   const fields =
     `fields[0]=title&fields[1]=desc&fields[2]=price&fields[3]=oldPrice` +
     `&fields[4]=stock&fields[5]=contactPrice&fields[6]=weight` +
-    `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags`;
+    `&fields[7]=volume&fields[8]=area&fields[9]=goal&fields[10]=tags` +
+    `&fields[11]=isPro&fields[12]=proPrice`;
+
   const populate =
     `populate[img][fields][0]=url` +
     `&populate[img2][fields][0]=url` +
@@ -185,34 +236,133 @@ const Product = () => {
     slug || ""
   )}&${fields}&${populate}&publicationState=live`;
 
-  const { data, loading, error } = useFetch(url); // как в Treatment: если массив – берём первый, если объект – как есть
-  //
+  const { data, loading, error } = useFetch(url);
+
   const product = useMemo(
     () => (Array.isArray(data) ? data[0] : data || null),
     [data]
   );
 
   const attrs = product?.attributes || {};
-
   const url1 = attrs?.img?.data?.attributes?.url || "";
   const url2 = attrs?.img2?.data?.attributes?.url || "";
   const title = attrs?.title || "";
-
   const leftWidths = [160, 220, 320, 420];
   const ratio = 400 / 275;
-
   const brandAttrs = attrs?.brands?.data?.[0]?.attributes || null;
   const brandTitle = brandAttrs?.title || "-";
   const brandSlug = brandAttrs?.slug || null;
 
+  /* ====== ЛОГИКА ЦЕН (та же, что в Card.jsx) ====== */
+
+  const userIsPro = isProUser();
+  const isProProduct = attrs.isPro === true;
+  const rawPrice = attrs.price;
+  const rawProPrice = attrs.proPrice;
+  const rawOldPrice = attrs.oldPrice;
+  const price =
+    rawPrice === undefined || rawPrice === null ? null : Number(rawPrice);
+  const proPrice =
+    rawProPrice === undefined || rawProPrice === null
+      ? null
+      : Number(rawProPrice);
+  const oldPrice =
+    rawOldPrice === undefined || rawOldPrice === null
+      ? null
+      : Number(rawOldPrice);
+  const hasPrice = price !== null && !Number.isNaN(price) && price > 0;
+  const isZeroPrice = price !== null && !Number.isNaN(price) && price === 0;
+  const hasProPrice =
+    proPrice !== null && !Number.isNaN(proPrice) && proPrice > 0;
+  const hasOldPrice =
+    oldPrice !== null && !Number.isNaN(oldPrice) && oldPrice > 0;
+  const contactText = attrs.contactPrice || "Ota yhteyttä hinnasta";
+  // Что показываем в блоке цены
+  //
+  let priceContent = null;
+  // Цена, по которой эта конкретная сессия будет класть товар в корзину
+  //
+  let effectivePriceForCart = null; // 1) Pro-товар, гость -> только текст
+  //
+  if (isProProduct && !userIsPro) {
+    priceContent = (
+      <ProOnlyText>
+                Vain ammattilaisille – kirjaudu nähdäksesi hinnan   
+      </ProOnlyText>
+    );
+    effectivePriceForCart = null;
+  }
+
+  // 2) Проф-юзер, есть спец. цена — показываем её
+  //
+  else if (userIsPro && hasProPrice) {
+    if (hasPrice) {
+      priceContent = (
+        <>
+          <OldPrice>€{price.toFixed(2)}</OldPrice>
+          <NewPrice>€{proPrice.toFixed(2)}</NewPrice>
+        </>
+      );
+    } else if (hasOldPrice) {
+      priceContent = (
+        <>
+          <OldPrice>€{oldPrice.toFixed(2)}</OldPrice>
+          <NewPrice>€{proPrice.toFixed(2)}</NewPrice>
+        </>
+      );
+    } else {
+      priceContent = <NewPrice>€{proPrice.toFixed(2)}</NewPrice>;
+    }
+    effectivePriceForCart = proPrice;
+  }
+
+  // 3) Нет видимой цены: price = 0 и proPrice нет
+  //
+  else if (isZeroPrice && !hasProPrice) {
+    priceContent = <ContactText>{contactText}</ContactText>;
+    effectivePriceForCart = null;
+  }
+
+  // 4) Обычная скидка
+  //
+  else if (hasOldPrice && hasPrice && oldPrice > price) {
+    priceContent = (
+      <>
+        <OldPrice>€{oldPrice.toFixed(2)}</OldPrice>
+        <NewPrice>€{price.toFixed(2)}</NewPrice>
+      </>
+    );
+    effectivePriceForCart = price;
+  }
+
+  // 5) Обычная цена
+  //
+  else if (hasPrice) {
+    priceContent = <NewPrice>€{price.toFixed(2)}</NewPrice>;
+    effectivePriceForCart = price;
+  }
+
+  // 6) Фоллбек на contactPrice
+  //
+  else if (contactText) {
+    priceContent = <ContactText>{contactText}</ContactText>;
+    effectivePriceForCart = null;
+  }
+
   const addHandler = () => {
     if (!product) return;
+    // если нет цены (только "свяжитесь с нами") — не кладём в корзину
+    //
+    if (effectivePriceForCart == null) {
+      toast.info(contactText, { position: toast.POSITION.TOP_CENTER });
+      return;
+    }
     dispatch(
       addToCart({
         id: product.id,
         title: attrs.title,
         desc: attrs.desc,
-        price: attrs.price,
+        price: effectivePriceForCart,
         img: url1,
         quantity,
       })
@@ -274,49 +424,52 @@ const Product = () => {
         </MainImg>
       </Left>
       <Right>
-                <Title>{attrs?.title}</Title>       
-        {attrs?.price != null && <Price>€{attrs.price}</Price>}       
-        <span>{attrs?.volume || attrs?.size}</span>       
-        <Desc>{attrs?.desc}</Desc>       
+        <Title>{attrs?.title}</Title>
+        <PriceRow>{priceContent}</PriceRow>
+        <span>{attrs?.volume || attrs?.size}</span>
+        <Desc>{attrs?.desc}</Desc>
+
         <Quantity>
           <MinusButton
             onClick={() => setQuantity((prev) => (prev === 1 ? 1 : prev - 1))}
           >
-                        -         
+            -
           </MinusButton>
-                    {quantity}         
+          {quantity}
           <PlusButton onClick={() => setQuantity((prev) => prev + 1)}>
-                        +         
+            +
           </PlusButton>
         </Quantity>
+
         <AddButton onClick={addHandler}>
-                    <AddShoppingCartIcon /> ADD TO CART       
+          <AddShoppingCartIcon /> ADD TO CART
         </AddButton>
         <InfoContainer>
-                    <HrBorder />         
-          <span>Availability: {attrs?.stock}</span>         
-          <span>{attrs?.contactPrice}</span>         
+          <HrBorder />
+          <span>Availability: {attrs?.stock}</span>
+          {attrs?.contactPrice && <span>{attrs.contactPrice}</span>}
           <BrandRow>
-                        <span className="label">Brand:</span>           
+            <span className="label">Brand:</span>
             {brandSlug ? (
               <Link
                 className="brand-link"
                 to={`/brands/${encodeURIComponent(brandSlug)}`}
               >
-                                {brandTitle}             
+                {brandTitle}
               </Link>
             ) : (
               <span className="brand-text">{brandTitle}</span>
             )}
+                   
           </BrandRow>
-                    <span>Weight: {attrs?.weight}</span>         
-          <span>Size: {attrs?.volume}</span>         
-          <span>Area: {attrs?.area}</span>         
-          <span>Goal: {attrs?.goal}</span>         
-          <span>Tag: {attrs?.tags}</span>       
+          <span>Weight: {attrs?.weight}</span>
+          <span>Size: {attrs?.volume}</span>
+          <span>Area: {attrs?.area}</span>
+          <span>Goal: {attrs?.goal}</span>
+          <span>Tag: {attrs?.tags}</span>
         </InfoContainer>
       </Right>
-            <ToastContainer />   
+      <ToastContainer /> 
     </ProductContainer>
   );
 };

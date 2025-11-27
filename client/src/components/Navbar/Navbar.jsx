@@ -1,14 +1,19 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
 import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
 import MailOutlineIcon from "@mui/icons-material/MailOutline";
+import PersonIcon from "@mui/icons-material/Person";
+import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
 import { Link } from "react-router-dom";
-import Cart from "../Cart/Cart";
 import { useSelector } from "react-redux";
 import styled from "styled-components";
+import Cart from "../Cart/Cart";
+import { getCurrentUser } from "../../utils/auth";
 import { mobile } from "../../responsive";
+
+/* ========== styled-компоненты ========== */
 
 const NavbarContainer = styled.div`
   height: 80px;
@@ -23,6 +28,7 @@ const Wrapper = styled.div`
   align-items: center;
   ${mobile({ padding: "10px 15px 0px 5px" })};
 `;
+
 const HamburgerMenu = styled.div`
   display: none;
   width: 30px;
@@ -31,34 +37,38 @@ const HamburgerMenu = styled.div`
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
+
   & > div {
     width: 100%;
     height: 3px;
     background: #282862;
   }
+
   &:hover > div {
-    background: "#282862";
+    background: #282862;
   }
-  ${mobile({ display: "flex" })}
+
+  ${mobile({ display: "flex" })};
 `;
 
 const Left = styled.div`
   display: flex;
   align-items: center;
   gap: 25px;
-  ${mobile({ display: "none" })}
+  ${mobile({ display: "none" })};
 `;
 
 const Item = styled.div`
   align-items: center;
   font-size: 18px;
-  ${mobile({ display: "none" })}
+  ${mobile({ display: "none" })};
 `;
 
 const Center = styled.div`
   font-size: 30px;
   letter-spacing: 2px;
 `;
+
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: black;
@@ -71,6 +81,7 @@ const StyledLink = styled(Link)`
     text-decoration: none;
   }
 `;
+
 const StyledLinkSearch = styled(Link)`
   text-decoration: none;
   color: #777;
@@ -100,17 +111,25 @@ const Icons = styled.div`
 
 const CartIcon = styled.div`
   position: relative;
+  display: flex;
+  align-items: center;
 `;
+
 const Circle = styled.span`
-  font-size: 12px;
-  width: 20px;
-  height: 20px;
+  position: absolute;
+  right: -6px;
+  top: -6px;
+
+  min-width: 18px;
+  height: 18px;
+  padding: 0 4px;
+
   border-radius: 50%;
   background-color: green;
   color: white;
-  position: absolute;
-  right: -10px;
-  top: -10px;
+
+  font-size: 11px;
+  line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -118,32 +137,132 @@ const Circle = styled.span`
 
 const DesktopOnly = styled.div`
   display: flex;
-  ${mobile({ display: "none" })}
+  ${mobile({ display: "none" })};
 `;
 
+/* ==== дропдаун аккаунта ==== */
+
+const AccountWrapper = styled.div`
+  position: relative;
+  display: flex;
+  align-items: center;
+`;
+const AccountButton = styled.button`
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  color: #777;
+
+  svg {
+    font-size: 26px;
+  }
+`;
+const AccountMenu = styled.div`
+  position: absolute;
+  top: 120%;
+  right: 0;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  min-width: 230px;
+  z-index: 300;
+  padding: 8px 0;
+  font-family: "Urbanist", sans-serif;
+`;
+
+const AccountMenuItem = styled(Link)`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 16px;
+  font-size: 14px;
+  text-decoration: none;
+  color: #171717;
+
+  &:hover {
+    background-color: #f4f4f4;
+  }
+`;
+const AccountMenuDivider = styled.hr`
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 6px 0;
+`;
+
+const LogoutButton = styled.button`
+  width: 100%;
+  padding: 10px 16px;
+  border: none;
+  background: transparent;
+  text-align: left;
+  font-size: 14px;
+  cursor: pointer;
+  color: #b00020;
+
+  &:hover {
+    background-color: #fff0f0;
+  }
+`;
+
+const ProTag = styled.span`
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 999px;
+  background-color: #0a7c5f;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+`;
+
+/* ========== компонент Navbar ========== */
 const Navbar = ({ click }) => {
-  const [show, setShow] = useState(false);
-
+  const [showCart, setShowCart] = useState(false);
+  const [isAccountOpen, setIsAccountOpen] = useState(false);
   const products = useSelector((state) => state.cart.products);
+  const cartButtonRef = useRef(null);
+  const accountRef = useRef(null);
+  const closeCart = () => {
+    setShowCart(false);
+  }; // получаем юзера
+  //
+  const user = getCurrentUser();
+  const isLoggedIn = !!user;
+  const isPro = !!user?.isPro;
+  /* закрытие дропдауна аккаунта при клике вне */
 
-  const openButtonRef = useRef();
-
-  const close = () => {
-    setShow(false);
+  useEffect(() => {
+    if (!isAccountOpen) return;
+    const handleClickOutside = (event) => {
+      if (!accountRef.current) return;
+      if (!accountRef.current.contains(event.target)) {
+        setIsAccountOpen(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [isAccountOpen]);
+  const handleLogout = () => {
+    localStorage.removeItem("jwt");
+    localStorage.removeItem("user");
+    setIsAccountOpen(false);
+    window.location.href = "/";
   };
-
   return (
     <NavbarContainer>
       <Wrapper>
-        <HamburgerMenu onClick={click}>
+        <HamburgerMenu onClick={click} aria-label="Avaa valikko">
           <div></div>
-          <div></div>
-          <div></div>
+          <div></div> <div></div>
         </HamburgerMenu>
         <Left>
           <Item>
             <img src="/img/fi.png" alt="flag" />
-            <KeyboardArrowDownIcon />
+            <KeyboardArrowDownIcon />         
           </Item>
           <Item>
             <StyledLink to="/products/face">Kasvot</StyledLink>
@@ -171,12 +290,48 @@ const Navbar = ({ click }) => {
             <StyledLink to="/about">Meistä</StyledLink>
           </Item>
           <Icons>
-            <StyledLinkSearch to="/search" arial-label="Haku">
+            <StyledLinkSearch to="/search" aria-label="Haku">
               <SearchIcon />
             </StyledLinkSearch>
-            <StyledLinkSearch to="/login" arial-label="Kirjaudu sisään">
-              <PersonOutlineIcon />
-            </StyledLinkSearch>
+            {isLoggedIn ? (
+              <AccountWrapper ref={accountRef}>
+                <AccountButton
+                  type="button"
+                  aria-haspopup="true"
+                  aria-expanded={isAccountOpen}
+                  aria-label={isPro ? "Pro-tili" : "Oma tili"}
+                  onClick={() => setIsAccountOpen((prev) => !prev)}
+                >
+                  {isPro ? <VerifiedUserIcon /> : <PersonIcon />}
+                </AccountButton>{" "}
+                {isAccountOpen && (
+                  <AccountMenu>
+                    <AccountMenuItem
+                      to="/account"
+                      onClick={() => setIsAccountOpen(false)}
+                    >
+                      <span>Oma tili</span>
+                      {isPro && <ProTag>PRO</ProTag>}
+                    </AccountMenuItem>
+                                       
+                    <AccountMenuItem
+                      to="/orders"
+                      onClick={() => setIsAccountOpen(false)}
+                    >
+                      <span>Omat tilaukset</span>
+                    </AccountMenuItem>
+                    <AccountMenuDivider />                   
+                    <LogoutButton type="button" onClick={handleLogout}>
+                      Kirjaudu ulos
+                    </LogoutButton>
+                  </AccountMenu>
+                )}
+              </AccountWrapper>
+            ) : (
+              <StyledLinkSearch to="/login" aria-label="Kirjaudu sisään">
+                <PersonOutlineIcon />
+              </StyledLinkSearch>
+            )}
 
             <DesktopOnly>
               <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
@@ -185,19 +340,18 @@ const Navbar = ({ click }) => {
             </DesktopOnly>
             <CartIcon>
               <ShoppingCartOutlinedIcon
-                ref={openButtonRef}
+                ref={cartButtonRef}
                 onClick={() => {
-                  setShow((show) => !show);
+                  setShowCart((prev) => !prev);
                 }}
               />
-              <Circle>{products.length}</Circle>
+              {products.length > 0 && <Circle>{products.length}</Circle>}
             </CartIcon>
           </Icons>
         </Right>
       </Wrapper>
-      {show && <Cart open={openButtonRef} close={close} />}
+      {showCart && <Cart open={cartButtonRef} close={closeCart} />}
     </NavbarContainer>
   );
 };
-
 export default Navbar;

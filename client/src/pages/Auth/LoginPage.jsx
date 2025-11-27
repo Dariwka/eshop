@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { mobile } from "../../responsive";
-import { makeRequest } from "../../makeRequest";
+import axios from "axios";
 
 const Page = styled.main`
   min-height: calc(100vh - 80px);
@@ -121,9 +121,12 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const API_URL =
+    process.env.REACT_APP_API_URL || "https://kosmedikbackend.onrender.com/api";
+
   const handleSubmit = async (e) => {
-    e.preventDefault(); // clean error
-    //
+    e.preventDefault();
     setError("");
     if (!email || !password) {
       setError("Täytä sähköposti ja salasana.");
@@ -131,7 +134,7 @@ export default function LoginPage() {
     }
     setLoading(true);
     try {
-      const res = await makeRequest.post("/auth/local", {
+      const res = await axios.post(`${API_URL}/auth/local`, {
         identifier: email,
         password,
       });
