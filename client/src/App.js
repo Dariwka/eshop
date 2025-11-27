@@ -38,6 +38,7 @@ import DiodilaserHelsinki from "./pages/Seo/DiodilaserHelsinki.jsx";
 import RipsienpidennysHelsinki from "./pages/Seo/RipsienpidennysHelsinki.jsx";
 import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
 import LoginPage from "./pages/Auth/LoginPage.jsx";
+import AccountPage from "./pages/Account/AccountPage.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -154,6 +155,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <LoginPage />,
+      },
+      {
+        path: "/account",
+        element: <AccountPage />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],
