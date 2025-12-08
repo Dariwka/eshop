@@ -2,7 +2,12 @@ export function getCurrentUser() {
   try {
     const raw = localStorage.getItem("user");
     if (!raw) return null;
-    return JSON.parse(raw);
+
+    const user = JSON.parse(raw);
+    const jwt = localStorage.getItem("jwt");
+
+    // Вернём пользователя + jwt (если есть)
+    return jwt ? { ...user, jwt } : user;
   } catch (e) {
     console.error("getCurrentUser parse error", e);
     return null;

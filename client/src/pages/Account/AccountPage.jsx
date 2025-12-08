@@ -164,7 +164,7 @@ const AccountPage = () => {
   );
 
   useEffect(() => {
-    if (!user) {
+    if (!user?.id) {
       setLoading(false);
       setError("Sinun täytyy kirjautua sisään nähdäksesi tilisi tiedot.");
       return;
@@ -212,7 +212,7 @@ const AccountPage = () => {
       }
     };
     fetchProfile();
-  }, [user]);
+  }, [user?.id]);
 
   const handleChange = (field) => (e) => {
     const value =

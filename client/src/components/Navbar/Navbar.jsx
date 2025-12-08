@@ -54,19 +54,29 @@ const HamburgerMenu = styled.div`
 const Left = styled.div`
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 30px;
   ${mobile({ display: "none" })};
 `;
 
 const Item = styled.div`
+  display: flex;
   align-items: center;
+  gap: 6px;
+
   font-size: 18px;
+  font-weight: 500;
+  letter-spacing: 0.02em;
   ${mobile({ display: "none" })};
 `;
 
 const Center = styled.div`
   font-size: 30px;
   letter-spacing: 2px;
+  font-weight: 600;
+  ${mobile({
+    fontSize: "24px",
+    letterSpacing: "1.5px",
+  })}
 `;
 
 const StyledLink = styled(Link)`
@@ -74,10 +84,14 @@ const StyledLink = styled(Link)`
   color: black;
 
   &:focus,
-  &:hover,
   &:visited,
-  &:link,
+  ​&:link {
+    text-decoration: none;
+  }
+
+  &:hover,
   &:active {
+    color: #0a7c5f; /* лёгкий зелёный акцент при ховере */
     text-decoration: none;
   }
 `;
@@ -87,10 +101,14 @@ const StyledLinkSearch = styled(Link)`
   color: #777;
 
   &:focus,
-  &:hover,
   &:visited,
-  &:link,
+  &:link {
+    text-decoration: none;
+  }
+
+  &:hover,
   &:active {
+    color: #0a7c5f;
     text-decoration: none;
   }
 `;
@@ -99,6 +117,7 @@ const Right = styled.div`
   display: flex;
   align-items: center;
   gap: 25px;
+  ${mobile({ gap: "14px" })};
 `;
 
 const Icons = styled.div`
@@ -107,6 +126,10 @@ const Icons = styled.div`
   cursor: pointer;
   gap: 18px;
   color: #777;
+
+  svg {
+    font-size: 22px;
+  }
 `;
 
 const CartIcon = styled.div`
@@ -257,7 +280,8 @@ const Navbar = ({ click }) => {
       <Wrapper>
         <HamburgerMenu onClick={click} aria-label="Avaa valikko">
           <div></div>
-          <div></div> <div></div>
+          <div></div>
+          <div></div>
         </HamburgerMenu>
         <Left>
           <Item>
@@ -313,14 +337,13 @@ const Navbar = ({ click }) => {
                       <span>Oma tili</span>
                       {isPro && <ProTag>PRO</ProTag>}
                     </AccountMenuItem>
-                                       
                     <AccountMenuItem
                       to="/orders"
                       onClick={() => setIsAccountOpen(false)}
                     >
                       <span>Omat tilaukset</span>
                     </AccountMenuItem>
-                    <AccountMenuDivider />                   
+                    <AccountMenuDivider />
                     <LogoutButton type="button" onClick={handleLogout}>
                       Kirjaudu ulos
                     </LogoutButton>
@@ -332,7 +355,6 @@ const Navbar = ({ click }) => {
                 <PersonOutlineIcon />
               </StyledLinkSearch>
             )}
-
             <DesktopOnly>
               <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
                 <MailOutlineIcon />
