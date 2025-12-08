@@ -17,6 +17,31 @@
     },
     "products": {
       "type": "json"
+    },
+    "users_permissions_user": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "plugin::users-permissions.user"
+    },
+    "status": {
+      "type": "enumeration",
+      "enum": [
+        "pending,",
+        "paid,",
+        "cancelled,",
+        "refunded"
+      ],
+      "default": "paid,"
+    },
+    "total": {
+      "type": "decimal"
+    },
+    "currency": {
+      "type": "string",
+      "default": "EUR"
+    },
+    "customerEmail": {
+      "type": "email"
     }
   }
 }

@@ -30,8 +30,9 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
       const slug =
         (ctx.request.query && ctx.request.query.slug) ||
         (ctx.request.body && ctx.request.body.slug) ||
-        ""; // все позиции — ваучеры?
-      //
+        "";
+      const userId = ctx.state.user?.id || null;
+      // все позиции — ваучеры?//
       const onlyVouchers = products.every((p) => p?.type === "voucher"); // собираем line_items
       //
       const lineItems = await Promise.all(
@@ -136,6 +137,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
           paymentIntentId: session.payment_intent || null,
           isVoucherOnly: onlyVouchers,
           slugAtPurchase: slug || null,
+          users_permissions_user: userId || null,
         },
       });
       return { stripeSession: session };
@@ -320,66 +322,66 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             "Ystävällisin terveisin, KosmediK",
           ].join("\n");
           const htmlFi =
-            `<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f5f7f9;padding:24px;font-family:Arial, Helvetica, sans-serif;"> <tr>  <td align="center">   <table width="640" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;border-radius:12px;overflow:hidden;">    
-            <tr>     
-            <td style="background:#2e7d32;padding:24px 28px;color:#ffffff;">      
-            <div style="text-align:center;">       
+            `<table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="background:#f5f7f9;padding:24px;font-family:Arial, Helvetica, sans-serif;"> <tr>  <td align="center">   <table width="640" cellpadding="0" cellspacing="0" role="presentation" style="background:#ffffff;border-radius:12px;overflow:hidden;">
+            <tr>
+            <td style="background:#2e7d32;padding:24px 28px;color:#ffffff;">
+            <div style="text-align:center;">
             ${
               logoUrl
                 ? `<img src="${logoUrl}" alt="KosmediK" style="max-width:160px;height:auto;display:block;margin:0 auto 12px;" />`
                 : ""
-            }      
-            </div>      
-            <h1 style="margin:0;font-size:20px;line-height:1.3;">Vahvistus: Hoitovoucher ostettu</h1>     
-            </td>    
+            }
+            </div>
+            <h1 style="margin:0;font-size:20px;line-height:1.3;">Vahvistus: Hoitovoucher ostettu</h1>
+            </td>
             </tr>
-    <tr>     
-    <td style="padding:24px 28px;color:#111827;font-size:15px;">      
-    <p style="margin:0 0 16px 0;">Hei!</p>      
+    <tr>
+    <td style="padding:24px 28px;color:#111827;font-size:15px;">
+    <p style="margin:0 0 16px 0;">Hei!</p>
     <p style="margin:0 0 20px 0;">Kiitos ostostasi KosmediKissa. Vahvistamme, että maksu on vastaanotettu.</p>
-      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">       
-      <tr>        
-      <td style="padding:8px 0;color:#6b7280;width:140px;">Voucher</td>        
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="border-collapse:collapse;">
+      <tr>
+      <td style="padding:8px 0;color:#6b7280;width:140px;">Voucher</td>
       <td style="padding:8px 0;color:#111827;font-weight:700;">${
         p0.title || "Hoitolahjakortti"
-      }</td>       
-      </tr>       
-      <tr>        
-      <td style="padding:8px 0;color:#6b7280;">Koodi</td>        
+      }</td>
+      </tr>
+      <tr>
+      <td style="padding:8px 0;color:#6b7280;">Koodi</td>
       <td style="padding:8px 0;"><span style="letter-spacing:1px;font-weight:700;color:#2e7d32;">${
         voucher.code
-      }</span></td>       
-      </tr>       
-      <tr>        
-      <td style="padding:8px 0;color:#6b7280;">Maksettu</td>        
-      <td style="padding:8px 0;">${p0.price ?? ""} €</td>       
-      </tr>       
-      <tr>        
-      <td style="padding:8px 0;color:#6b7280;">Voimassa</td>        
-      <td style="padding:8px 0;">${validFromFi} - ${validToFi} <span style="color:#6b7280;">(${voucherDaysTextFi} ostopäivästä lukien)</span></td>       
-      </tr>      
-      </table>
-      <div style="text-align:center;margin:24px 0 8px;">       
-      <a href="${bookingLink}"        
-      style="background:#2e7d32;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:700;display:inline-block;">        
-      Varaa hoitoaika       
-      </a>      
-      </div>
-      <h3 style="margin:24px 0 8px 0;color:#111827;font-size:16px;">Ehdot:</h3>      
-      <ul style="margin:0 0 12px 18px;padding:0;color:#111827;">       
-      <li>Voucher on henkilökohtainen eikä sitä voi vaihtaa rahaksi.</li>       
-      <li>Voucher on käytettävä voimassaoloaikana.</li>       
-      <li>Yksi varaus per voucher.</li>       
-      <li>Mikäli varaus perutaan eikä uutta aikaa sovita, voucher katsotaan käytetyksi.</li>      </ul>
-      <p style="margin:20px 0 0 0;color:#6b7280;font-size:12px;">Tämä on automaattinen viesti, ethän vastaa tähän sähköpostiin.</p>     
-      </td>    
+      }</span></td>
       </tr>
-    <tr>     
-    <td style="padding:16px 28px;background:#f0f4f3;color:#374151;font-size:13px;">      Ystävällisin terveisin,<br/>KosmediK     
-    </td>    
-    </tr>   
-    </table>  
-    </td> 
+      <tr>
+      <td style="padding:8px 0;color:#6b7280;">Maksettu</td>
+      <td style="padding:8px 0;">${p0.price ?? ""} €</td>
+      </tr>
+      <tr>
+      <td style="padding:8px 0;color:#6b7280;">Voimassa</td>
+      <td style="padding:8px 0;">${validFromFi} - ${validToFi} <span style="color:#6b7280;">(${voucherDaysTextFi} ostopäivästä lukien)</span></td>
+      </tr>
+      </table>
+      <div style="text-align:center;margin:24px 0 8px;">
+      <a href="${bookingLink}"
+      style="background:#2e7d32;color:#ffffff;text-decoration:none;padding:12px 20px;border-radius:8px;font-weight:700;display:inline-block;">
+      Varaa hoitoaika
+      </a>
+      </div>
+      <h3 style="margin:24px 0 8px 0;color:#111827;font-size:16px;">Ehdot:</h3>
+      <ul style="margin:0 0 12px 18px;padding:0;color:#111827;">
+      <li>Voucher on henkilökohtainen eikä sitä voi vaihtaa rahaksi.</li>
+      <li>Voucher on käytettävä voimassaoloaikana.</li>
+      <li>Yksi varaus per voucher.</li>
+      <li>Mikäli varaus perutaan eikä uutta aikaa sovita, voucher katsotaan käytetyksi.</li>      </ul>
+      <p style="margin:20px 0 0 0;color:#6b7280;font-size:12px;">Tämä on automaattinen viesti, ethän vastaa tähän sähköpostiin.</p>
+      </td>
+      </tr>
+    <tr>
+    <td style="padding:16px 28px;background:#f0f4f3;color:#374151;font-size:13px;">      Ystävällisin terveisin,<br/>KosmediK
+    </td>
+    </tr>
+    </table>
+    </td>
     </tr></table>`.trim();
           try {
             await strapi
@@ -489,15 +491,13 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             .map(
               (i) => `
             <tr>
-            <td style="padding:8px 0;color:#111827;">${
-              i.title || i.name
-            }</td>     
+            <td style="padding:8px 0;color:#111827;">${i.title || i.name}</td>
             <td style="padding:8px 0;text-align:center;color:#111827;">${
               i.quantity || 1
-            }</td>     
+            }</td>
             <td style="padding:8px 0;text-align:right;color:#111827;">${
               i.price ?? ""
-            } ${currency}</td>    
+            } ${currency}</td>
             </tr>`
             )
             .join("");
@@ -519,8 +519,18 @@ ${
     ? `<p style="margin:16px 0 0;color:#6b7280;font-size:14px;">Toimitusosoite: ${addressLines}</p>`
     : ""
 }
-<p style="margin:20px 0 0;color:#9ca3af;font-size:12px;">Tämä on automaattinen viesti, ethän vastaa tähän sähköpostiin.</p></td></tr>
-<!-- Подвал --><tr><td style="padding:16px 24px;background:#f0f4f3;color:#374151;font-size:13px;">Ystävällisin terveisin,<br/>KosmediK</td></tr></table></td></tr></table>`.trim();
+<p style="margin:20px 0 0;color:#9ca3af;font-size:12px;">Tämä on automaattinen viesti, ethän vastaa tähän sähköpostiin.</p>
+</td>
+</tr>
+<tr>
+<td style="padding:16px 24px;background:#f0f4f3;color:#374151;font-size:13px;">
+Ystävällisin terveisin,<br/>KosmediK
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>`.trim();
           try {
             await strapi
               .plugin("email")
@@ -555,6 +565,40 @@ ${
       return { ok: true, kind: "product_order" };
     } catch (err) {
       strapi.log.error(`[orders/success] error: ${err.message}`, err);
+      ctx.response.status = 500;
+      return { error: { message: "Internal Server Error" } };
+    }
+  },
+  /**
+   * Omat tilaukset
+   * GET /api/orders/my
+   * Возвращает заказы текущего залогиненного пользователя
+   */
+  async my(ctx) {
+    try {
+      const user = ctx.state.user;
+
+      if (!user) {
+        strapi.log.warn("[orders/my] no user in ctx.state.user");
+        return ctx.unauthorized("You must be logged in");
+      }
+
+      strapi.log.info(`[orders/my] user id=${user.id}`);
+
+      // ИСПОЛЬЗУЕМ query-API вместо entityService
+      const orders = await strapi.db.query("api::order.order").findMany({
+        orderBy: { createdAt: "desc" },
+      });
+
+      strapi.log.info(
+        `[orders/my] TOTAL orders in DB = ${
+          Array.isArray(orders) ? orders.length : 0
+        }`
+      );
+
+      return orders;
+    } catch (e) {
+      strapi.log.error("[orders/my] error:", e);
       ctx.response.status = 500;
       return { error: { message: "Internal Server Error" } };
     }
