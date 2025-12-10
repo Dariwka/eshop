@@ -206,7 +206,7 @@ export default function LoginPage() {
           <SmallLink to="/register">Luo tili</SmallLink>
         </HelpText>
         <HelpText>
-          Unohtuiko salasana?
+          Unohtuiko salasana?{" "}
           <SmallLink to="/forgot-password">Palauta salasana</SmallLink>
         </HelpText>
       </Card>

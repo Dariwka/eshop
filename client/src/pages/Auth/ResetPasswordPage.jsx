@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { mobile } from "../../responsive";
 
 const Container = styled.div`
@@ -84,41 +84,65 @@ const SmallLink = styled.div`
     text-decoration: underline;
   }
 `;
-const ForgotPasswordPage = () => {
-  const [email, setEmail] = useState("");
+const ResetPasswordPage = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  const [code, setCode] = useState("");
+  const [password, setPassword] = useState("");
+  const [password2, setPassword2] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:1337/api";
+  useEffect(() => {
+    const params = new URLSearchParams(location.search);
+    const c = params.get("code");
+    if (!c) {
+      setError("Virheellinen tai puuttuva palautuskoodi.");
+    } else {
+      setCode(c);
+    }
+  }, [location.search]);
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
-    if (!email) {
-      setError("Syötä sähköpostiosoite.");
+    if (!password || !password2) {
+      setError("Syötä uusi salasana kahdesti.");
+      return;
+    }
+    if (password !== password2) {
+      setError("Salasanat eivät täsmää.");
+      return;
+    }
+    if (!code) {
+      setError("Palautuskoodi puuttuu.");
       return;
     }
     try {
       setSending(true);
-      const res = await fetch(`${API_URL}/auth/forgot-password`, {
+      const res = await fetch(`${API_URL}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({
+          code,
+          password,
+          passwordConfirmation: password2,
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
-        console.error("Forgot error:", data);
+        console.error("Reset error:", data);
         throw new Error(
-          data?.error?.message || "Salasanan palautus epäonnistui."
+          data?.error?.message || "Salasanan vaihtaminen epäonnistui."
         );
       }
-      setSuccess(
-        "Jos sähköpostiosoite löytyy järjestelmästä, lähetimme ohjeet salasanan vaihtoon."
-      );
+      setSuccess("Uusi salasana on asetettu. Voit nyt kirjautua sisään.");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setError(
         err.message ||
-          "Salasanan palautus epäonnistui. Yritä hetken päästä uudelleen."
+          "Salasanan vaihtaminen epäonnistui. Yritä hetken päästä uudelleen."
       );
     } finally {
       setSending(false);
@@ -127,31 +151,36 @@ const ForgotPasswordPage = () => {
   return (
     <Container>
       <Card>
-        <Title>Unohtuiko salasana?</Title> 
+        <Title>Aseta uusi salasana</Title> 
         <Text>
-          Syötä rekisteröity sähköpostiosoite. Lähetämme sinulle linkinsalasanan
-          vaihtamiseen, jos osoite löytyy järjestelmästä. 
+          Syötä uusi salasana kahdesti. Varmista, että salasana on  riittävän
+          vahva. 
         </Text>
         <form onSubmit={handleSubmit}>
-          <Label>Sähköposti</Label> 
+          <Label>Uusi salasana</Label> 
           <Input
-            type="email"
-            placeholder="sina@esimerkki.fi"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
           />
-          <Button type="submit" disabled={sending}>
-            {sending ? "Lähetetään..." : "Lähetä palautuslinkki"}   
+          <Label>Uusi salasana uudelleen</Label> 
+          <Input
+            type="password"
+            value={password2}
+            onChange={(e) => setPassword2(e.target.value)}
+          />
+          <Button type="submit" disabled={sending || !code}>
+            {sending ? "Tallennetaan..." : "Tallenna uusi salasana"} 
           </Button>
         </form>
         {error && <ErrorBox>{error}</ErrorBox>} 
         {success && <SuccessBox>{success}</SuccessBox>} 
         <SmallLink>
-          Muistitko sittenkin salasanan?  
+          Muistatko kuitenkin salasanan?  
           <Link to="/login">Takaisin kirjautumiseen</Link> 
         </SmallLink>
       </Card>
     </Container>
   );
 };
-export default ForgotPasswordPage;
+export default ResetPasswordPage;

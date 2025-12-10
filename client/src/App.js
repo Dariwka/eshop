@@ -42,6 +42,7 @@ import AccountPage from "./pages/Account/AccountPage.jsx";
 import OrdersPage from "./pages/Orders/OrdersPage.jsx";
 import RegisterPage from "./pages/Auth/RigesterPage.jsx";
 import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage.jsx";
+import ResetPasswordPage from "./pages/Auth/ResetPasswordPage.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -170,6 +171,10 @@ const router = createBrowserRouter([
       {
         path: "/register",
         element: <RegisterPage />,
+      },
+      {
+        path: "/reset-password",
+        element: <ResetPasswordPage />,
       },
       {
         path: "/forgot-password",
