@@ -40,6 +40,8 @@ import SokerointiHelsinki from "./pages/Seo/SokerointiHelsinki.jsx";
 import LoginPage from "./pages/Auth/LoginPage.jsx";
 import AccountPage from "./pages/Account/AccountPage.jsx";
 import OrdersPage from "./pages/Orders/OrdersPage.jsx";
+import RegisterPage from "./pages/Auth/RigesterPage.jsx";
+import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -164,6 +166,14 @@ const router = createBrowserRouter([
       {
         path: "/orders",
         element: <OrdersPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterPage />,
+      },
+      {
+        path: "/forgot-password",
+        element: <ForgotPasswordPage />,
       },
       { path: "*", element: <Navigate to="/" replace /> },
     ],

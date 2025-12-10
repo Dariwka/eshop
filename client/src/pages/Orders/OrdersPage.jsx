@@ -17,7 +17,6 @@ const Title = styled.h1`
   font-weight: 600;
   margin-bottom: 24px;
 `;
-
 const InfoText = styled.p`
   font-size: 16px;
   line-height: 1.5;
@@ -37,7 +36,6 @@ const OrderCard = styled.div`
   background: #ffffff;
   box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04);
 `;
-
 const OrderHeader = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -45,11 +43,11 @@ const OrderHeader = styled.div`
   gap: 8px;
   margin-bottom: 10px;
 `;
-
 const OrderMeta = styled.div`
   font-size: 14px;
   color: #4b5563;
 `;
+
 const StatusBadge = styled.span`
   display: inline-flex;
   align-items: center;
@@ -59,16 +57,24 @@ const StatusBadge = styled.span`
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.03em;
-  background: ${({ status }) =>
-    status === "paid" || status === "succeeded"
+  background: ${({ $status }) =>
+    $status === "paid" || $status === "succeeded"
       ? "rgba(16, 185, 129, 0.12)"
-      : "rgba(251, 191, 36, 0.12)"};
-  color: ${({ status }) =>
-    status === "paid" || status === "succeeded" ? "#047857" : "#92400e"};
+      : $status === "pending"
+      ? "rgba(251, 191, 36, 0.12)"
+      : "rgba(148, 163, 184, 0.12)"};
+  color: ${({ $status }) =>
+    $status === "paid" || $status === "succeeded"
+      ? "#047857"
+      : $status === "pending"
+      ? "#92400e"
+      : "#475569"};
 `;
+
 const Total = styled.div`
   font-weight: 600;
   font-size: 16px;
+  margin-top: 4px;
 `;
 
 const ItemsList = styled.div`
@@ -79,14 +85,35 @@ const ItemsList = styled.div`
 
 const ItemRow = styled.div`
   display: flex;
+  align-items: center;
   justify-content: space-between;
+  gap: 12px;
+  padding: 6px 0;
   font-size: 14px;
-  padding: 4px 0;
   color: #374151;
+`;
+
+const ItemLeft = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+const ItemThumb = styled.img`
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: cover;
+  background: #f3f4f6;
 `;
 
 const ItemTitle = styled.span`
   font-weight: 500;
+`;
+
+const ItemRight = styled.div`
+  text-align: right;
+  white-space: nowrap;
 `;
 
 const Badge = styled.span`
@@ -111,9 +138,8 @@ const LoginLink = styled(Link)`
   color: #2563eb;
   text-decoration: underline;
 `;
-
-// вспомогательный расчёт суммы заказа//
-
+// вспомогательный расчёт суммы заказа
+//
 const calcOrderTotal = (order) => {
   if (typeof order?.total === "number") return order.total;
   if (Array.isArray(order?.products)) {
@@ -125,24 +151,37 @@ const calcOrderTotal = (order) => {
   }
   return null;
 };
-
+// получение ссылки на картинку товара
+//
+const getItemImage = (item, apiBase) => {
+  if (!item) return null;
+  if (typeof item.img === "string") return item.img;
+  const url = item.img?.url;
+  if (!url) return null;
+  if (/^https?:\/\//i.test(url)) return url;
+  return `${apiBase}${url}`;
+};
 const OrdersPage = () => {
   const currentUser = getCurrentUser();
-  const token = currentUser?.jwt || currentUser?.token || null;
+  const jwtFromStorage =
+    typeof window !== "undefined" ? localStorage.getItem("jwt") : null;
+  const token =
+    jwtFromStorage || currentUser?.jwt || currentUser?.token || null;
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-
   const apiBase = useMemo(
     () => process.env.REACT_APP_API_URL || "http://localhost:1337",
     []
   );
+
   useEffect(() => {
     if (!token) {
       setLoading(false);
       setError("NOT_AUTH");
       return;
     }
+
     const controller = new AbortController();
     const loadOrders = async () => {
       try {
@@ -159,7 +198,8 @@ const OrdersPage = () => {
         if (!res.ok) {
           throw new Error(`Virhe ladattaessa tilaustietoja (${res.status})`);
         }
-        const data = await res.json(); // т.к. в кастомном контроллере мы возвращаем массив, а не { data: [...] }//
+        const data = await res.json(); // в кастомном контроллере возвращаем массив
+        //
         setOrders(Array.isArray(data) ? data : []);
       } catch (err) {
         if (err.name === "AbortError") return;
@@ -193,7 +233,7 @@ const OrdersPage = () => {
         <InfoText>Ladataan tilauksia...</InfoText>
       ) : orders.length === 0 ? (
         <InfoText>
-          Sinulla ei ole vielä tilauksia. Voit tehdä tilauksen verkkokaupassa.
+          Sinulla ei ole vielä tilauksia. Voit tehdä tilauksen verkkokaupassа.
         </InfoText>
       ) : (
         <OrdersWrapper>
@@ -201,12 +241,20 @@ const OrdersPage = () => {
             const isVoucher = order.isVoucherOnly;
             const created =
               order.createdAt &&
-              new Date(order.createdAt).toLocaleString("fi-FI", {
+              new Date(order.createdAt).toLocaleDateString("fi-FI", {
                 dateStyle: "short",
-                timeStyle: "short",
               });
             const total = calcOrderTotal(order);
-            const currency = order.currency || "€";
+            const currency = order.currency || "€"; // нормализуем статус: убираем запятые, приводим к нижнему регистру
+            //
+            const rawStatus = order.status || "";
+            const status = rawStatus.toLowerCase().replace(",", "").trim();
+            const statusLabel =
+              status === "paid" || status === "succeeded"
+                ? "Maksettu"
+                : status === "pending"
+                ? "Odottaa maksua"
+                : "Tuntematon";
             return (
               <OrderCard key={order.id || order.stripeId}>
                 <OrderHeader>
@@ -216,38 +264,42 @@ const OrdersPage = () => {
                       {isVoucher && <Badge>Lahjakortti</Badge>}
                     </div>
                     {created && <div>Päivämäärä: {created}</div>}
-                    {order.stripeId && <div>Stripe ID: {order.stripeId}</div>} 
                   </OrderMeta>
                   <div style={{ textAlign: "right" }}>
-                    <StatusBadge status={order.status}>
-                      {order.status === "paid" || order.status === "succeeded"
-                        ? "Maksettu"
-                        : order.status === "pending"
-                        ? "Odottaa maksua"
-                        : order.status || "Tuntematon"}
-                    </StatusBadge>
+                    <StatusBadge $status={status}>{statusLabel}</StatusBadge>
                     <Total>
                       {total != null ? `${total.toFixed(2)} ${currency}` : ""}
                     </Total>
                   </div>
                 </OrderHeader>
-
                 {Array.isArray(order.products) && order.products.length > 0 && (
                   <ItemsList>
-                    {order.products.map((item, idx) => (
-                      <ItemRow key={idx}>
-                        <ItemTitle>
-                          {item.title || item.name || "Tuote"}
-                          {item.type === "voucher" && <Badge>Voucher</Badge>}
-                        </ItemTitle>
-                        <span>
-                          x{item.quantity || 1} —{" "}
-                          {item.price != null
-                            ? `${Number(item.price).toFixed(2)} ${currency}`
-                            : ""}
-                        </span>
-                      </ItemRow>
-                    ))}
+                    {order.products.map((item, idx) => {
+                      const imgSrc = getItemImage(item, apiBase);
+                      return (
+                        <ItemRow key={idx}>
+                          <ItemLeft>
+                            {imgSrc && <ItemThumb src={imgSrc} alt="" />}
+                            <div>
+                              <ItemTitle>
+                                {item.title || item.name || "Tuote"}
+                              </ItemTitle>
+                              {item.type === "voucher" && (
+                                <Badge>Lahjakortti</Badge>
+                              )}
+                            </div>
+                          </ItemLeft>
+                          <ItemRight>
+                            <div>x{item.quantity || 1}</div>
+                            {item.price != null && (
+                              <div>
+                                {Number(item.price).toFixed(2)} {currency}
+                              </div>
+                            )}
+                          </ItemRight>
+                        </ItemRow>
+                      );
+                    })}
                   </ItemsList>
                 )}
               </OrderCard>
