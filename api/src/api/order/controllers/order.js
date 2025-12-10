@@ -576,26 +576,41 @@ Ystävällisin terveisin,<br/>KosmediK
    */
   async my(ctx) {
     try {
-      const user = ctx.state.user;
-
-      if (!user) {
-        strapi.log.warn("[orders/my] no user in ctx.state.user");
-        return ctx.unauthorized("You must be logged in");
+      // 1. Достаём токен из заголовка Authorization: Bearer xxx//
+      const authHeader = ctx.request.header.authorization || "";
+      if (!authHeader.startsWith("Bearer ")) {
+        return ctx.unauthorized("No authorization header");
       }
-
-      strapi.log.info(`[orders/my] user id=${user.id}`);
-
-      // ИСПОЛЬЗУЕМ query-API вместо entityService
-      const orders = await strapi.db.query("api::order.order").findMany({
-        orderBy: { createdAt: "desc" },
+      const token = authHeader.replace("Bearer ", "").trim();
+      if (!token) {
+        return ctx.unauthorized("No token provided");
+      }
+      // 2. Проверяем JWT через сервис users-permissions//
+      let decoded;
+      try {
+        decoded = await strapi
+          .plugin("users-permissions")
+          .service("jwt")
+          .verify(token);
+      } catch (err) {
+        strapi.log.warn("[orders/my] invalid token", err);
+        return ctx.unauthorized("Invalid token");
+      }
+      if (!decoded || !decoded.id) {
+        return ctx.unauthorized("Invalid token payload");
+      }
+      const userId = decoded.id;
+      strapi.log.info(`[orders/my] user id=${userId}`);
+      // 3. Ищем заказы этого пользователя//
+      const orders = await strapi.entityService.findMany("api::order.order", {
+        filters: {
+          users_permissions_user: userId,
+        },
+        sort: { createdAt: "desc" },
       });
-
       strapi.log.info(
-        `[orders/my] TOTAL orders in DB = ${
-          Array.isArray(orders) ? orders.length : 0
-        }`
+        `[orders/my] found ${Array.isArray(orders) ? orders.length : 0} orders`
       );
-
       return orders;
     } catch (e) {
       strapi.log.error("[orders/my] error:", e);

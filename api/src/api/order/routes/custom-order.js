@@ -22,11 +22,7 @@ module.exports = {
       method: "GET",
       path: "/orders/my",
       handler: "order.my",
-      config: {
-        auth: {
-          scope: ["authenticated"],
-        },
-      },
+      config: { auth: false },
     },
   ],
 };
