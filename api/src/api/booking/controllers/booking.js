@@ -1,9 +1,11 @@
 "use strict";
+
 const { createCoreController } = require("@strapi/strapi").factories;
 
 module.exports = createCoreController("api::booking.booking", ({ strapi }) => ({
   async myBookings(ctx) {
     const user = ctx.state.user;
+
     if (!user) {
       return ctx.unauthorized("You must be logged in");
     }
@@ -15,8 +17,8 @@ module.exports = createCoreController("api::booking.booking", ({ strapi }) => ({
             // теперь связь называется "user"//
             user: user.id,
           },
-          populate: ["treatment", "location"],
-          sort: { date: "desc", start: "asc" },
+          populate: { treatment: true, user: true },
+          sort: { date: "asc", start: "asc" },
         }
       );
       return bookings;
