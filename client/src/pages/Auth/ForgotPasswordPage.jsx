@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { mobile } from "../../responsive";
+import { notifyResetLinkSent } from "../../utils/toastService";
 
 const Container = styled.div`
   padding: 40px 20px;
@@ -89,23 +90,29 @@ const ForgotPasswordPage = () => {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+
   const API_URL = process.env.REACT_APP_API_URL || "http://localhost:1337/api";
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+
     if (!email) {
       setError("Syötä sähköpostiosoite.");
       return;
     }
     try {
       setSending(true);
+
       const res = await fetch(`${API_URL}/auth/forgot-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email }),
       });
+
       const data = await res.json();
+
       if (!res.ok) {
         console.error("Forgot error:", data);
         throw new Error(
@@ -115,6 +122,8 @@ const ForgotPasswordPage = () => {
       setSuccess(
         "Jos sähköpostiosoite löytyy järjestelmästä, lähetimme ohjeet salasanan vaihtoon."
       );
+      notifyResetLinkSent();
+      setEmail("");
     } catch (err) {
       setError(
         err.message ||

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { mobile } from "../../responsive";
+import { notifyPasswordChanged } from "../../utils/toastService";
 
 const Container = styled.div`
   padding: 40px 20px;
@@ -84,16 +85,20 @@ const SmallLink = styled.div`
     text-decoration: underline;
   }
 `;
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:1337/api";
+
 const ResetPasswordPage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
   const [code, setCode] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const API_URL = process.env.REACT_APP_API_URL || "http://localhost:1337/api";
+
+  const location = useLocation();
+  const navigate = useNavigate();
+
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const c = params.get("code");
@@ -103,10 +108,12 @@ const ResetPasswordPage = () => {
       setCode(c);
     }
   }, [location.search]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+
     if (!password || !password2) {
       setError("Syötä uusi salasana kahdesti.");
       return;
@@ -121,6 +128,7 @@ const ResetPasswordPage = () => {
     }
     try {
       setSending(true);
+
       const res = await fetch(`${API_URL}/auth/reset-password`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -131,6 +139,7 @@ const ResetPasswordPage = () => {
         }),
       });
       const data = await res.json();
+
       if (!res.ok) {
         console.error("Reset error:", data);
         throw new Error(
@@ -138,6 +147,9 @@ const ResetPasswordPage = () => {
         );
       }
       setSuccess("Uusi salasana on asetettu. Voit nyt kirjautua sisään.");
+
+      notifyPasswordChanged();
+
       setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
       setError(

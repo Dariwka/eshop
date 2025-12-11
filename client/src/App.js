@@ -21,7 +21,7 @@ import About from "./pages/About/About.jsx";
 import ContactUs from "./pages/ContactUs/ContactUs.jsx";
 import SearchPage from "./pages/Search/SearchPage.jsx";
 import SideDrawer from "./components/Drawer/SideDrawer.jsx";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import BackDrop from "./components/BackDrop/BackDrop.jsx";
 import Announcement from "./components/Announcement/Announcement.jsx";
 import Success from "./pages/Success/Success.jsx";
@@ -44,8 +44,29 @@ import RegisterPage from "./pages/Auth/RigesterPage.jsx";
 import ForgotPasswordPage from "./pages/Auth/ForgotPasswordPage.jsx";
 import ResetPasswordPage from "./pages/Auth/ResetPasswordPage.jsx";
 
+import "react-toastify/dist/ReactToastify.css";
+import {
+  KosmedikToastContainer,
+  notifyLoginSuccess,
+  notifyLogout,
+} from "./utils/toastService.js";
+
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
+
+  useEffect(() => {
+    if (localStorage.getItem("loginSuccess") === "true") {
+      notifyLoginSuccess();
+      localStorage.removeItem("loginSuccess");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (localStorage.getItem("logoutSuccess") === "true") {
+      notifyLogout();
+      localStorage.removeItem("logoutSuccess");
+    }
+  }, []);
 
   return (
     <div className="app">
@@ -57,6 +78,7 @@ const Layout = () => {
       <Outlet />
       <ConsentBar />
       <Footer />
+      <KosmedikToastContainer />
     </div>
   );
 };

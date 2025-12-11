@@ -165,6 +165,7 @@ const RegisterPage = () => {
   const [position, setPosition] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");

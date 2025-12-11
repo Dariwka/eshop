@@ -269,9 +269,11 @@ const Navbar = ({ click }) => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isAccountOpen]);
+
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
+    localStorage.setItem("logoutSuccess", "true");
     setIsAccountOpen(false);
     window.location.href = "/";
   };

@@ -67,7 +67,7 @@ const Label = styled.label`
   font-weight: 600;
 `;
 
-const BaseInput = ` width: 100%; height: 44px; border: 1px solid #e3e3e3; border-radius: 10px; padding: 10px 12px; outline: none; font-size: 15px; background: #fff; transition: box-shadow .15s ease, border-color .15s ease;
+const BaseInput = `width: 100%; height: 44px; border: 1px solid #e3e3e3; border-radius: 10px; padding: 10px 12px; outline: none; font-size: 15px; background: #fff; transition: box-shadow .15s ease, border-color .15s ease;
  &:focus {  border-color: #7bb57a;  box-shadow: 0 0 0 3px rgba(123, 181, 122, 0.15); }
  &::placeholder { color: #9aa0a6; }`;
 

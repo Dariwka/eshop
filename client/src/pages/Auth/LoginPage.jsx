@@ -155,6 +155,9 @@ export default function LoginPage() {
       }
       localStorage.setItem("user", JSON.stringify(res.data.user || null));
       localStorage.setItem("jwt", res.data.jwt);
+
+      localStorage.setItem("loginSuccess", "true");
+
       window.location.href = "/";
     } catch (err) {
       console.error("LOGIN ERROR:", err?.response?.data || err);
