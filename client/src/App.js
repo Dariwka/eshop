@@ -50,6 +50,7 @@ import {
   notifyLoginSuccess,
   notifyLogout,
 } from "./utils/toastService.js";
+import MyBookings from "./pages/Account/MyBookings.jsx";
 
 const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
@@ -189,6 +190,10 @@ const router = createBrowserRouter([
       {
         path: "/orders",
         element: <OrdersPage />,
+      },
+      {
+        path: "/account-bookings",
+        element: <MyBookings />,
       },
       {
         path: "/register",

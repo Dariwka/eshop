@@ -345,6 +345,12 @@ const Navbar = ({ click }) => {
                     >
                       <span>Omat tilaukset</span>
                     </AccountMenuItem>
+                    <AccountMenuItem
+                      to="/account-bookings"
+                      onClick={() => setIsAccountOpen(false)}
+                    >
+                      <span>Omat varaukset</span>
+                    </AccountMenuItem>
                     <AccountMenuDivider />
                     <LogoutButton type="button" onClick={handleLogout}>
                       Kirjaudu ulos
