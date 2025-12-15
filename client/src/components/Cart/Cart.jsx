@@ -6,6 +6,13 @@ import { removeItem, resetCart } from "../../redux/cartReducer";
 import { loadStripe } from "@stripe/stripe-js";
 import { makeRequest } from "../../makeRequest";
 
+const Item = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+`;
+
 const CartContainer = styled.div`
   position: absolute;
   right: 20px;
@@ -13,9 +20,21 @@ const CartContainer = styled.div`
   z-index: 999;
   background-color: #fff;
   padding: 20px;
+  line-height: 1.4;
+
+  /* ПУСТАЯ (компактная) */
+  width: 360px;
+  max-width: calc(100vw - 40px);
+
   box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
   -webkit-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
   -moz-box-shadow: -12px 5px 28px -6px rgba(0, 0, 0, 0.62);
+
+  /* С ТОВАРАМИ (широкая как фото №2) */
+  &:has(${Item}) {
+    width: 900px;
+    max-width: calc(100vw - 40px);
+  }
 `;
 
 const CartTitle = styled.h1`
@@ -23,13 +42,6 @@ const CartTitle = styled.h1`
   color: gray;
   font-weight: 400;
   font-size: 24px;
-`;
-
-const Item = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-bottom: 30px;
 `;
 
 const Image = styled.img`

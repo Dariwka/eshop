@@ -14,13 +14,11 @@ import { getCurrentUser } from "../../utils/auth";
 import { mobile } from "../../responsive";
 
 /* ========== styled-компоненты ========== */
-
 const NavbarContainer = styled.div`
   height: 80px;
   font-family: "Urbanist", sans-serif;
   ${mobile({ height: "70px" })};
 `;
-
 const Wrapper = styled.div`
   padding: 15px 30px;
   display: flex;
@@ -28,7 +26,6 @@ const Wrapper = styled.div`
   align-items: center;
   ${mobile({ padding: "10px 15px 0px 5px" })};
 `;
-
 const HamburgerMenu = styled.div`
   display: none;
   width: 30px;
@@ -37,82 +34,67 @@ const HamburgerMenu = styled.div`
   justify-content: space-between;
   align-items: center;
   cursor: pointer;
-
   & > div {
     width: 100%;
     height: 3px;
     background: #282862;
   }
-
   &:hover > div {
     background: #282862;
   }
-
   ${mobile({ display: "flex" })};
 `;
-
 const Left = styled.div`
   display: flex;
   align-items: center;
   gap: 30px;
   ${mobile({ display: "none" })};
 `;
-
 const Item = styled.div`
   display: flex;
   align-items: center;
   gap: 6px;
-
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  ${mobile({ display: "none" })};
+  ${mobile({
+    display: "none",
+  })};
 `;
-
 const Center = styled.div`
   font-size: 30px;
   letter-spacing: 2px;
   font-weight: 600;
-  ${mobile({
-    fontSize: "24px",
-    letterSpacing: "1.5px",
-  })}
+  ${mobile({ fontSize: "24px", letterSpacing: "1.5px" })}
 `;
-
 const StyledLink = styled(Link)`
   text-decoration: none;
   color: black;
-
-  &:focus,
-  &:visited,
-  ​&:link {
-    text-decoration: none;
-  }
-
-  &:hover,
-  &:active {
-    color: #0a7c5f; /* лёгкий зелёный акцент при ховере */
-    text-decoration: none;
-  }
-`;
-
-const StyledLinkSearch = styled(Link)`
-  text-decoration: none;
-  color: #777;
-
   &:focus,
   &:visited,
   &:link {
     text-decoration: none;
   }
-
   &:hover,
   &:active {
     color: #0a7c5f;
     text-decoration: none;
   }
 `;
-
+const StyledLinkSearch = styled(Link)`
+  text-decoration: none;
+  color: #777;
+  &:focus,
+  &:visited,
+  &:link {
+    text-decoration: none;
+  }
+  &:hover,
+  &:active {
+    color: #0a7c5f;
+    text-decoration: none;
+  }
+`;
 const Right = styled.div`
   display: flex;
   align-items: center;
@@ -123,12 +105,28 @@ const Right = styled.div`
 const Icons = styled.div`
   display: flex;
   align-items: center;
-  cursor: pointer;
   gap: 18px;
   color: #777;
 
   svg {
     font-size: 22px;
+    display: block;
+  }
+
+  /* одинаковые слоты под все элементы в ряду */
+  & > a,
+  & > div,
+  & > button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 28px;
+    flex: 0 0 auto;
+  }
+
+  /* div с корзиной (обертка ref) — якорь для CartContainer */
+  & > div {
+    position: relative;
   }
 `;
 
@@ -136,40 +134,44 @@ const CartIcon = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  height: 28px;
+  cursor: pointer;
 `;
 
 const Circle = styled.span`
   position: absolute;
   right: -6px;
   top: -6px;
-
   min-width: 18px;
   height: 18px;
   padding: 0 4px;
-
   border-radius: 50%;
   background-color: green;
   color: white;
-
   font-size: 11px;
   line-height: 1;
   display: flex;
   align-items: center;
   justify-content: center;
+  pointer-events: none;
 `;
-
 const DesktopOnly = styled.div`
   display: flex;
-  ${mobile({ display: "none" })};
+  ${mobile({
+    display: "none",
+  })};
 `;
-
 /* ==== дропдаун аккаунта ==== */
-
 const AccountWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
+  justify-content: center;
+  height: 28px;
+  width: 28px;
+  z-index: 900;
 `;
+
 const AccountButton = styled.button`
   border: none;
   background: transparent;
@@ -181,12 +183,19 @@ const AccountButton = styled.button`
 
   svg {
     font-size: 26px;
+    display: block;
+  }
+
+  &:hover {
+    color: #0a7c5f;
   }
 `;
+
 const AccountMenu = styled.div`
   position: absolute;
-  top: 120%;
-  right: 0;
+  top: calc(100% + 12px);
+  left: 50%;
+  transform: translateX(-50%);
   background: #ffffff;
   border-radius: 10px;
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
@@ -194,16 +203,21 @@ const AccountMenu = styled.div`
   z-index: 300;
   padding: 8px 0;
   font-family: "Urbanist", sans-serif;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 0;
 `;
-
 const AccountMenuItem = styled(Link)`
+  min-height: 44px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 16px;
+  padding: 12px 16px;
   font-size: 14px;
   text-decoration: none;
   color: #171717;
+  line-height: 1.4;
 
   &:hover {
     background-color: #f4f4f4;
@@ -214,7 +228,6 @@ const AccountMenuDivider = styled.hr`
   border-top: 1px solid #eee;
   margin: 6px 0;
 `;
-
 const LogoutButton = styled.button`
   width: 100%;
   padding: 10px 16px;
@@ -224,39 +237,36 @@ const LogoutButton = styled.button`
   font-size: 14px;
   cursor: pointer;
   color: #b00020;
-
   &:hover {
     background-color: #fff0f0;
   }
 `;
-
 const ProTag = styled.span`
   font-size: 11px;
-  padding: 2px 6px;
+  padding: 4px 8px;
   border-radius: 999px;
   background-color: #0a7c5f;
   color: #ffffff;
   text-transform: uppercase;
   letter-spacing: 0.04em;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
 `;
-
 /* ========== компонент Navbar ========== */
 const Navbar = ({ click }) => {
   const [showCart, setShowCart] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
   const products = useSelector((state) => state.cart.products);
   const cartButtonRef = useRef(null);
-  const accountRef = useRef(null);
-  const closeCart = () => {
-    setShowCart(false);
-  }; // получаем юзера
+  const cartWrapperRef = useRef(null); // добавили обёртку для клика вне
   //
+  const accountRef = useRef(null);
+  const closeCart = () => setShowCart(false);
   const user = getCurrentUser();
   const isLoggedIn = !!user;
   const isPro = !!user?.isPro;
-  /* закрытие дропдауна аккаунта при клике вне */
-
-  useEffect(() => {
+  /* закрытие дропдауна аккаунта при клике вне */ useEffect(() => {
     if (!isAccountOpen) return;
     const handleClickOutside = (event) => {
       if (!accountRef.current) return;
@@ -265,11 +275,20 @@ const Navbar = ({ click }) => {
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isAccountOpen]);
-
+  /* закрытие корзины при клике вне (по аналогии) */
+  useEffect(() => {
+    if (!showCart) return;
+    const handleClickOutside = (event) => {
+      if (!cartWrapperRef.current) return;
+      if (!cartWrapperRef.current.contains(event.target)) {
+        setShowCart(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showCart]);
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
@@ -285,36 +304,44 @@ const Navbar = ({ click }) => {
           <div></div>
           <div></div>
         </HamburgerMenu>
+
         <Left>
           <Item>
-            <img src="/img/fi.png" alt="flag" />
-            <KeyboardArrowDownIcon />         
+            <img src="/img/fi.png" alt="flag" />  <KeyboardArrowDownIcon />
           </Item>
+
           <Item>
-            <StyledLink to="/products/face">Kasvot</StyledLink>
+            <StyledLink to="/products/face">Kasvot</StyledLink> 
           </Item>
+
           <Item>
-            <StyledLink to="/products/body">Vartalo</StyledLink>
+            <StyledLink to="/products/body">Vartalo</StyledLink> 
           </Item>
+
           <Item>
             <StyledLink to="/products/professionals">
               Ammattilaisille
             </StyledLink>
           </Item>
         </Left>
+
         <Center>
           <StyledLink to="/">KOSMEDiK</StyledLink>
         </Center>
+
         <Right>
           <Item>
-            <StyledLink to="/treatments">Hoidot</StyledLink>
+            <StyledLink to="/treatments">Hoidot</StyledLink> 
           </Item>
+
           <Item>
-            <StyledLink to="/trainings">Koulutukset</StyledLink>
+            <StyledLink to="/trainings">Koulutukset</StyledLink> 
           </Item>
+
           <Item>
             <StyledLink to="/about">Meistä</StyledLink>
           </Item>
+
           <Icons>
             <StyledLinkSearch to="/search" aria-label="Haku">
               <SearchIcon />
@@ -329,29 +356,28 @@ const Navbar = ({ click }) => {
                   onClick={() => setIsAccountOpen((prev) => !prev)}
                 >
                   {isPro ? <VerifiedUserIcon /> : <PersonIcon />}
-                </AccountButton>{" "}
+                </AccountButton>
                 {isAccountOpen && (
                   <AccountMenu>
                     <AccountMenuItem
                       to="/account"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Oma tili</span>
-                      {isPro && <ProTag>PRO</ProTag>}
+                      <span>Oma tili</span> {isPro && <ProTag>PRO</ProTag>}
                     </AccountMenuItem>
                     <AccountMenuItem
                       to="/orders"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Omat tilaukset</span>
+                      <span>Omat tilaukset</span> 
                     </AccountMenuItem>
                     <AccountMenuItem
                       to="/account-bookings"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Omat varaukset</span>
+                      <span>Omat varaukset</span> 
                     </AccountMenuItem>
-                    <AccountMenuDivider />
+                    <AccountMenuDivider /> 
                     <LogoutButton type="button" onClick={handleLogout}>
                       Kirjaudu ulos
                     </LogoutButton>
@@ -368,19 +394,19 @@ const Navbar = ({ click }) => {
                 <MailOutlineIcon />
               </StyledLinkSearch>
             </DesktopOnly>
-            <CartIcon>
-              <ShoppingCartOutlinedIcon
-                ref={cartButtonRef}
-                onClick={() => {
-                  setShowCart((prev) => !prev);
-                }}
-              />
-              {products.length > 0 && <Circle>{products.length}</Circle>}
-            </CartIcon>
+            <div ref={cartWrapperRef}>
+              <CartIcon>
+                <ShoppingCartOutlinedIcon
+                  ref={cartButtonRef}
+                  onClick={() => setShowCart((prev) => !prev)}
+                />
+                {products.length > 0 && <Circle>{products.length}</Circle>} 
+              </CartIcon>
+              {showCart && <Cart open={cartButtonRef} close={closeCart} />} 
+            </div>
           </Icons>
         </Right>
       </Wrapper>
-      {showCart && <Cart open={cartButtonRef} close={closeCart} />}
     </NavbarContainer>
   );
 };

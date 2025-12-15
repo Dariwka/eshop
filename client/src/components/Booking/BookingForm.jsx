@@ -167,6 +167,7 @@ const BookingForm = ({
   allowedLocations = [],
   initialLocation = "",
   close,
+  mode,
 }) => {
   const treat =
     treatment && treatment.attributes ? treatment.attributes : treatment || {};
@@ -272,19 +273,21 @@ const BookingForm = ({
     setValues((v) => ({ ...v, [name]: value }));
   };
 
+  const successText =
+    mode === "reschedule"
+      ? "Ajanmuutospyyntö on lähetetty. Saat vahvistuksen sähköpostitse"
+      : "Varauspyyntö on lähetetty. Saat vahvistuksen sähköpostitse";
+
   useEffect(() => {
     if (submitStatus === "SUCCESS") {
-      toast.success(
-        "Request sent. If the chosen time is still available, you will receive a confirmation by email.",
-        { position: toast.POSITION.TOP_CENTER }
-      );
+      toast.success(successText, { position: toast.POSITION.TOP_CENTER });
       const t = setTimeout(() => {
         setSubmitStatus("");
         close(); // закрываем модалку
       }, 3000);
       return () => clearTimeout(t);
     }
-  }, [submitStatus, close]);
+  }, [submitStatus, close, successText]);
 
   const handleSubmitAppointment = async (e) => {
     e.preventDefault();
