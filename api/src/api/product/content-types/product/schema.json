@@ -124,6 +124,10 @@
     },
     "proPrice": {
       "type": "decimal"
+    },
+    "isBulky": {
+      "type": "boolean",
+      "default": false
     }
   }
 }
