@@ -56,6 +56,14 @@ const Layout = () => {
   const [sideToggle, setSideToggle] = useState(false);
 
   useEffect(() => {
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "auto";
+    return () => {
+      document.body.style.overflow = prev || "auto";
+    };
+  }, []);
+
+  useEffect(() => {
     if (localStorage.getItem("loginSuccess") === "true") {
       notifyLoginSuccess();
       localStorage.removeItem("loginSuccess");

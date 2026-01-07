@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingCartOutlinedIcon from "@mui/icons-material/ShoppingCartOutlined";
@@ -13,7 +13,8 @@ import Cart from "../Cart/Cart";
 import { getCurrentUser } from "../../utils/auth";
 import { mobile } from "../../responsive";
 
-/* ========== styled-компоненты ========== */
+/* ========== styled ========== */
+
 const NavbarContainer = styled.div`
   height: 80px;
   font-family: "Urbanist", sans-serif;
@@ -57,15 +58,13 @@ const Item = styled.div`
   font-size: 18px;
   font-weight: 500;
   letter-spacing: 0.02em;
-  ${mobile({
-    display: "none",
-  })};
+  ${mobile({ display: "none" })};
 `;
 const Center = styled.div`
   font-size: 30px;
   letter-spacing: 2px;
   font-weight: 600;
-  ${mobile({ fontSize: "24px", letterSpacing: "1.5px" })}
+  ${mobile({ fontSize: "24px", letterSpacing: "1.5px" })};
 `;
 const StyledLink = styled(Link)`
   text-decoration: none;
@@ -101,19 +100,15 @@ const Right = styled.div`
   gap: 25px;
   ${mobile({ gap: "14px" })};
 `;
-
 const Icons = styled.div`
   display: flex;
   align-items: center;
   gap: 18px;
   color: #777;
-
   svg {
     font-size: 22px;
     display: block;
   }
-
-  /* одинаковые слоты под все элементы в ряду */
   & > a,
   & > div,
   & > button {
@@ -123,21 +118,33 @@ const Icons = styled.div`
     height: 28px;
     flex: 0 0 auto;
   }
-
-  /* div с корзиной (обертка ref) — якорь для CartContainer */
-  & > div {
-    position: relative;
+`;
+const DesktopOnly = styled.div`
+  display: flex;
+  ${mobile({
+    display: "none",
+  })};
+`;
+/* ====== icon button (важно: кликается 100%) ====== */ const IconBtn = styled.button`
+  border: none;
+  background: transparent;
+  padding: 0;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 28px;
+  color: #777;
+  &:hover {
+    color: #0a7c5f;
   }
 `;
-
-const CartIcon = styled.div`
+/* ====== cart ====== */ const CartWrap = styled.div`
   position: relative;
   display: flex;
   align-items: center;
   height: 28px;
-  cursor: pointer;
 `;
-
 const Circle = styled.span`
   position: absolute;
   right: -6px;
@@ -155,58 +162,31 @@ const Circle = styled.span`
   justify-content: center;
   pointer-events: none;
 `;
-const DesktopOnly = styled.div`
-  display: flex;
-  ${mobile({
-    display: "none",
-  })};
-`;
-/* ==== дропдаун аккаунта ==== */
-const AccountWrapper = styled.div`
+/* ====== account dropdown ====== */ const AccountWrapper = styled.div`
   position: relative;
   display: flex;
   align-items: center;
-  justify-content: center;
   height: 28px;
-  width: 28px;
   z-index: 900;
 `;
-
-const AccountButton = styled.button`
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  padding: 0;
-  display: flex;
-  align-items: center;
-  color: #777;
-
+const AccountButton = styled(IconBtn)`
   svg {
     font-size: 26px;
-    display: block;
-  }
-
-  &:hover {
-    color: #0a7c5f;
   }
 `;
-
 const AccountMenu = styled.div`
   position: absolute;
-  top: calc(100% + 12px);
-  left: 50%;
-  transform: translateX(-50%);
+  top: calc(100% + 6px);
+  right: 0;
   background: #ffffff;
-  border-radius: 10px;
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-  min-width: 230px;
+  border-radius: 12px;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, 0.18);
+  min-width: 210px;
   z-index: 300;
-  padding: 8px 0;
-  font-family: "Urbanist", sans-serif;
+  padding: 6px 0;
   display: flex;
   flex-direction: column;
   gap: 4px;
-  margin-top: 0;
 `;
 const AccountMenuItem = styled(Link)`
   min-height: 44px;
@@ -218,7 +198,6 @@ const AccountMenuItem = styled(Link)`
   text-decoration: none;
   color: #171717;
   line-height: 1.4;
-
   &:hover {
     background-color: #f4f4f4;
   }
@@ -253,42 +232,40 @@ const ProTag = styled.span`
   display: inline-flex;
   align-items: center;
 `;
-/* ========== компонент Navbar ========== */
-const Navbar = ({ click }) => {
+/* ========== component ========== */ const Navbar = ({ click }) => {
+  const products = useSelector((state) => state.cart.products);
   const [showCart, setShowCart] = useState(false);
   const [isAccountOpen, setIsAccountOpen] = useState(false);
-  const products = useSelector((state) => state.cart.products);
-  const cartButtonRef = useRef(null);
-  const cartWrapperRef = useRef(null); // добавили обёртку для клика вне
-  //
+  const cartBtnRef = useRef(null);
   const accountRef = useRef(null);
-  const closeCart = () => setShowCart(false);
   const user = getCurrentUser();
   const isLoggedIn = !!user;
-  const isPro = !!user?.isPro;
-  /* закрытие дропдауна аккаунта при клике вне */ useEffect(() => {
-    if (!isAccountOpen) return;
-    const handleClickOutside = (event) => {
-      if (!accountRef.current) return;
-      if (!accountRef.current.contains(event.target)) {
-        setIsAccountOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isAccountOpen]);
-  /* закрытие корзины при клике вне (по аналогии) */
+  const isPro = !!user?.isPro; // close on outside click (account + cart)
+  //
   useEffect(() => {
-    if (!showCart) return;
-    const handleClickOutside = (event) => {
-      if (!cartWrapperRef.current) return;
-      if (!cartWrapperRef.current.contains(event.target)) {
-        setShowCart(false);
+    const onMouseDown = (e) => {
+      // account
+      //
+      if (
+        isAccountOpen &&
+        accountRef.current &&
+        !accountRef.current.contains(e.target)
+      ) {
+        setIsAccountOpen(false);
+      } // cart (Cart.jsx сам тоже умеет закрываться по outside, но тут подстрахуем)
+      //
+      if (
+        showCart &&
+        cartBtnRef.current &&
+        !cartBtnRef.current.contains(e.target)
+      ) {
+        // НЕ закрываем, если клик внутри самого Cart popup (он fixed и вне DOM-ветки Navbar)    // поэтому закрытие корзины лучше делегировать Cart.jsx через onClose.
+        //
       }
     };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [showCart]);
+    document.addEventListener("mousedown", onMouseDown);
+    return () => document.removeEventListener("mousedown", onMouseDown);
+  }, [isAccountOpen, showCart]);
   const handleLogout = () => {
     localStorage.removeItem("jwt");
     localStorage.removeItem("user");
@@ -298,115 +275,124 @@ const Navbar = ({ click }) => {
   };
   return (
     <NavbarContainer>
+      {" "}
       <Wrapper>
+        {" "}
         <HamburgerMenu onClick={click} aria-label="Avaa valikko">
-          <div></div>
-          <div></div>
-          <div></div>
-        </HamburgerMenu>
-
+          <div /> <div /> <div />{" "}
+        </HamburgerMenu>{" "}
         <Left>
+          {" "}
           <Item>
-            <img src="/img/fi.png" alt="flag" />  <KeyboardArrowDownIcon />
-          </Item>
-
+            <img src="/img/fi.png" alt="flag" /> <KeyboardArrowDownIcon />{" "}
+          </Item>{" "}
           <Item>
-            <StyledLink to="/products/face">Kasvot</StyledLink> 
-          </Item>
-
+            <StyledLink to="/products/face">Kasvot</StyledLink>{" "}
+          </Item>{" "}
           <Item>
-            <StyledLink to="/products/body">Vartalo</StyledLink> 
-          </Item>
-
+            <StyledLink to="/products/body">Vartalo</StyledLink>{" "}
+          </Item>{" "}
           <Item>
+            {" "}
             <StyledLink to="/products/professionals">
               Ammattilaisille
-            </StyledLink>
-          </Item>
-        </Left>
-
+            </StyledLink>{" "}
+          </Item>{" "}
+        </Left>{" "}
         <Center>
-          <StyledLink to="/">KOSMEDiK</StyledLink>
-        </Center>
-
+          <StyledLink to="/">KOSMEDiK</StyledLink>{" "}
+        </Center>{" "}
         <Right>
+          {" "}
           <Item>
-            <StyledLink to="/treatments">Hoidot</StyledLink> 
-          </Item>
-
+            <StyledLink to="/treatments">Hoidot</StyledLink>{" "}
+          </Item>{" "}
           <Item>
-            <StyledLink to="/trainings">Koulutukset</StyledLink> 
-          </Item>
-
+            <StyledLink to="/trainings">Koulutukset</StyledLink>{" "}
+          </Item>{" "}
           <Item>
-            <StyledLink to="/about">Meistä</StyledLink>
-          </Item>
-
+            <StyledLink to="/about">Meistä</StyledLink>{" "}
+          </Item>{" "}
           <Icons>
+            {" "}
             <StyledLinkSearch to="/search" aria-label="Haku">
-              <SearchIcon />
-            </StyledLinkSearch>
+              <SearchIcon />{" "}
+            </StyledLinkSearch>{" "}
             {isLoggedIn ? (
               <AccountWrapper ref={accountRef}>
+                {" "}
                 <AccountButton
                   type="button"
                   aria-haspopup="true"
                   aria-expanded={isAccountOpen}
                   aria-label={isPro ? "Pro-tili" : "Oma tili"}
-                  onClick={() => setIsAccountOpen((prev) => !prev)}
+                  onClick={() => setIsAccountOpen((p) => !p)}
                 >
-                  {isPro ? <VerifiedUserIcon /> : <PersonIcon />}
-                </AccountButton>
+                  {" "}
+                  {isPro ? <VerifiedUserIcon /> : <PersonIcon />}{" "}
+                </AccountButton>{" "}
                 {isAccountOpen && (
                   <AccountMenu>
+                    {" "}
                     <AccountMenuItem
                       to="/account"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Oma tili</span> {isPro && <ProTag>PRO</ProTag>}
-                    </AccountMenuItem>
+                      <span>Oma tili</span>
+                      {isPro && <ProTag>PRO</ProTag>}{" "}
+                    </AccountMenuItem>{" "}
                     <AccountMenuItem
                       to="/orders"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Omat tilaukset</span> 
-                    </AccountMenuItem>
+                      <span>Omat tilaukset</span>{" "}
+                    </AccountMenuItem>{" "}
                     <AccountMenuItem
                       to="/account-bookings"
                       onClick={() => setIsAccountOpen(false)}
                     >
-                      <span>Omat varaukset</span> 
+                      <span>Omat varaukset</span>{" "}
                     </AccountMenuItem>
-                    <AccountMenuDivider /> 
+                    <AccountMenuDivider />{" "}
                     <LogoutButton type="button" onClick={handleLogout}>
-                      Kirjaudu ulos
-                    </LogoutButton>
+                      Kirjaudu ulos{" "}
+                    </LogoutButton>{" "}
                   </AccountMenu>
-                )}
+                )}{" "}
               </AccountWrapper>
             ) : (
               <StyledLinkSearch to="/login" aria-label="Kirjaudu sisään">
-                <PersonOutlineIcon />
+                <PersonOutlineIcon />{" "}
               </StyledLinkSearch>
-            )}
+            )}{" "}
             <DesktopOnly>
+              {" "}
               <StyledLinkSearch to="/contact" aria-label="Yhteystiedot">
-                <MailOutlineIcon />
-              </StyledLinkSearch>
+                <MailOutlineIcon />{" "}
+              </StyledLinkSearch>{" "}
             </DesktopOnly>
-            <div ref={cartWrapperRef}>
-              <CartIcon>
-                <ShoppingCartOutlinedIcon
-                  ref={cartButtonRef}
-                  onClick={() => setShowCart((prev) => !prev)}
+            {/* CART */}{" "}
+            <CartWrap>
+              {" "}
+              <IconBtn
+                ref={cartBtnRef}
+                type="button"
+                aria-label="Ostoskori"
+                onClick={() => setShowCart((p) => !p)}
+              >
+                <ShoppingCartOutlinedIcon />{" "}
+              </IconBtn>{" "}
+              {products.length > 0 && <Circle>{products.length}</Circle>}{" "}
+              {showCart && (
+                <Cart
+                  anchorRef={cartBtnRef}
+                  onClose={() => setShowCart(false)}
                 />
-                {products.length > 0 && <Circle>{products.length}</Circle>} 
-              </CartIcon>
-              {showCart && <Cart open={cartButtonRef} close={closeCart} />} 
-            </div>
-          </Icons>
-        </Right>
-      </Wrapper>
+              )}{" "}
+            </CartWrap>{" "}
+          </Icons>{" "}
+        </Right>{" "}
+      </Wrapper>{" "}
     </NavbarContainer>
   );
 };

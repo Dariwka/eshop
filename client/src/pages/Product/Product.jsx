@@ -365,6 +365,7 @@ const Product = () => {
         price: effectivePriceForCart,
         img: url1,
         quantity,
+        isBulky: product.attributes.isBulky,
       })
     );
     toast.success("Product successfully added to your shopping cart", {
